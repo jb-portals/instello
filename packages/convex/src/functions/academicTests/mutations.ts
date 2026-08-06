@@ -1,6 +1,8 @@
-import { ERROR_CODES, throwAppError } from "#helpers/constants";
 import { insMutation } from "#helpers/customFunctions";
 import { vv } from "#schema";
+import * as AcademicComponent from "./model/academicComponent";
+import * as AcademicSchema from "./model/academicSchema";
+import * as Access from "./model/access";
 import {
 	CreateAssessmentComponentInput,
 	PatchAssessmentComponentBody,
@@ -14,8 +16,18 @@ import {
 export const createAssessmentSchema = insMutation({
 	args: CreateAssessmentSchemaInput,
 	returns: vv.id("assessmentSchemas"),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireProgramSubjectInInstitution(
+			ctx,
+			args.programSubjectId,
+			ctx.institution._id,
+		);
+
+		return await AcademicSchema.create(ctx, {
+			programSubjectId: args.programSubjectId,
+			name: args.name,
+			description: args.description,
+		});
 	},
 });
 
@@ -23,8 +35,19 @@ export const createAssessmentSchema = insMutation({
 export const createAssessmentComponent = insMutation({
 	args: CreateAssessmentComponentInput,
 	returns: vv.id("assessmentComponents"),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireSchemaInInstitution(
+			ctx,
+			args.assessmentSchemaId,
+			ctx.institution._id,
+		);
+
+		return await AcademicComponent.create(ctx, {
+			assessmentSchemaId: args.assessmentSchemaId,
+			name: args.name,
+			totalAllotedMarks: args.totalAllotedMarks,
+			passingMarks: args.passingMarks,
+		});
 	},
 });
 
@@ -35,8 +58,11 @@ export const updateAssessmentSchema = insMutation({
 		body: PatchAssessmentSchemaBody,
 	},
 	returns: vv.null(),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireSchemaInInstitution(ctx, args.id, ctx.institution._id);
+
+		await AcademicSchema.patch(ctx, args.id, args.body);
+		return null;
 	},
 });
 
@@ -47,8 +73,15 @@ export const updateAssessmentComponent = insMutation({
 		body: PatchAssessmentComponentBody,
 	},
 	returns: vv.null(),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireComponentInInstitution(
+			ctx,
+			args.id,
+			ctx.institution._id,
+		);
+
+		await AcademicComponent.patch(ctx, args.id, args.body);
+		return null;
 	},
 });
 
@@ -59,8 +92,15 @@ export const reposAssessmentComponent = insMutation({
 		orderIdx: vv.number(),
 	},
 	returns: vv.null(),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireComponentInInstitution(
+			ctx,
+			args.id,
+			ctx.institution._id,
+		);
+
+		await AcademicComponent.repos(ctx, args.id, args.orderIdx);
+		return null;
 	},
 });
 
@@ -70,8 +110,11 @@ export const removeAssessmentSchema = insMutation({
 		id: vv.id("assessmentSchemas"),
 	},
 	returns: vv.null(),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireSchemaInInstitution(ctx, args.id, ctx.institution._id);
+
+		await AcademicSchema.remove(ctx, args.id);
+		return null;
 	},
 });
 
@@ -81,7 +124,14 @@ export const removeAssessmentComponent = insMutation({
 		id: vv.id("assessmentComponents"),
 	},
 	returns: vv.null(),
-	handler: async () => {
-		throwAppError(ERROR_CODES.BASE.METHOD_NOT_IMPLEMENTED);
+	handler: async (ctx, args) => {
+		await Access.requireComponentInInstitution(
+			ctx,
+			args.id,
+			ctx.institution._id,
+		);
+
+		await AcademicComponent.remove(ctx, args.id);
+		return null;
 	},
 });
