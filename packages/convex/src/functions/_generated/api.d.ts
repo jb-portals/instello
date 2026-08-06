@@ -8,12 +8,23 @@
  * @module
  */
 
+import type * as __fixtures___v2_assertions from "../__fixtures__/v2/assertions.js";
+import type * as __fixtures___v2_auth from "../__fixtures__/v2/auth.js";
+import type * as __fixtures___v2_factories_academicPattern from "../__fixtures__/v2/factories/academicPattern.js";
+import type * as __fixtures___v2_factories_institution from "../__fixtures__/v2/factories/institution.js";
+import type * as __fixtures___v2_factories_owner from "../__fixtures__/v2/factories/owner.js";
+import type * as __fixtures___v2_factories_ownerOrganization from "../__fixtures__/v2/factories/ownerOrganization.js";
+import type * as __fixtures___v2_factories_program from "../__fixtures__/v2/factories/program.js";
+import type * as __fixtures___v2_test from "../__fixtures__/v2/test.js";
+import type * as __fixtures___v2_types from "../__fixtures__/v2/types.js";
 import type * as academicPattern_model_academicPattern from "../academicPattern/model/academicPattern.js";
 import type * as academicPattern_model_academicStage from "../academicPattern/model/academicStage.js";
 import type * as academicPattern_mutations from "../academicPattern/mutations.js";
 import type * as academicPattern_queries from "../academicPattern/queries.js";
 import type * as academicPattern_validator_academicPattern from "../academicPattern/validator/academicPattern.js";
 import type * as academicPattern_validator_academicStage from "../academicPattern/validator/academicStage.js";
+import type * as academicTests_mutations from "../academicTests/mutations.js";
+import type * as academicTests_queries from "../academicTests/queries.js";
 import type * as attendance_helpers from "../attendance/helpers.js";
 import type * as attendance_model_activityLog from "../attendance/model/activityLog.js";
 import type * as attendance_model_record from "../attendance/model/record.js";
@@ -100,12 +111,23 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "__fixtures__/v2/assertions": typeof __fixtures___v2_assertions;
+  "__fixtures__/v2/auth": typeof __fixtures___v2_auth;
+  "__fixtures__/v2/factories/academicPattern": typeof __fixtures___v2_factories_academicPattern;
+  "__fixtures__/v2/factories/institution": typeof __fixtures___v2_factories_institution;
+  "__fixtures__/v2/factories/owner": typeof __fixtures___v2_factories_owner;
+  "__fixtures__/v2/factories/ownerOrganization": typeof __fixtures___v2_factories_ownerOrganization;
+  "__fixtures__/v2/factories/program": typeof __fixtures___v2_factories_program;
+  "__fixtures__/v2/test": typeof __fixtures___v2_test;
+  "__fixtures__/v2/types": typeof __fixtures___v2_types;
   "academicPattern/model/academicPattern": typeof academicPattern_model_academicPattern;
   "academicPattern/model/academicStage": typeof academicPattern_model_academicStage;
   "academicPattern/mutations": typeof academicPattern_mutations;
   "academicPattern/queries": typeof academicPattern_queries;
   "academicPattern/validator/academicPattern": typeof academicPattern_validator_academicPattern;
   "academicPattern/validator/academicStage": typeof academicPattern_validator_academicStage;
+  "academicTests/mutations": typeof academicTests_mutations;
+  "academicTests/queries": typeof academicTests_queries;
   "attendance/helpers": typeof attendance_helpers;
   "attendance/model/activityLog": typeof attendance_model_activityLog;
   "attendance/model/record": typeof attendance_model_record;

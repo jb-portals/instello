@@ -10,6 +10,7 @@ import { programTables } from "./program/schema";
 import { studentTables } from "./student/schema";
 import { subjectTables } from "./subject/schema";
 import { timetableTables } from "./timetable/schema";
+import { academicTestsTables } from "#academicTests/schema";
 
 const tables = {
 	/** This model is only for owner who owns an organization.
@@ -59,6 +60,7 @@ const tables = {
 	...studentTables,
 	...timetableTables,
 	...attendanceTables,
+	...academicTestsTables,
 };
 
 const schema = defineSchema(tables);

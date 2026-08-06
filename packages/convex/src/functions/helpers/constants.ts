@@ -19,6 +19,10 @@ export const ERROR_CODES = {
 	BASE: {
 		/* Better auth base error codes merged with our customized error codes */
 		...BASE_ERROR_CODES,
+		METHOD_NOT_IMPLEMENTED: {
+			code: "METHOD_NOT_IMPLEMENTED",
+			message: "Method not implemented yet",
+		},
 		UNAUTHORIZED: { code: "UNAUTHORIZED", message: "Unauthorized access" },
 		ACCESS_DENIED: { code: "ACCESS_DENIED", message: "Access denied" },
 		INVALID_PHONE: {
@@ -287,6 +291,30 @@ export const ERROR_CODES = {
 		INVALID_STUDENT: {
 			code: "ATTENDANCE_INVALID_STUDENT",
 			message: "One or more students are not valid for this register",
+		},
+	},
+	ASSESSMENT_SCHEMA: {
+		NOT_FOUND: {
+			code: "ASSESSMENT_SCHEMA_NOT_FOUND",
+			message: "Assessment schema not found",
+		},
+		INVALID_PROGRAM_SUBJECT: {
+			code: "ASSESSMENT_SCHEMA_INVALID_PROGRAM_SUBJECT",
+			message: "Program subject allocation not found in this institution",
+		},
+	},
+	ASSESSMENT_COMPONENT: {
+		NOT_FOUND: {
+			code: "ASSESSMENT_COMPONENT_NOT_FOUND",
+			message: "Assessment component not found",
+		},
+		INVALID_MARKS: {
+			code: "ASSESSMENT_COMPONENT_INVALID_MARKS",
+			message: "Passing marks cannot exceed total allotted marks",
+		},
+		INVALID_ORDER: {
+			code: "ASSESSMENT_COMPONENT_INVALID_ORDER",
+			message: "Assessment component order is invalid",
 		},
 	},
 	/** Better auth organization error codes */
