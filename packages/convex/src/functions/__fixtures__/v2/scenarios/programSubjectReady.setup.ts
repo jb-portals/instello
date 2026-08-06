@@ -1,10 +1,10 @@
-import { adoptEngineeringPattern } from "../factories/academicPattern";
-import { createOwnerOrganization } from "../factories/ownerOrganization";
-import { createProgram } from "../factories/program";
-import { createProgramSubject } from "../factories/programSubject";
-import { createSubject } from "../factories/subject";
-import type { AppTest } from "../types";
-import { arrangeOwnerInstitution } from "./ownerInstitution";
+import { adoptEngineeringPattern } from "../factories/academicPattern.setup";
+import { createOwnerOrganization } from "../factories/ownerOrganization.setup";
+import { createProgram } from "../factories/program.setup";
+import { createProgramSubject } from "../factories/programSubject.setup";
+import { createSubject } from "../factories/subject.setup";
+import type { AppTest } from "../types.setup";
+import { arrangeOwnerInstitution } from "./ownerInstitution.setup";
 
 /**
  * Full stack needed to work with assessment schemas:

@@ -1,7 +1,7 @@
-import { ownerIdentity } from "../auth";
-import { createInstitution } from "../factories/institution";
-import { createOwner } from "../factories/owner";
-import type { AppTest } from "../types";
+import { ownerIdentity } from "../auth.setup";
+import { createInstitution } from "../factories/institution.setup";
+import { createOwner } from "../factories/owner.setup";
+import type { AppTest } from "../types.setup";
 
 /**
  * Owner who owns an institution — the common auth boundary for insMutation/insQuery.

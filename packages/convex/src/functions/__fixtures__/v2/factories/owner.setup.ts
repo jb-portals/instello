@@ -1,5 +1,5 @@
 import { components } from "#_generated/api";
-import type { AppTest } from "../types";
+import type { AppTest } from "../types.setup";
 
 export type CreatedOwner = {
 	_id: string;

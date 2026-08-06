@@ -4,6 +4,7 @@ import * as ClassSubjectFaculty from "../../class/model/classSubjectFaculty";
 import type {
 	AllocatableSubject,
 	AllocationType,
+	ProgramSubjectDetail,
 	ProgramSubjectListItem,
 } from "../validator/programSubject";
 import { ALLOCATION_TYPES } from "../validator/programSubject";
@@ -11,9 +12,15 @@ import { ALLOCATION_TYPES } from "../validator/programSubject";
 export {
 	AllocatableSubjectSchema,
 	AllocateInputSchema,
+	ProgramSubjectDetailSchema,
 	ProgramSubjectListItemSchema,
 } from "../validator/programSubject";
-export type { AllocatableSubject, AllocationType, ProgramSubjectListItem };
+export type {
+	AllocatableSubject,
+	AllocationType,
+	ProgramSubjectDetail,
+	ProgramSubjectListItem,
+};
 
 function allocationKey(subjectId: Id<"subjects">, type: AllocationType) {
 	return `${subjectId}:${type}`;
@@ -178,6 +185,32 @@ export async function allocateMany(
 
 export async function getById(ctx: AppQueryCtx, id: Id<"programSubjects">) {
 	return await ctx.db.get("programSubjects", id);
+}
+
+/** Returns a program-subject allocation with subject details (no institution check). */
+export async function getDetailById(
+	ctx: AppQueryCtx,
+	id: Id<"programSubjects">,
+): Promise<ProgramSubjectDetail | null> {
+	const row = await getById(ctx, id);
+	if (!row) return null;
+
+	const subject = await ctx.db.get("subjects", row.subjectId);
+	if (!subject) return null;
+
+	return {
+		_id: row._id,
+		type: row.type,
+		academicStageId: row.academicStageId,
+		programId: row.programId,
+		createdAt: row.createdAt,
+		subject: {
+			_id: subject._id,
+			name: subject.name,
+			code: subject.code,
+			color: subject.color,
+		},
+	};
 }
 
 /** Returns the allocation for a subject in a program stage, or null if none exists. */

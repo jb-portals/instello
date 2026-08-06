@@ -19,6 +19,7 @@ import { ProgramDtoSchema, ProgramListItemSchema } from "./validator/program";
 import { ProgramFacultyResult } from "./validator/programFaculty";
 import {
 	AllocatableSubjectSchema,
+	ProgramSubjectDetailSchema,
 	ProgramSubjectListItemSchema,
 } from "./validator/programSubject";
 
@@ -138,6 +139,28 @@ export const listSubjectsByStage = insQuery({
 			programId: args.programId,
 			academicStageId: args.academicStageId,
 		});
+	},
+});
+
+/** Get a single program-subject allocation by id for the current institution */
+export const getProgramSubject = insQuery({
+	permissions: ["program:view"],
+	args: {
+		id: vv.id("programSubjects"),
+	},
+	returns: vv.union(ProgramSubjectDetailSchema, vv.null()),
+	handler: async (ctx, args) => {
+		const detail = await ProgramSubject.getDetailById(ctx, args.id);
+		if (!detail) return null;
+
+		const program = await Program.getById(
+			ctx,
+			detail.programId,
+			ctx.institution._id,
+		);
+		if (!program) return null;
+
+		return detail;
 	},
 });
 

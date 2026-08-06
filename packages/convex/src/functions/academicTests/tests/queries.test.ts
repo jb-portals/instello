@@ -8,7 +8,7 @@ import {
 	createAssessmentSchema,
 	expectAppError,
 	withSlug,
-} from "#__fixtures__/v2/index";
+} from "#__fixtures__/v2/index.setup";
 import { api } from "#_generated/api";
 import { ERROR_CODES } from "#helpers/constants";
 

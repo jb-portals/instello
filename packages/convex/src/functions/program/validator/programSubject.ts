@@ -37,5 +37,20 @@ export const ProgramSubjectListItemSchema = vv.object({
 	}),
 });
 
+export const ProgramSubjectDetailSchema = vv.object({
+	_id: vv.id("programSubjects"),
+	type: allocationTypeValidator,
+	academicStageId: vv.id("academicStages"),
+	programId: vv.id("programs"),
+	createdAt: vv.number(),
+	subject: vv.object({
+		_id: vv.id("subjects"),
+		name: vv.string(),
+		code: vv.string(),
+		color: vv.string(),
+	}),
+});
+
 export type AllocatableSubject = Infer<typeof AllocatableSubjectSchema>;
 export type ProgramSubjectListItem = Infer<typeof ProgramSubjectListItemSchema>;
+export type ProgramSubjectDetail = Infer<typeof ProgramSubjectDetailSchema>;

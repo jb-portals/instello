@@ -1,7 +1,7 @@
 import type { Doc, Id } from "#_generated/dataModel";
 import * as AcademicStage from "#academicPattern/model/academicStage";
 import * as InstitutionAcademicPattern from "#institution/model/institutionAcademicPattern";
-import type { AppTest } from "../types";
+import type { AppTest } from "../types.setup";
 
 export type AdoptedEngineeringPattern = {
 	pattern: Doc<"academicPatterns">;

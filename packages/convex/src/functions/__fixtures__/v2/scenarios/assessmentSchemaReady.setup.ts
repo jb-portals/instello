@@ -1,12 +1,12 @@
-import type { CreatedAssessmentComponent } from "../factories/assessmentComponent";
-import { createAssessmentComponent } from "../factories/assessmentComponent";
-import type { CreatedAssessmentSchema } from "../factories/assessmentSchema";
-import { createAssessmentSchema } from "../factories/assessmentSchema";
-import type { AppTest } from "../types";
+import type { CreatedAssessmentComponent } from "../factories/assessmentComponent.setup";
+import { createAssessmentComponent } from "../factories/assessmentComponent.setup";
+import type { CreatedAssessmentSchema } from "../factories/assessmentSchema.setup";
+import { createAssessmentSchema } from "../factories/assessmentSchema.setup";
+import type { AppTest } from "../types.setup";
 import {
 	arrangeProgramSubjectReady,
 	type ProgramSubjectReady,
-} from "./programSubjectReady";
+} from "./programSubjectReady.setup";
 
 type AssessmentSchemaReadyBase = ProgramSubjectReady & {
 	assessmentSchema: CreatedAssessmentSchema;

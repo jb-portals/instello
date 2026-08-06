@@ -1,5 +1,5 @@
 import type { Doc, Id } from "#_generated/dataModel";
-import type { AppTest } from "../types";
+import type { AppTest } from "../types.setup";
 
 export type CreatedProgramSubject = Doc<"programSubjects">;
 

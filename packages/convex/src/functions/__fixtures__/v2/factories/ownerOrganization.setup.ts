@@ -1,6 +1,6 @@
 import type { Doc, Id } from "#_generated/dataModel";
 import * as OwnerOrganization from "#model/ownerOrganization";
-import type { AppTest } from "../types";
+import type { AppTest } from "../types.setup";
 
 export type CreatedOwnerOrganization = Doc<"ownerOrganizations">;
 
