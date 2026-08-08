@@ -4,9 +4,9 @@ import { api } from "@instello/convex/api";
 import type { Id } from "@instello/convex/dataModel";
 import { useParams } from "next/navigation";
 import { useInsQuery } from "@/hooks/convex-react";
-import { AssessmentSchemaList } from "../components/assessment-schema-list";
+import { AssessmentSittingList } from "../components/assessment-sitting-list";
 
-export function AssessmentSchemasPage() {
+export function AssessmentSchedulePage() {
 	const { programSubjectId } = useParams<{ programSubjectId: string }>();
 	const allocation = useInsQuery(
 		api.program.queries.getProgramSubject,
@@ -19,5 +19,5 @@ export function AssessmentSchemasPage() {
 		return null;
 	}
 
-	return <AssessmentSchemaList programSubjectId={allocation._id} />;
+	return <AssessmentSittingList programSubjectId={allocation._id} />;
 }

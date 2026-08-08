@@ -302,6 +302,10 @@ export const ERROR_CODES = {
 			code: "ASSESSMENT_SCHEMA_INVALID_PROGRAM_SUBJECT",
 			message: "Program subject allocation not found in this institution",
 		},
+		NAME_ALREADY_EXISTS: {
+			code: "ASSESSMENT_SCHEMA_NAME_ALREADY_EXISTS",
+			message: "An assessment schema with this name already exists",
+		},
 	},
 	ASSESSMENT_COMPONENT: {
 		NOT_FOUND: {
@@ -315,6 +319,38 @@ export const ERROR_CODES = {
 		INVALID_ORDER: {
 			code: "ASSESSMENT_COMPONENT_INVALID_ORDER",
 			message: "Assessment component order is invalid",
+		},
+	},
+	ASSESSMENT_SITTING: {
+		NOT_FOUND: {
+			code: "ASSESSMENT_SITTING_NOT_FOUND",
+			message: "Assessment sitting not found",
+		},
+		ALREADY_EXISTS: {
+			code: "ASSESSMENT_SITTING_ALREADY_EXISTS",
+			message: "This class already has a sitting for this assessment schema",
+		},
+		INVALID_CLASS: {
+			code: "ASSESSMENT_SITTING_INVALID_CLASS",
+			message:
+				"Class is not eligible for this subject allocation (wrong program or stage)",
+		},
+		INVALID_SESSION_DATE: {
+			code: "ASSESSMENT_SITTING_INVALID_SESSION_DATE",
+			message: "Session date must be a valid YYYY-MM-DD date",
+		},
+		INVALID_SESSION_TIME: {
+			code: "ASSESSMENT_SITTING_INVALID_SESSION_TIME",
+			message:
+				"Session times must be valid HH:mm values and end time must be after start time",
+		},
+		ALREADY_CONDUCTED: {
+			code: "ASSESSMENT_SITTING_ALREADY_CONDUCTED",
+			message: "This sitting has already been conducted",
+		},
+		NOT_SCHEDULED: {
+			code: "ASSESSMENT_SITTING_NOT_SCHEDULED",
+			message: "Only scheduled sittings can be updated or removed",
 		},
 	},
 	/** Better auth organization error codes */

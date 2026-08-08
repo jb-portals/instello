@@ -3,6 +3,10 @@ export { expectUnauthorized, ownerIdentity, withSlug } from "./auth.setup";
 export { adoptEngineeringPattern } from "./factories/academicPattern.setup";
 export { createAssessmentComponent } from "./factories/assessmentComponent.setup";
 export { createAssessmentSchema } from "./factories/assessmentSchema.setup";
+export {
+	createClass,
+	storeQuestionPaperPdf,
+} from "./factories/class.setup";
 export { createInstitution } from "./factories/institution.setup";
 export { createOwner } from "./factories/owner.setup";
 export { createOwnerOrganization } from "./factories/ownerOrganization.setup";
@@ -10,6 +14,7 @@ export { createProgram } from "./factories/program.setup";
 export { createProgramSubject } from "./factories/programSubject.setup";
 export { createSubject } from "./factories/subject.setup";
 export { arrangeAssessmentSchemaReady } from "./scenarios/assessmentSchemaReady.setup";
+export { arrangeAssessmentSittingReady } from "./scenarios/assessmentSittingReady.setup";
 export { arrangeOwnerInstitution } from "./scenarios/ownerInstitution.setup";
 export { arrangeProgramSubjectReady } from "./scenarios/programSubjectReady.setup";
 export { baseTest } from "./test.setup";

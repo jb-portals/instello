@@ -6,6 +6,7 @@ import type {
 	AssessmentComponentListItem,
 	PatchAssessmentComponentBody,
 } from "../validator/assessmentComponent";
+import * as AcademicSchema from "./academicSchema";
 
 const LIST_LIMIT = 100;
 
@@ -54,6 +55,42 @@ function assertValidMarks(totalAllotedMarks: number, passingMarks: number) {
 	if (passingMarks > totalAllotedMarks) {
 		throwAppError(ERROR_CODES.ASSESSMENT_COMPONENT.INVALID_MARKS);
 	}
+}
+
+export async function listByProgramSubject(
+	ctx: AppQueryCtx,
+	programSubjectId: Id<"programSubjects">,
+): Promise<
+	Array<
+		AssessmentComponentListItem & {
+			assessmentSchemaId: Id<"assessmentSchemas">;
+			assessmentSchemaName: string;
+		}
+	>
+> {
+	const schemas = await AcademicSchema.listByProgramSubject(
+		ctx,
+		programSubjectId,
+	);
+	const result: Array<
+		AssessmentComponentListItem & {
+			assessmentSchemaId: Id<"assessmentSchemas">;
+			assessmentSchemaName: string;
+		}
+	> = [];
+
+	for (const schema of schemas) {
+		const components = await listBySchema(ctx, schema._id);
+		for (const component of components) {
+			result.push({
+				...component,
+				assessmentSchemaId: schema._id,
+				assessmentSchemaName: schema.name,
+			});
+		}
+	}
+
+	return result;
 }
 
 export async function create(

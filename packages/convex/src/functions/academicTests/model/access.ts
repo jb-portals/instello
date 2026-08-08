@@ -5,6 +5,7 @@ import * as Program from "#program/model/program";
 import * as ProgramSubject from "#program/model/programSubject";
 import * as AcademicComponent from "./academicComponent";
 import * as AcademicSchema from "./academicSchema";
+import * as AssessmentSitting from "./assessmentSitting";
 
 type Ctx = AppQueryCtx | AppMutationCtx;
 
@@ -116,4 +117,66 @@ export async function requireComponentInInstitution(
 	}
 
 	return component;
+}
+
+/**
+ * Ensures the assessment sitting belongs to a schema in the institution.
+ * Wrong-institution / missing parent always surfaces as sitting not found.
+ */
+export async function requireSittingInInstitution(
+	ctx: Ctx,
+	sittingId: Id<"assessmentSittings">,
+	institutionId: string,
+): Promise<Doc<"assessmentSittings">> {
+	const sitting = await AssessmentSitting.getById(ctx, sittingId);
+
+	if (!sitting) {
+		throwAppError(ERROR_CODES.ASSESSMENT_SITTING.NOT_FOUND);
+	}
+
+	await requireSchemaInInstitution(
+		ctx,
+		sitting.assessmentSchemaId,
+		institutionId,
+	);
+
+	return sitting;
+}
+
+/**
+ * Resolves programSubjectId for a schema after institution access is confirmed.
+ */
+export async function resolveProgramSubjectIdForSchema(
+	ctx: Ctx,
+	assessmentSchemaId: Id<"assessmentSchemas">,
+): Promise<Id<"programSubjects">> {
+	const schema = await AcademicSchema.getById(ctx, assessmentSchemaId);
+	if (!schema) {
+		throwAppError(ERROR_CODES.ASSESSMENT_SCHEMA.NOT_FOUND);
+	}
+
+	return schema.programSubjectId;
+}
+
+/**
+ * Resolves programSubjectId for a component after institution access is confirmed.
+ */
+export async function resolveProgramSubjectIdForComponent(
+	ctx: Ctx,
+	componentId: Id<"assessmentComponents">,
+): Promise<Id<"programSubjects">> {
+	const component = await AcademicComponent.getById(ctx, componentId);
+	if (!component) {
+		throwAppError(ERROR_CODES.ASSESSMENT_COMPONENT.NOT_FOUND);
+	}
+
+	const schema = await AcademicSchema.getById(
+		ctx,
+		component.assessmentSchemaId,
+	);
+	if (!schema) {
+		throwAppError(ERROR_CODES.ASSESSMENT_COMPONENT.NOT_FOUND);
+	}
+
+	return schema.programSubjectId;
 }

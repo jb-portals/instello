@@ -48,6 +48,40 @@ export type AssessmentComponentFormValues = v.InferInput<
 	typeof AssessmentComponentFormSchema
 >;
 
+const SessionTimeSchema = v.pipe(
+	v.string(),
+	v.nonEmpty("Time is required"),
+	v.regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Use HH:mm format"),
+);
+
+export const ScheduleSittingFormSchema = v.pipe(
+	v.object({
+		assessmentSchemaId: v.pipe(
+			v.string(),
+			v.nonEmpty("Select an assessment schema"),
+		),
+		classId: v.pipe(v.string(), v.nonEmpty("Select a class")),
+		sessionDate: v.pipe(
+			v.string(),
+			v.nonEmpty("Date is required"),
+			v.regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD format"),
+		),
+		sessionStartTime: SessionTimeSchema,
+		sessionEndTime: SessionTimeSchema,
+	}),
+	v.forward(
+		v.check(
+			(input) => input.sessionEndTime > input.sessionStartTime,
+			"End time must be after start time",
+		),
+		["sessionEndTime"],
+	),
+);
+
+export type ScheduleSittingFormValues = v.InferInput<
+	typeof ScheduleSittingFormSchema
+>;
+
 export const ASSESSMENT_TABS = [
 	{ id: "schemas", label: "Schemas" },
 	{ id: "schedule", label: "Schedule" },

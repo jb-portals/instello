@@ -17,10 +17,12 @@ import type * as academicPattern_validator_academicStage from "../academicPatter
 import type * as academicTests_model_academicComponent from "../academicTests/model/academicComponent.js";
 import type * as academicTests_model_academicSchema from "../academicTests/model/academicSchema.js";
 import type * as academicTests_model_access from "../academicTests/model/access.js";
+import type * as academicTests_model_assessmentSitting from "../academicTests/model/assessmentSitting.js";
 import type * as academicTests_mutations from "../academicTests/mutations.js";
 import type * as academicTests_queries from "../academicTests/queries.js";
 import type * as academicTests_validator_assessmentComponent from "../academicTests/validator/assessmentComponent.js";
 import type * as academicTests_validator_assessmentSchema from "../academicTests/validator/assessmentSchema.js";
+import type * as academicTests_validator_assessmentSitting from "../academicTests/validator/assessmentSitting.js";
 import type * as attendance_helpers from "../attendance/helpers.js";
 import type * as attendance_model_activityLog from "../attendance/model/activityLog.js";
 import type * as attendance_model_record from "../attendance/model/record.js";
@@ -116,10 +118,12 @@ declare const fullApi: ApiFromModules<{
   "academicTests/model/academicComponent": typeof academicTests_model_academicComponent;
   "academicTests/model/academicSchema": typeof academicTests_model_academicSchema;
   "academicTests/model/access": typeof academicTests_model_access;
+  "academicTests/model/assessmentSitting": typeof academicTests_model_assessmentSitting;
   "academicTests/mutations": typeof academicTests_mutations;
   "academicTests/queries": typeof academicTests_queries;
   "academicTests/validator/assessmentComponent": typeof academicTests_validator_assessmentComponent;
   "academicTests/validator/assessmentSchema": typeof academicTests_validator_assessmentSchema;
+  "academicTests/validator/assessmentSitting": typeof academicTests_validator_assessmentSitting;
   "attendance/helpers": typeof attendance_helpers;
   "attendance/model/activityLog": typeof attendance_model_activityLog;
   "attendance/model/record": typeof attendance_model_record;

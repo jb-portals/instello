@@ -1,5 +1,5 @@
-import { SchedulePlaceholderPage } from "@/features/program-subject-assessments/pages/schedule-placeholder-page";
+import { AssessmentSchedulePage } from "@/features/program-subject-assessments/pages/schedule-page";
 
 export default function Page() {
-  return <SchedulePlaceholderPage />;
+  return <AssessmentSchedulePage />;
 }
