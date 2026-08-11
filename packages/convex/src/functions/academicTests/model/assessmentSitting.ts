@@ -9,7 +9,10 @@ import type {
 	EligibleClassForSitting,
 	PatchAssessmentSittingBody,
 } from "../validator/assessmentSitting";
+import type { ConductedSittingListItem } from "../validator/assessmentMark";
 import * as AcademicSchema from "./academicSchema";
+import * as AssessmentMark from "./assessmentMark";
+import * as AssessmentMarkActivityLog from "./assessmentMarkActivityLog";
 
 const LIST_LIMIT = 200;
 const SESSION_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -212,6 +215,39 @@ export async function listByProgramSubject(
 	});
 }
 
+/** Conducted sittings only — used for marks entry surfaces. */
+export async function listConductedByProgramSubject(
+	ctx: AppQueryCtx,
+	programSubjectId: Id<"programSubjects">,
+): Promise<ConductedSittingListItem[]> {
+	const items = await listByProgramSubject(ctx, programSubjectId);
+	const conducted = items.filter((item) => item.status === "conducted");
+
+	return await Promise.all(
+		conducted.map(async (item) => {
+			const latestActivity =
+				await AssessmentMarkActivityLog.getLatestActivitySummary(ctx, item._id);
+			return {
+				...item,
+				status: "conducted" as const,
+				...(latestActivity ? { latestActivity } : {}),
+			};
+		}),
+	);
+}
+
+/** Conducted sittings for a class + program-subject assignment. */
+export async function listConductedByClassAndProgramSubject(
+	ctx: AppQueryCtx,
+	args: {
+		classId: Id<"classes">;
+		programSubjectId: Id<"programSubjects">;
+	},
+): Promise<ConductedSittingListItem[]> {
+	const items = await listConductedByProgramSubject(ctx, args.programSubjectId);
+	return items.filter((item) => item.classId === args.classId);
+}
+
 export async function create(
 	ctx: AppMutationCtx,
 	args: {
@@ -347,6 +383,9 @@ async function deleteSittingRow(
 	ctx: AppMutationCtx,
 	sitting: Doc<"assessmentSittings">,
 ) {
+	await AssessmentMark.removeAllBySitting(ctx, sitting._id);
+	await AssessmentMarkActivityLog.removeAllBySitting(ctx, sitting._id);
+
 	try {
 		await ctx.storage.delete(sitting.questionPaperStorageId);
 	} catch {

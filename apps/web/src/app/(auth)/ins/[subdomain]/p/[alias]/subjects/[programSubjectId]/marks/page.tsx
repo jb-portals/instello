@@ -1,5 +1,5 @@
-import { MarksPlaceholderPage } from "@/features/program-subject-assessments/pages/marks-placeholder-page";
+import { AssessmentMarksPage } from "@/features/program-subject-assessments/pages/marks-page";
 
 export default function Page() {
-  return <MarksPlaceholderPage />;
+	return <AssessmentMarksPage />;
 }

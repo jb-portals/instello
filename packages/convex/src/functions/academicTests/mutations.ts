@@ -1,13 +1,17 @@
+import { ERROR_CODES, throwAppError } from "#helpers/constants";
 import { insMutation } from "#helpers/customFunctions";
 import { vv } from "#schema";
+import type { InsRole } from "../../better-auth/ins-permissions";
 import * as AcademicComponent from "./model/academicComponent";
 import * as AcademicSchema from "./model/academicSchema";
 import * as Access from "./model/access";
+import * as AssessmentMark from "./model/assessmentMark";
 import * as AssessmentSitting from "./model/assessmentSitting";
 import {
 	CreateAssessmentComponentInput,
 	PatchAssessmentComponentBody,
 } from "./validator/assessmentComponent";
+import { UpsertMarksInput } from "./validator/assessmentMark";
 import {
 	CreateAssessmentSchemaInput,
 	PatchAssessmentSchemaBody,
@@ -223,6 +227,72 @@ export const removeAssessmentSitting = insMutation({
 		await Access.requireSittingInInstitution(ctx, args.id, ctx.institution._id);
 
 		await AssessmentSitting.remove(ctx, args.id);
+		return null;
+	},
+});
+
+/** Create or update student marks for a conducted sitting */
+export const upsertMarks = insMutation({
+	permissions: ["assessment:mark"],
+	args: UpsertMarksInput,
+	returns: vv.null(),
+	handler: async (ctx, args) => {
+		const sitting = await Access.requireSittingInInstitution(
+			ctx,
+			args.assessmentSittingId,
+			ctx.institution._id,
+		);
+
+		await Access.requireMarksAssignmentAccess(ctx, {
+			sitting,
+			role: ctx.membership.role as InsRole,
+			institutionId: ctx.institution._id,
+			userId: ctx.session.userId,
+			userEmail: ctx.session.user.email,
+		});
+
+		await AssessmentMark.upsertMarks(ctx, {
+			sitting,
+			entries: args.entries,
+			performedBy: ctx.session.userId,
+		});
+
+		return null;
+	},
+});
+
+/** Delete a single mark (owner / principal / HoP only) */
+export const deleteMark = insMutation({
+	permissions: ["assessment:delete"],
+	args: {
+		id: vv.id("assessmentMarks"),
+	},
+	returns: vv.null(),
+	handler: async (ctx, args) => {
+		const mark = await AssessmentMark.getById(ctx, args.id);
+		if (!mark) {
+			throwAppError(ERROR_CODES.ASSESSMENT_MARK.NOT_FOUND);
+		}
+
+		const sitting = await Access.requireSittingInInstitution(
+			ctx,
+			mark.assessmentSittingId,
+			ctx.institution._id,
+		);
+
+		await Access.requireMarksAssignmentAccess(ctx, {
+			sitting,
+			role: ctx.membership.role as InsRole,
+			institutionId: ctx.institution._id,
+			userId: ctx.session.userId,
+			userEmail: ctx.session.user.email,
+		});
+
+		await AssessmentMark.remove(ctx, {
+			markId: args.id,
+			performedBy: ctx.session.userId,
+		});
+
 		return null;
 	},
 });

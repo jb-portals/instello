@@ -6,7 +6,7 @@ import type { ClassSubjectFacultySummary } from "../validator/classSubjectFacult
 
 /** Find an existing faculty assignment for a class subject, or null */
 export async function findByClassProgramSubjectAndFaculty(
-	ctx: AppQueryCtx,
+	ctx: AppQueryCtx | AppMutationCtx,
 	args: {
 		classId: Id<"classes">;
 		programSubjectId: Id<"programSubjects">;

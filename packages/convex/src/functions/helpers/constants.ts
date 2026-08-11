@@ -353,6 +353,29 @@ export const ERROR_CODES = {
 			message: "Only scheduled sittings can be updated or removed",
 		},
 	},
+	ASSESSMENT_MARK: {
+		NOT_FOUND: {
+			code: "ASSESSMENT_MARK_NOT_FOUND",
+			message: "Assessment mark not found",
+		},
+		SITTING_NOT_CONDUCTED: {
+			code: "ASSESSMENT_MARK_SITTING_NOT_CONDUCTED",
+			message: "Marks can only be entered after the sitting is conducted",
+		},
+		INVALID_MARKS: {
+			code: "ASSESSMENT_MARK_INVALID_MARKS",
+			message:
+				"Marks must be between 0 and the component's total allotted marks",
+		},
+		INVALID_COMPONENT: {
+			code: "ASSESSMENT_MARK_INVALID_COMPONENT",
+			message: "Assessment component does not belong to this sitting's schema",
+		},
+		INVALID_STUDENT: {
+			code: "ASSESSMENT_MARK_INVALID_STUDENT",
+			message: "One or more students are not enrolled in this sitting's class",
+		},
+	},
 	/** Better auth organization error codes */
 	ORGANIZATION: ORGANIZATION_ERROR_CODES,
 } as const;

@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@instello/convex/api";
 import {
 	Empty,
 	EmptyDescription,
@@ -7,8 +8,10 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@instello/ui/components/empty";
-import { IconCalendarCheck } from "@tabler/icons-react";
+import { Skeleton } from "@instello/ui/components/skeleton";
+import { IconReportAnalytics } from "@tabler/icons-react";
 import { notFound } from "next/navigation";
+import { useMemo } from "react";
 import Container from "@/components/common/container";
 import {
 	PageHeader,
@@ -16,40 +19,88 @@ import {
 	PageHeaderStart,
 	PageHeaderTitle,
 } from "@/components/common/page-header";
+import { ConductedSittingListForAssigned } from "@/features/program-subject-assessments/components/conducted-sitting-list";
+import { useInsQuery } from "@/hooks/convex-react";
 import { useAssignedSubjectKey } from "../hooks/use-assigned-subject-key";
 
 export function AssignedSubjectPage() {
 	const key = useAssignedSubjectKey();
+	const groups = useInsQuery(api.class.queries.listMyAssignedSubjects, {});
+
+	const match = useMemo(() => {
+		if (!key || groups === undefined) return null;
+		for (const group of groups) {
+			if (
+				group.programAlias !== key.programAlias ||
+				group.classSlug !== key.classSlug
+			) {
+				continue;
+			}
+			const subject = group.subjects.find(
+				(row) => row.alias === key.subjectAlias,
+			);
+			if (!subject) continue;
+			return {
+				classId: group.classId,
+				className: group.className,
+				programName: group.programName,
+				subjectName: subject.name,
+				programSubjectId: subject.programSubjectId,
+			};
+		}
+		return null;
+	}, [groups, key]);
 
 	if (!key) {
 		notFound();
 	}
 
-	const title = key.subjectAlias.replace(/-/g, " ");
+	if (groups === undefined) {
+		return (
+			<Container>
+				<div className="space-y-3">
+					<Skeleton className="h-10 w-56" />
+					<Skeleton className="h-6 w-80" />
+					<Skeleton className="h-48 w-full" />
+				</div>
+			</Container>
+		);
+	}
+
+	if (!match) {
+		return (
+			<Container>
+				<Empty className="min-h-72 border border-dashed border-border">
+					<EmptyMedia variant="icon">
+						<IconReportAnalytics />
+					</EmptyMedia>
+					<EmptyHeader>
+						<EmptyTitle>Assignment not found</EmptyTitle>
+						<EmptyDescription>
+							This class subject is not assigned to you, or it is no longer
+							available.
+						</EmptyDescription>
+					</EmptyHeader>
+				</Empty>
+			</Container>
+		);
+	}
 
 	return (
 		<Container>
 			<PageHeader>
 				<PageHeaderStart>
-					<PageHeaderTitle className="capitalize">{title}</PageHeaderTitle>
+					<PageHeaderTitle>{match.subjectName}</PageHeaderTitle>
 					<PageHeaderDescription>
-						Assigned subject workspace for this class. Attendance tools will
-						appear here soon.
+						{match.className} · {match.programName}
 					</PageHeaderDescription>
 				</PageHeaderStart>
 			</PageHeader>
 
-			<Empty className="border border-border min-h-72 border-dashed">
-				<EmptyMedia variant="icon">
-					<IconCalendarCheck />
-				</EmptyMedia>
-				<EmptyHeader>
-					<EmptyTitle>Nothing here yet</EmptyTitle>
-					<EmptyDescription>
-						Attendance for this class subject will show up on this page.
-					</EmptyDescription>
-				</EmptyHeader>
-			</Empty>
+			<ConductedSittingListForAssigned
+				classId={match.classId}
+				programSubjectId={match.programSubjectId}
+			/>
 		</Container>
 	);
 }

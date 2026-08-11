@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 
 export default async function Page({
-  params,
+	params,
 }: {
-  params: Promise<{ alias: string; programSubjectId: string }>;
+	params: Promise<{ alias: string; programSubjectId: string }>;
 }) {
-  const { alias, programSubjectId } = await params;
-  redirect(`/p/${alias}/subjects/${programSubjectId}/schemas`);
+	const { alias, programSubjectId } = await params;
+	redirect(`/p/${alias}/subjects/${programSubjectId}/schemas`);
 }

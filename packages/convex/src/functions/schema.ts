@@ -1,6 +1,7 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import { typedV } from "convex-helpers/validators";
+import { academicTestsTables } from "#academicTests/schema";
 import { academicPatternTables } from "./academicPattern/schema";
 import { attendanceTables } from "./attendance/schema";
 import { classTables } from "./class/schema";
@@ -10,7 +11,6 @@ import { programTables } from "./program/schema";
 import { studentTables } from "./student/schema";
 import { subjectTables } from "./subject/schema";
 import { timetableTables } from "./timetable/schema";
-import { academicTestsTables } from "#academicTests/schema";
 
 const tables = {
 	/** This model is only for owner who owns an organization.

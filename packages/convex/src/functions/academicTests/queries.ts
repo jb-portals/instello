@@ -1,13 +1,21 @@
 import { insQuery } from "#helpers/customFunctions";
 import { vv } from "#schema";
+import type { InsRole } from "../../better-auth/ins-permissions";
 import * as AcademicComponent from "./model/academicComponent";
 import * as AcademicSchema from "./model/academicSchema";
 import * as Access from "./model/access";
+import * as AssessmentMark from "./model/assessmentMark";
+import * as AssessmentMarkActivityLog from "./model/assessmentMarkActivityLog";
 import * as AssessmentSitting from "./model/assessmentSitting";
 import {
 	AssessmentComponentListItemSchema,
 	AssessmentComponentWithSchemaListItemSchema,
 } from "./validator/assessmentComponent";
+import {
+	ConductedSittingListItemSchema,
+	MarkActivityLogDtoSchema,
+	MarksSheetSchema,
+} from "./validator/assessmentMark";
 import { AssessmentSchemaListItemSchema } from "./validator/assessmentSchema";
 import {
 	AssessmentSittingListItemSchema,
@@ -110,6 +118,122 @@ export const listEligibleClassesForSitting = insQuery({
 		return await AssessmentSitting.listEligibleClasses(
 			ctx,
 			args.programSubjectId,
+		);
+	},
+});
+
+/** Conducted sittings for the program Marks tab */
+export const listConductedSittingsForProgramSubject = insQuery({
+	permissions: ["assessment:view"],
+	args: {
+		programSubjectId: vv.id("programSubjects"),
+	},
+	returns: vv.array(ConductedSittingListItemSchema),
+	handler: async (ctx, args) => {
+		await Access.requireProgramSubjectInInstitution(
+			ctx,
+			args.programSubjectId,
+			ctx.institution._id,
+		);
+
+		return await AssessmentSitting.listConductedByProgramSubject(
+			ctx,
+			args.programSubjectId,
+		);
+	},
+});
+
+/** Conducted sittings for a faculty-assigned class subject */
+export const listConductedSittingsForAssigned = insQuery({
+	permissions: ["assessment:view"],
+	args: {
+		classId: vv.id("classes"),
+		programSubjectId: vv.id("programSubjects"),
+	},
+	returns: vv.array(ConductedSittingListItemSchema),
+	handler: async (ctx, args) => {
+		await Access.requireProgramSubjectInInstitution(
+			ctx,
+			args.programSubjectId,
+			ctx.institution._id,
+		);
+
+		await Access.requireAssignedClassSubjectAccess(ctx, {
+			classId: args.classId,
+			programSubjectId: args.programSubjectId,
+			role: ctx.membership.role as InsRole,
+			institutionId: ctx.institution._id,
+			userId: ctx.session.userId,
+			userEmail: ctx.session.user.email,
+		});
+
+		return await AssessmentSitting.listConductedByClassAndProgramSubject(ctx, {
+			classId: args.classId,
+			programSubjectId: args.programSubjectId,
+		});
+	},
+});
+
+/** Full marks sheet for a conducted sitting */
+export const getMarksSheet = insQuery({
+	permissions: ["assessment:view"],
+	args: {
+		assessmentSittingId: vv.id("assessmentSittings"),
+	},
+	returns: MarksSheetSchema,
+	handler: async (ctx, args) => {
+		const sitting = await Access.requireSittingInInstitution(
+			ctx,
+			args.assessmentSittingId,
+			ctx.institution._id,
+		);
+
+		await Access.requireMarksAssignmentAccess(ctx, {
+			sitting,
+			role: ctx.membership.role as InsRole,
+			institutionId: ctx.institution._id,
+			userId: ctx.session.userId,
+			userEmail: ctx.session.user.email,
+		});
+
+		const canDeleteMarks = await Access.canDeleteMarks(ctx, {
+			role: ctx.membership.role as InsRole,
+			institutionId: ctx.institution._id,
+			userId: ctx.session.userId,
+		});
+
+		return await AssessmentMark.getMarksSheet(ctx, {
+			sitting,
+			canDeleteMarks,
+		});
+	},
+});
+
+/** Audit trail for marks on a sitting */
+export const listMarkActivity = insQuery({
+	permissions: ["assessment:view"],
+	args: {
+		assessmentSittingId: vv.id("assessmentSittings"),
+	},
+	returns: vv.array(MarkActivityLogDtoSchema),
+	handler: async (ctx, args) => {
+		const sitting = await Access.requireSittingInInstitution(
+			ctx,
+			args.assessmentSittingId,
+			ctx.institution._id,
+		);
+
+		await Access.requireMarksAssignmentAccess(ctx, {
+			sitting,
+			role: ctx.membership.role as InsRole,
+			institutionId: ctx.institution._id,
+			userId: ctx.session.userId,
+			userEmail: ctx.session.user.email,
+		});
+
+		return await AssessmentMarkActivityLog.listBySitting(
+			ctx,
+			args.assessmentSittingId,
 		);
 	},
 });

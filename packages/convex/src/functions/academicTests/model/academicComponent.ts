@@ -7,6 +7,7 @@ import type {
 	PatchAssessmentComponentBody,
 } from "../validator/assessmentComponent";
 import * as AcademicSchema from "./academicSchema";
+import * as AssessmentMark from "./assessmentMark";
 
 const LIST_LIMIT = 100;
 
@@ -214,6 +215,8 @@ export async function remove(
 		throwAppError(ERROR_CODES.ASSESSMENT_COMPONENT.NOT_FOUND);
 	}
 
+	await AssessmentMark.removeAllByComponent(ctx, id);
+
 	const schemaId = component.assessmentSchemaId;
 	await ctx.db.delete("assessmentComponents", id);
 
@@ -227,6 +230,7 @@ export async function removeAllBySchema(
 ) {
 	const components = await listOrderedBySchema(ctx, assessmentSchemaId);
 	for (const component of components) {
+		await AssessmentMark.removeAllByComponent(ctx, component._id);
 		await ctx.db.delete("assessmentComponents", component._id);
 	}
 }

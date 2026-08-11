@@ -1,8 +1,13 @@
 import type { Doc, Id } from "#_generated/dataModel";
+import * as ClassSubjectFaculty from "#class/model/classSubjectFaculty";
+import * as Faculty from "#faculty/model/faculty";
 import { ERROR_CODES, throwAppError } from "#helpers/constants";
 import type { AppMutationCtx, AppQueryCtx } from "#model/common.types";
 import * as Program from "#program/model/program";
+import * as ProgramFaculty from "#program/model/programFaculty";
 import * as ProgramSubject from "#program/model/programSubject";
+import type { InsRole } from "../../../better-auth/ins-permissions";
+import * as insPermissions from "../../../better-auth/ins-permissions";
 import * as AcademicComponent from "./academicComponent";
 import * as AcademicSchema from "./academicSchema";
 import * as AssessmentSitting from "./assessmentSitting";
@@ -179,4 +184,142 @@ export async function resolveProgramSubjectIdForComponent(
 	}
 
 	return schema.programSubjectId;
+}
+
+/**
+ * Whether the caller's role (with HoP elevation) includes assessment:delete.
+ */
+export async function canDeleteMarks(
+	ctx: Ctx,
+	args: {
+		role: InsRole;
+		institutionId: string;
+		userId: string;
+	},
+): Promise<boolean> {
+	const required = insPermissions.toPermissionObject(["assessment:delete"]);
+	const roleStatements = insPermissions.insRoles[args.role].statements;
+
+	if (insPermissions.hasPermission(roleStatements, required)) {
+		return true;
+	}
+
+	if (args.role === "faculty") {
+		const isHop = await ProgramFaculty.isHeadOfProgramForUser(
+			ctx,
+			args.institutionId,
+			args.userId,
+		);
+		if (
+			isHop &&
+			insPermissions.hasPermission(
+				insPermissions.insRoles.principal.statements,
+				required,
+			)
+		) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Regular faculty (non-HoP) must be assigned to the sitting's class + program subject.
+ * Owner / principal / HoP skip this check.
+ */
+export async function requireMarksAssignmentAccess(
+	ctx: Ctx,
+	args: {
+		sitting: Doc<"assessmentSittings">;
+		role: InsRole;
+		institutionId: string;
+		userId: string;
+		userEmail: string;
+	},
+) {
+	if (args.role === "owner" || args.role === "principal") {
+		return;
+	}
+
+	if (args.role === "faculty") {
+		const isHop = await ProgramFaculty.isHeadOfProgramForUser(
+			ctx,
+			args.institutionId,
+			args.userId,
+		);
+		if (isHop) {
+			return;
+		}
+	}
+
+	const faculty = await Faculty.findByEmail(
+		ctx,
+		args.institutionId,
+		args.userEmail,
+	);
+	if (!faculty) {
+		throwAppError(ERROR_CODES.BASE.ACCESS_DENIED);
+	}
+
+	const assignment =
+		await ClassSubjectFaculty.findByClassProgramSubjectAndFaculty(ctx, {
+			classId: args.sitting.classId,
+			programSubjectId: args.sitting.programSubjectId,
+			facultyId: faculty._id,
+		});
+
+	if (!assignment) {
+		throwAppError(ERROR_CODES.BASE.ACCESS_DENIED);
+	}
+}
+
+/**
+ * Same assignment gate for list queries scoped by class + program subject.
+ */
+export async function requireAssignedClassSubjectAccess(
+	ctx: Ctx,
+	args: {
+		classId: Id<"classes">;
+		programSubjectId: Id<"programSubjects">;
+		role: InsRole;
+		institutionId: string;
+		userId: string;
+		userEmail: string;
+	},
+) {
+	if (args.role === "owner" || args.role === "principal") {
+		return;
+	}
+
+	if (args.role === "faculty") {
+		const isHop = await ProgramFaculty.isHeadOfProgramForUser(
+			ctx,
+			args.institutionId,
+			args.userId,
+		);
+		if (isHop) {
+			return;
+		}
+	}
+
+	const faculty = await Faculty.findByEmail(
+		ctx,
+		args.institutionId,
+		args.userEmail,
+	);
+	if (!faculty) {
+		throwAppError(ERROR_CODES.BASE.ACCESS_DENIED);
+	}
+
+	const assignment =
+		await ClassSubjectFaculty.findByClassProgramSubjectAndFaculty(ctx, {
+			classId: args.classId,
+			programSubjectId: args.programSubjectId,
+			facultyId: faculty._id,
+		});
+
+	if (!assignment) {
+		throwAppError(ERROR_CODES.BASE.ACCESS_DENIED);
+	}
 }

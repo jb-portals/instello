@@ -15,6 +15,7 @@ const statement = {
 	subject: ["view", "create", "update", "delete"],
 	student: ["view", "create", "update"],
 	attendance: ["view", "mark"],
+	assessment: ["view", "mark", "delete"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -32,6 +33,7 @@ export const owner = ac.newRole({
 	subject: ["create", "update", "delete", "view"],
 	student: ["create", "update", "view"],
 	attendance: ["view", "mark"],
+	assessment: ["view", "mark", "delete"],
 });
 
 /**
@@ -47,6 +49,7 @@ export const principal = ac.newRole({
 	subject: ["update", "view"],
 	student: ["create", "update", "view"],
 	attendance: ["view", "mark"],
+	assessment: ["view", "mark", "delete"],
 });
 
 /**
@@ -63,6 +66,7 @@ export const faculty = ac.newRole({
 	subject: ["view"],
 	student: ["view"],
 	attendance: ["view", "mark"],
+	assessment: ["view", "mark"],
 });
 
 export const insRoles = {
