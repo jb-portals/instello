@@ -4,12 +4,12 @@ import * as Class from "#class/model/class";
 import { ERROR_CODES, throwAppError } from "#helpers/constants";
 import type { AppMutationCtx, AppQueryCtx } from "#model/common.types";
 import * as ProgramSubject from "#program/model/programSubject";
+import type { ConductedSittingListItem } from "../validator/assessmentMark";
 import type {
 	AssessmentSittingListItem,
 	EligibleClassForSitting,
 	PatchAssessmentSittingBody,
 } from "../validator/assessmentSitting";
-import type { ConductedSittingListItem } from "../validator/assessmentMark";
 import * as AcademicSchema from "./academicSchema";
 import * as AssessmentMark from "./assessmentMark";
 import * as AssessmentMarkActivityLog from "./assessmentMarkActivityLog";

@@ -31,6 +31,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@instello/ui/components/select";
+import { TimeCombobox } from "@instello/ui/components/time-combobox";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { revalidateLogic, useForm } from "@tanstack/react-form-nextjs";
 import { useEffect, useState } from "react";
@@ -45,7 +46,6 @@ import {
 	uploadQuestionPaperPdf,
 } from "../lib/upload-question-paper";
 import { DatePickerField } from "./date-picker-field";
-import { TimeSlotPicker } from "./time-slot-picker";
 
 export function ScheduleSittingDialog({
 	open,
@@ -189,7 +189,13 @@ export function ScheduleSittingDialog({
 											disabled={!schemas || schemas.length === 0}
 										>
 											<SelectTrigger id={field.name}>
-												<SelectValue placeholder="Select schema" />
+												<SelectValue placeholder="Select schema">
+													{
+														schemas?.filter(
+															(schema) => schema._id === field.state.value,
+														)?.[0]?.name
+													}
+												</SelectValue>
 											</SelectTrigger>
 											<SelectContent>
 												{schemas?.map((schema) => (
@@ -222,7 +228,13 @@ export function ScheduleSittingDialog({
 											disabled={!classes || classes.length === 0}
 										>
 											<SelectTrigger id={field.name}>
-												<SelectValue placeholder="Select class" />
+												<SelectValue placeholder="Select class">
+													{
+														classes?.filter(
+															(schema) => schema._id === field.state.value,
+														)?.[0]?.name
+													}
+												</SelectValue>
 											</SelectTrigger>
 											<SelectContent>
 												{classes?.map((cls) => (
@@ -270,8 +282,11 @@ export function ScheduleSittingDialog({
 												field.state.meta.isTouched && !field.state.meta.isValid;
 											return (
 												<Field data-invalid={isInvalid || undefined}>
-													<FieldLabel>Start time</FieldLabel>
-													<TimeSlotPicker
+													<FieldLabel htmlFor={field.name}>
+														Start time
+													</FieldLabel>
+													<TimeCombobox
+														id={field.name}
 														value={field.state.value}
 														onChange={(value) => {
 															field.handleChange(value);
@@ -295,12 +310,14 @@ export function ScheduleSittingDialog({
 												field.state.meta.isTouched && !field.state.meta.isValid;
 											return (
 												<Field data-invalid={isInvalid || undefined}>
-													<FieldLabel>End time</FieldLabel>
-													<TimeSlotPicker
+													<FieldLabel htmlFor={field.name}>End time</FieldLabel>
+													<TimeCombobox
+														id={field.name}
 														value={field.state.value}
 														onChange={field.handleChange}
 														minTime={sessionStartTime || undefined}
 														emptyLabel="Pick a start time first"
+														placeholder="Select end time"
 													/>
 													{isInvalid && (
 														<FieldError errors={field.state.meta.errors} />
