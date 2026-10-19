@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: backend
+    version: 0.0.1
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  devtools:
+    restart:
+      enabled: false
+
+server:
+  servlet:
+    context-path: /api/v1
+
+logging:
+  level:
+    web: trace
+    org.hibernate.sql: DEBUG
