@@ -1,4 +1,4 @@
-package com.instello.backend.user;
+package com.instello.backend.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -17,9 +17,10 @@ spring:
       hibernate:
         format_sql: true
 
-  devtools:
-    restart:
-      enabled: true
+instello:
+  bootstrap:
+    admin:
+      email: ${BOOTSTRAP_ADMIN_EMAIL:}
 
 server:
   servlet:
@@ -27,5 +28,4 @@ server:
 
 logging:
   level:
-    web: trace
     org.hibernate.sql: DEBUG
