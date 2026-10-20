@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,8 +22,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String firstName;
-    private String lastName;
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String passwordHash;
+
+    @Column(nullable = false)
+    private String name;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -30,4 +37,7 @@ public class User {
 
     @UpdateTimestamp
     private Instant updatedAt;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserPlatformRole> roles;
 }

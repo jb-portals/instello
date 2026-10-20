@@ -19,7 +19,7 @@ spring:
 
   devtools:
     restart:
-      enabled: false
+      enabled: true
 
 server:
   servlet:
