@@ -2,12 +2,15 @@ package com.instello.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -15,13 +18,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth->
                         auth
-                                .requestMatchers("/auth/**")
-                                .permitAll()
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/auth/csrf-token").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -33,6 +37,11 @@ public class SecurityConfiguration {
                                 .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
                 )
                 .build();
+    }
+
+    @Bean 
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }
