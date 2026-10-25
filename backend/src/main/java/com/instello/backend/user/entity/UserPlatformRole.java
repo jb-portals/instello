@@ -14,7 +14,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "user_platform_roles")
+@Table(
+        name = "user_platform_roles",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"})
+)
 public class UserPlatformRole {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
