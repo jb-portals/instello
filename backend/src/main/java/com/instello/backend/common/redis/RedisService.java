@@ -15,7 +15,7 @@ public class RedisService {
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
-    public void set(String key, String value, Duration ttl){
+    public void set(String key, String value, Duration ttl) throws IllegalArgumentException{
         stringRedisTemplate.opsForValue().set(key, value, ttl);
     }
 
@@ -23,8 +23,8 @@ public class RedisService {
         return Optional.ofNullable(stringRedisTemplate.opsForValue().get(key));
     }
 
-    public void delete(String key){
-        stringRedisTemplate.delete(key);
+    public boolean delete(String key){
+        return stringRedisTemplate.delete(key);
     }
 
     public Long getRemainingExpiration(String key){
