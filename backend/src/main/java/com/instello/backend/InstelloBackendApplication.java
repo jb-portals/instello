@@ -2,19 +2,19 @@ package com.instello.backend;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.time.Duration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class InstelloBackendApplication {
 
-    private Logger logger = LoggerFactory.getLogger(InstelloBackendApplication.class);
+    private final Logger logger = LoggerFactory.getLogger(InstelloBackendApplication.class);
 
     @Bean 
     ApplicationRunner redisConnectionCheck(RedisConnectionFactory connectionFactory) {
@@ -24,9 +24,7 @@ public class InstelloBackendApplication {
                     .getConnection()
                     .ping();
 
-            logger.info(
-                    "Redis connection status: " + response
-            );
+            logger.info("Redis connection status: {}", response);
         };
     }
 

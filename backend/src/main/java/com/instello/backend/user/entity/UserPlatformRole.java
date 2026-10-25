@@ -34,10 +34,3 @@ public class UserPlatformRole {
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 }
-
-
-enum PlatformRole {
-    ADMIN,
-    USER,
-    ORG_OWNER
-}

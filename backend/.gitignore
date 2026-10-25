@@ -32,6 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
+### Email templates (Maizzle) ###
+emails/node_modules/
+emails/.maizzle/
+
 ### Env Files ###
 .env
 .env.local

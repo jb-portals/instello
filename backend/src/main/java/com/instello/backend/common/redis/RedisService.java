@@ -1,4 +1,4 @@
-package com.instello.backend.redis;
+package com.instello.backend.common.redis;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -17,6 +17,19 @@ public class RedisService {
 
     public void set(String key, String value, Duration ttl) throws IllegalArgumentException{
         stringRedisTemplate.opsForValue().set(key, value, ttl);
+    }
+
+    public boolean setIfAbsent(String key, String value, Duration ttl){
+        return Boolean.TRUE.equals(stringRedisTemplate.opsForValue().setIfAbsent(key, value, ttl));
+    }
+
+    public long increment(String key, Duration ttlOnCreate){
+        Long value = stringRedisTemplate.opsForValue().increment(key);
+        long count = value != null ? value : 0;
+        if (count == 1) {
+            stringRedisTemplate.expire(key, ttlOnCreate);
+        }
+        return count;
     }
 
     public Optional<String> get(String key){

@@ -15,7 +15,7 @@ public record AppErrorResponse(
     public static AppErrorResponse of(HttpStatus code, String message){
         return new AppErrorResponse(
                 code.value(),
-                code.getReasonPhrase(),
+                code.name(),
                 message,
                 Instant.now()
         );

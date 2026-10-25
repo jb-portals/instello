@@ -9,13 +9,38 @@ spring:
     password: ${POSTGRES_PASSWORD}
 
   data:
+    # =========================================
+    # Redis Configuration
+    # =========================================
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
       database: 0
 
       connect-timeout: 2s
       timeout: 2s
+
+  # =========================================
+  # Email Configuration
+  # =========================================
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enabled: false
+
+  # Thymeleaf email templates location and configuration
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: html
+    encoding: UTF-8
 
   jpa:
     hibernate:
@@ -24,12 +49,20 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        "[format_sql]": true
 
 instello:
+  auth:
+    otp:
+      ttl: 10m
+      resend-cooldown: 60s
+      max-requests-per-hour: 5
+      max-verify-attempts: 5
   bootstrap:
     admin:
       email: ${BOOTSTRAP_ADMIN_EMAIL:}
+  mail:
+    from: ${MAIL_FROM:noreply@instello.local}
 
 server:
   servlet:
@@ -37,4 +70,4 @@ server:
 
 logging:
   level:
-    org.hibernate.sql: DEBUG
+    "[org.hibernate.sql]": DEBUG
