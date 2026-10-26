@@ -78,6 +78,6 @@ server:
 springdoc:
   api-docs:
     enabled: ${API_DOCS_ENABLED:true}
-    path: /v3/api-docs
+    path: /api-docs
   default-produces-media-type: application/json
   writer-with-order-by-keys: true

@@ -10,6 +10,7 @@ import com.instello.backend.accessRequest.dto.UpdateAccessRequestRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 import com.instello.backend.common.response.ApiResponse;
 import com.instello.backend.common.response.PageResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/access-requests")
+@Tag(name = "accessRequests")
 public class AccessRequestController {
 
     private final AccessRequestService accessRequestService;

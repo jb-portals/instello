@@ -6,6 +6,7 @@ import com.instello.backend.auth.admin.dto.AdminVerifyOtpRequest;
 import com.instello.backend.auth.otp.OtpService;
 import com.instello.backend.common.response.ApiResponse;
 import com.instello.backend.user.entity.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/auth/admin")
+@Tag(name= "auth.admin", description = "Platform admin authentication operations")
 public class AdminController {
 
     private final OtpService otpService;
@@ -35,14 +37,14 @@ public class AdminController {
     }
 
     @PostMapping("/otp")
-    public ResponseEntity<ApiResponse<Void>> requestAdminOtp(@Valid @RequestBody AdminOtpRequest requestBody) {
+    public ResponseEntity<ApiResponse<Void>> requestOTP(@Valid @RequestBody AdminOtpRequest requestBody) {
         otpService.requestAdminOtp(requestBody.email());
 
         return ResponseEntity.ok(ApiResponse.ok("If this email belongs to an admin, an OTP has been sent"));
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<ApiResponse<AdminLoginResponse>> verifyAdminOtp(
+    public ResponseEntity<ApiResponse<AdminLoginResponse>> verifyOTP(
             @Valid @RequestBody AdminVerifyOtpRequest requestBody,
             HttpServletRequest request,
             HttpServletResponse response

@@ -1,6 +1,7 @@
 package com.instello.backend.auth;
 
 import com.instello.backend.common.response.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name="auth", description = "Authentication operations for common users")
 public class AuthController {
 
     private final SecurityContextRepository securityContextRepository;
