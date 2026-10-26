@@ -29,8 +29,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth->
                         auth
                                 .requestMatchers("/error").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/auth/csrf-token").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/scalar/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/{version}/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/{version}/auth/csrf-token").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/{version}/access-requests").permitAll()
+                                .requestMatchers("/{version}/access-requests/**").hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )

@@ -63,11 +63,30 @@ instello:
       email: ${BOOTSTRAP_ADMIN_EMAIL:}
   mail:
     from: ${MAIL_FROM:noreply@instello.local}
-
-server:
-  servlet:
-    context-path: /api/v1
+  invitation:
+    ttl: 7d
+    accept-url: ${APP_INVITE_URL:http://localhost:3000/signup}
 
 logging:
   level:
     "[org.hibernate.sql]": DEBUG
+
+server:
+  servlet:
+    context-path: /api
+
+springdoc:
+  api-docs:
+    enabled: ${API_DOCS_ENABLED:true}
+    path: /v3/api-docs
+  default-produces-media-type: application/json
+  writer-with-order-by-keys: true
+
+scalar:
+  enabled: ${API_DOCS_ENABLED:true}
+  path: /scalar
+  page-title: Instello API
+  show-sidebar: true
+  dark-mode: true
+  plugin-urls:
+    - ${server.servlet.context-path}/scalar/plugins/csrf.js

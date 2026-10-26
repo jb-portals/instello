@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.accept.InvalidApiVersionException;
+import org.springframework.web.accept.MissingApiVersionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,6 +40,46 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(appErrorResponse.code())
                 .header(HttpHeaders.RETRY_AFTER, String.valueOf(ex.getRetryAfterSeconds()))
                 .body(appErrorResponse);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<AppErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex){
+        AppErrorResponse appErrorResponse = AppErrorResponse.of(HttpStatus.NOT_FOUND, ex.getMessage());
+
+        return ResponseEntity.status(appErrorResponse.code()).body(appErrorResponse);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<AppErrorResponse> handleConflictException(ConflictException ex){
+        AppErrorResponse appErrorResponse = AppErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage());
+
+        return ResponseEntity.status(appErrorResponse.code()).body(appErrorResponse);
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<AppErrorResponse> handleRateLimitExceededException(RateLimitExceededException ex){
+        AppErrorResponse appErrorResponse = AppErrorResponse.of(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+
+        return ResponseEntity.status(appErrorResponse.code())
+                .header(HttpHeaders.RETRY_AFTER, String.valueOf(ex.getRetryAfterSeconds()))
+                .body(appErrorResponse);
+    }
+
+    @ExceptionHandler(InvalidApiVersionException.class)
+    public ResponseEntity<AppErrorResponse> handleInvalidApiVersionException(InvalidApiVersionException ex){
+        AppErrorResponse appErrorResponse = AppErrorResponse.of(
+                HttpStatus.BAD_REQUEST,
+                "Unsupported API version: " + ex.getVersion()
+        );
+
+        return ResponseEntity.status(appErrorResponse.code()).body(appErrorResponse);
+    }
+
+    @ExceptionHandler(MissingApiVersionException.class)
+    public ResponseEntity<AppErrorResponse> handleMissingApiVersionException(MissingApiVersionException ex){
+        AppErrorResponse appErrorResponse = AppErrorResponse.of(HttpStatus.BAD_REQUEST, "API version is required");
+
+        return ResponseEntity.status(appErrorResponse.code()).body(appErrorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,0 +1,13 @@
+{
+  "name": "instello-emails",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --bun maizzle serve",
+    "build": "bun --bun maizzle build 2>&1",
+    "postinstall": "bun --bun maizzle prepare"
+  },
+  "dependencies": {
+    "@maizzle/framework": "^6.3.0"
+  }
+}
