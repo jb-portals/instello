@@ -81,12 +81,3 @@ springdoc:
     path: /v3/api-docs
   default-produces-media-type: application/json
   writer-with-order-by-keys: true
-
-scalar:
-  enabled: ${API_DOCS_ENABLED:true}
-  path: /scalar
-  page-title: Instello API
-  show-sidebar: true
-  dark-mode: true
-  plugin-urls:
-    - ${server.servlet.context-path}/scalar/plugins/csrf.js
