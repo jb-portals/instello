@@ -2,7 +2,6 @@ package com.instello.backend.common.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.RequestPath;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.ApiVersionConfigurer;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
@@ -13,20 +12,20 @@ import java.util.List;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-    private final static List<String> UNVERSIONED_PATHS = List.of("/error","/api-docs");
-
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/{version}", HandlerTypePredicate.forAnnotation(RestController.class));
-    }
+    private final static List<String> UNVERSIONED_PATHS = List.of("/error", "/api-docs");
 
     @Override
     public void configureApiVersioning(ApiVersionConfigurer configurer) {
         configurer
                 .usePathSegment(0, WebConfiguration::isVersioned)
                 .setVersionRequired(false)
-                .addSupportedVersions(ApiVersions.V1)
-                .setDefaultVersion(ApiVersions.V1);
+                .addSupportedVersions(ApiVersions.V0_1)
+                .setDefaultVersion(ApiVersions.V0_1);
+    }
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.addPathPrefix("/v{version}", HandlerTypePredicate.forBasePackage("com.instello.backend"));
     }
 
     private static boolean isVersioned(RequestPath requestPath){

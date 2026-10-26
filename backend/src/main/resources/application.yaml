@@ -71,10 +71,6 @@ logging:
   level:
     "[org.hibernate.sql]": DEBUG
 
-server:
-  servlet:
-    context-path: /api
-
 springdoc:
   api-docs:
     enabled: ${API_DOCS_ENABLED:true}

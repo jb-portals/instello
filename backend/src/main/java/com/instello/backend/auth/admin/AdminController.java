@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/auth/admin")
-@Tag(name= "auth.admin", description = "Platform admin authentication operations")
+@Tag(name= "auth/admin", description = "Platform admin authentication operations")
 public class AdminController {
 
     private final OtpService otpService;

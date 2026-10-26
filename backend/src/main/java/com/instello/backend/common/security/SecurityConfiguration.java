@@ -29,11 +29,15 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth->
                         auth
                                 .requestMatchers("/error").permitAll()
-                                .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/{version}/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/{version}/auth/csrf-token").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/{version}/access-requests").permitAll()
-                                .requestMatchers("/{version}/access-requests/**").hasRole("ADMIN")
+                                .requestMatchers("/api-docs/**").permitAll()
+                                
+                                .requestMatchers(HttpMethod.POST, "/v{version}/auth/login", "/v{version}/auth/admin/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v{version}/auth/csrf-token").permitAll()
+
+                                // Anybody can create access request
+                                .requestMatchers(HttpMethod.POST, "/v{version}/access-requests").permitAll()
+
+                                .requestMatchers("/v{version}/access-requests/**").hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )
