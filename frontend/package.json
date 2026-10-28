@@ -9,7 +9,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "check": "bun run lint && bun run typecheck && bun run build",
-    "ui:add": "cd apps/admin && bunx shadcn@latest add"
+    "ui:add": "cd apps/admin && bunx shadcn@latest add",
+    "api:generate": "bun run --filter @instello/api-client generate"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.3",

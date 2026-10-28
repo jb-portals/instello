@@ -1,0 +1,27 @@
+{
+  "name": "@instello/api-client",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "generate": "bun ./scripts/generate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./query": "./src/query.ts",
+    "./v*/query": "./src/v*/query/index.ts",
+    "./v*": "./src/v*/client.ts"
+  },
+  "devDependencies": {
+    "@instello/typescript-config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^19.3.0",
+    "orval": "^8",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.105.0",
+    "react": "19.3.1"
+  }
+}
