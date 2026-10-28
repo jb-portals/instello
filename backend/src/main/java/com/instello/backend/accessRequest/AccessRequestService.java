@@ -14,10 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.instello.backend.accessRequest.dto.AccessRequestDetail;
 import com.instello.backend.accessRequest.dto.AccessRequestSummary;
@@ -31,9 +29,11 @@ import com.instello.backend.accessRequest.entity.AccessRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 import com.instello.backend.accessRequest.repository.AccessRequestRepository;
 import com.instello.backend.common.entity.Address;
+import com.instello.backend.common.exception.BadRequestException;
 import com.instello.backend.common.exception.ConflictException;
 import com.instello.backend.common.exception.RateLimitExceededException;
 import com.instello.backend.common.exception.ResourceNotFoundException;
+import com.instello.backend.common.exception.UnauthorizedException;
 import com.instello.backend.common.redis.RedisService;
 import com.instello.backend.common.response.PageResponse;
 import com.instello.backend.invitation.InvitationService;
@@ -146,10 +146,7 @@ public class AccessRequestService {
 
         if (body.status() != null) {
             if (!OPEN_STATUSES.contains(body.status())) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Use the approve or reject endpoint to close a request"
-                );
+                throw new BadRequestException("Use the approve or reject endpoint to close a request");
             }
             accessRequest.setStatus(body.status());
         }
@@ -242,7 +239,7 @@ public class AccessRequestService {
 
     private User findAdmin(String adminEmail) {
         return userRepository.findByEmailIgnoreCase(adminEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User no longer exists"));
+                .orElseThrow(() -> new UnauthorizedException("User no longer exists"));
     }
 
     private static void requireOpen(AccessRequest accessRequest) {

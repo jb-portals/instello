@@ -2,11 +2,10 @@ package com.instello.backend.user;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.instello.backend.common.exception.UnauthorizedException;
 import com.instello.backend.user.dto.CurrentUserResponse;
 import com.instello.backend.user.entity.User;
 import com.instello.backend.user.entity.UserPlatformRole;
@@ -25,7 +24,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public CurrentUserResponse getCurrentUser(String email) {
         User user = userRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User no longer exists"));
+                .orElseThrow(() -> new UnauthorizedException("User no longer exists"));
 
         List<UserPlatformRole> roles = user.getRoles() != null ? user.getRoles() : List.of();
         UserProfile profile = user.getUserProfile();
