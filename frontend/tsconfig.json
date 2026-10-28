@@ -1,0 +1,3 @@
+{
+  "extends": "@instello/typescript-config/base.json"
+}
