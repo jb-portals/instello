@@ -2,7 +2,6 @@ package com.instello.backend.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
@@ -15,19 +14,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(
-        name = "user_platform_roles",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"})
+        name = "authorities",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "authority"})
 )
-public class UserPlatformRole {
+public class Authority {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault(value = "USER")
-    @Builder.Default
     @Column(nullable = false)
-    private PlatformRole role = PlatformRole.USER;
+    private AppAuthority authority;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

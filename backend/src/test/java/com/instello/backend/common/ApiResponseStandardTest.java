@@ -5,6 +5,7 @@ import com.instello.backend.accessRequest.AccessRequestService;
 import com.instello.backend.accessRequest.dto.CreateAccessRequestResponse;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 import com.instello.backend.auth.AuthController;
+import com.instello.backend.auth.LoginService;
 import com.instello.backend.common.exception.GlobalExceptionHandler;
 import com.instello.backend.common.security.ApiAccessDeniedHandler;
 import com.instello.backend.common.security.ApiAuthenticationEntryPoint;
@@ -12,6 +13,7 @@ import com.instello.backend.common.security.ApiErrorWriter;
 import com.instello.backend.user.UserController;
 import com.instello.backend.user.UserService;
 import com.instello.backend.user.dto.CurrentUserResponse;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,6 +68,9 @@ class ApiResponseStandardTest {
     @Mock
     private SecurityContextRepository securityContextRepository;
 
+    @Mock
+    private LoginService loginService;
+
     private MockMvc mockMvc;
     private ApiErrorWriter apiErrorWriter;
 
@@ -79,7 +84,7 @@ class ApiResponseStandardTest {
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(
-                        new AuthController(securityContextRepository),
+                        new AuthController(securityContextRepository, loginService),
                         new AccessRequestController(accessRequestService),
                         new UserController(userService)
                 )
@@ -203,15 +208,15 @@ class ApiResponseStandardTest {
     private static HandlerMethodArgumentResolver csrfTokenResolver() {
         return new HandlerMethodArgumentResolver() {
             @Override
-            public boolean supportsParameter(MethodParameter parameter) {
+            public boolean supportsParameter(@NonNull MethodParameter parameter) {
                 return CsrfToken.class.isAssignableFrom(parameter.getParameterType());
             }
 
             @Override
             public Object resolveArgument(
-                    MethodParameter parameter,
+                    @NonNull MethodParameter parameter,
                     ModelAndViewContainer mavContainer,
-                    NativeWebRequest webRequest,
+                    @NonNull NativeWebRequest webRequest,
                     WebDataBinderFactory binderFactory
             ) {
                 return new DefaultCsrfToken("X-CSRF-TOKEN", "_csrf", "test-csrf-token");
@@ -222,15 +227,15 @@ class ApiResponseStandardTest {
     private static HandlerMethodArgumentResolver authenticationPrincipalResolver() {
         return new HandlerMethodArgumentResolver() {
             @Override
-            public boolean supportsParameter(MethodParameter parameter) {
+            public boolean supportsParameter(@NonNull MethodParameter parameter) {
                 return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
             }
 
             @Override
             public Object resolveArgument(
-                    MethodParameter parameter,
+                    @NonNull MethodParameter parameter,
                     ModelAndViewContainer mavContainer,
-                    NativeWebRequest webRequest,
+                    @NonNull NativeWebRequest webRequest,
                     WebDataBinderFactory binderFactory
             ) {
                 return "admin@example.com";

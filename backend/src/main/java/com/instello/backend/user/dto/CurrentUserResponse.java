@@ -4,13 +4,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import com.instello.backend.user.entity.PlatformRole;
+import com.instello.backend.user.entity.AppAuthority;
 
 public record CurrentUserResponse(
         UUID id,
         String email,
         Instant emailVerifiedAt,
-        List<PlatformRole> roles,
+        List<AppAuthority> authorities,
         Profile profile
 ) {
 

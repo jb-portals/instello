@@ -19,7 +19,7 @@
           Verify your email
         </Heading>
         <Text class="m-0 mt-4 text-sm text-slate-600">
-          Enter this code to continue signing in to Instello.
+          Enter this code to verify your email and continue with Instello.
         </Text>
 
         <Section class="mt-6 rounded-xl border border-solid border-slate-200 bg-slate-50 py-4">

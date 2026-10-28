@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.accept.InvalidApiVersionException;
 import org.springframework.web.accept.MissingApiVersionException;
@@ -49,6 +51,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiErrorResponse> handleUnauthorizedException(UnauthorizedException ex) {
         return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, ex.getMessage());
+    }
+
+    // Only raised after the password was proven correct (see SecurityConfiguration), so it is safe to disclose
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiErrorResponse> handleDisabledException(DisabledException ex) {
+        return error(HttpStatus.FORBIDDEN, ErrorCodes.EMAIL_NOT_VERIFIED, "Email address is not verified");
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, "Invalid email or password");
     }
 
     @ExceptionHandler(InvalidOtpException.class)

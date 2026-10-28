@@ -2,13 +2,16 @@ package com.instello.backend.invitation.entity;
 
 import com.instello.backend.accessRequest.entity.AccessRequest;
 import com.instello.backend.organization.entity.Organization;
-import com.instello.backend.user.entity.PlatformRole;
+import com.instello.backend.user.entity.AppAuthority;
 import com.instello.backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -33,7 +36,7 @@ public class Invitation {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PlatformRole role;
+    private AppAuthority role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "access_request_id")
@@ -45,6 +48,11 @@ public class Invitation {
 
     @Column(nullable = false)
     private Instant expiresAt;
+
+    // Free-form data captured at invite time, e.g. {"email": "..."} so the invitee cannot change the email
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, String> metadata;
 
     private Instant acceptedAt;
 

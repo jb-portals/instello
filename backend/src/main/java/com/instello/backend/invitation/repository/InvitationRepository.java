@@ -12,4 +12,10 @@ public interface InvitationRepository extends JpaRepository<Invitation, UUID> {
     List<Invitation> findByAccessRequestIdAndAcceptedAtIsNullAndRevokedAtIsNull(UUID accessRequestId);
 
     Optional<Invitation> findFirstByAccessRequestIdOrderByCreatedAtDesc(UUID accessRequestId);
+
+    Optional<Invitation> findByTokenHash(String tokenHash);
+
+    Optional<Invitation> findFirstByEmailAndAcceptedAtIsNullAndRevokedAtIsNullOrderByCreatedAtDesc(String email);
+
+    boolean existsByEmailAndAcceptedAtIsNullAndRevokedAtIsNull(String email);
 }

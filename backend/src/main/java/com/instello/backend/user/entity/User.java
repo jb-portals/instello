@@ -40,7 +40,7 @@ public class User {
     private Instant updatedAt;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<UserPlatformRole> roles;
+    private List<Authority> authorities;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;

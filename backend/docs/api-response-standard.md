@@ -90,9 +90,29 @@ Security `401` / `403` and the global exception handler use the **same** JSON sh
 | `validation_failed` | 400 |
 | `unauthorized` | 401 |
 | `forbidden` | 403 |
+| `email_not_verified` | 403 (login with a correct password before the email OTP was verified) |
 | `rate_limited` | 429 (+ `Retry-After` when known) |
 | `bad_request` | 400 |
 | `internal_error` | 500 |
+
+## Owner onboarding and login
+
+All endpoints below are public, served under `/v0.1`, and (like every `POST`) need the CSRF token from `GET /auth/csrf-token`.
+
+| Step | Endpoint | Body | Success |
+|------|----------|------|---------|
+| 1. Preview invitation | `GET /auth/invitations?token=` | – | `200 { email, organizationName, expiresAt }` (the email is locked, show it read-only) |
+| 2. Accept invitation | `POST /auth/invitations/accept` | `{ token, password }` (8–72 chars) | `200 { email }`; an unverified account is created and a 6-digit OTP is emailed |
+| 2b. Resend code | `POST /auth/email-verification/otp` | `{ email }` | `204` (always, to avoid account probing; `429` when rate limited) |
+| 3. Verify email | `POST /auth/email-verification/verify` | `{ email, code }` | `204`; grants `ROLE_OWNER` and marks the invitation accepted |
+| 4. Log in | `POST /auth/login` | `{ email, password }` | `204` + session cookie |
+
+Notes:
+
+- The account email comes from the invitation `metadata.email`, never from the request. It must match `invitation.email` or accept fails with `409`.
+- Invalid, expired, revoked or already accepted tokens return `404`. A verified account for the email already existing returns `409`.
+- Login failures: `401 unauthorized` for bad credentials (including admins, who use OTP only), `403 email_not_verified` for a correct password with an unverified email, `429 rate_limited` after 10 attempts per 15 minutes per email + IP.
+- Roles are rows in the `authorities` table (`ROLE_ADMIN`, `ROLE_OWNER`, `ROLE_USER`). `GET /users/me` returns them as `authorities` (previously `roles`).
 
 ## Do / don’t for new endpoints
 

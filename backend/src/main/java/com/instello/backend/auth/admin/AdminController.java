@@ -4,17 +4,14 @@ import com.instello.backend.auth.admin.dto.AdminLoginResponse;
 import com.instello.backend.auth.admin.dto.AdminOtpRequest;
 import com.instello.backend.auth.admin.dto.AdminVerifyOtpRequest;
 import com.instello.backend.auth.otp.OtpService;
+import com.instello.backend.common.security.SessionAuthenticator;
+import com.instello.backend.user.entity.AppAuthority;
 import com.instello.backend.user.entity.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +25,11 @@ import java.util.List;
 public class AdminController {
 
     private final OtpService otpService;
-    private final SecurityContextRepository securityContextRepository;
+    private final SessionAuthenticator sessionAuthenticator;
 
-    public AdminController(OtpService otpService, SecurityContextRepository securityContextRepository) {
+    public AdminController(OtpService otpService, SessionAuthenticator sessionAuthenticator) {
         this.otpService = otpService;
-        this.securityContextRepository = securityContextRepository;
+        this.sessionAuthenticator = sessionAuthenticator;
     }
 
     @PostMapping("/otp")
@@ -49,19 +46,12 @@ public class AdminController {
     ) {
         User admin = otpService.verifyAdminOtp(requestBody.email(), requestBody.code());
 
-        UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.authenticated(
+        sessionAuthenticator.authenticate(
+                request,
+                response,
                 admin.getEmail(),
-                null,
-                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                List.of(AppAuthority.ROLE_ADMIN.toGrantedAuthority())
         );
-
-        request.getSession(true);
-        request.changeSessionId();
-
-        SecurityContext context = SecurityContextHolder.getContextHolderStrategy().createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.getContextHolderStrategy().setContext(context);
-        securityContextRepository.saveContext(context, request, response);
 
         return ResponseEntity.ok(new AdminLoginResponse(admin.getId(), admin.getEmail()));
     }

@@ -2,13 +2,13 @@ package com.instello.backend.auth.otp;
 
 import java.time.Duration;
 import java.util.Locale;
-import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import org.springframework.stereotype.Service;
 
 import com.instello.backend.common.notification.email.EmailTemplateService;
 import com.instello.backend.common.redis.RedisService;
-import com.instello.backend.user.entity.PlatformRole;
+import com.instello.backend.user.entity.AppAuthority;
 import com.instello.backend.user.entity.User;
 import com.instello.backend.user.repository.UserRepository;
 
@@ -39,7 +39,35 @@ public class OtpService {
 
     public void requestAdminOtp(String email) {
         String normalizedEmail = normalize(email);
-        String prefix = keyPrefix(OtpPurpose.ADMIN_LOGIN, normalizedEmail);
+        issue(OtpPurpose.ADMIN_LOGIN, normalizedEmail, () -> findAdmin(normalizedEmail) != null);
+    }
+
+    public User verifyAdminOtp(String email, String code) {
+        String normalizedEmail = normalize(email);
+        consume(OtpPurpose.ADMIN_LOGIN, normalizedEmail, code);
+
+        User admin = findAdmin(normalizedEmail);
+        if (admin == null) {
+            throw new InvalidOtpException();
+        }
+        return admin;
+    }
+
+    /**
+     * Issues an email-verification code. Rate limits are always enforced; the email is only sent
+     * when {@code shouldDeliver} returns true so callers cannot probe which accounts exist.
+     */
+    public void requestEmailVerificationOtp(String email, BooleanSupplier shouldDeliver) {
+        issue(OtpPurpose.EMAIL_VERIFICATION, normalize(email), shouldDeliver);
+    }
+
+    /** Validates and consumes an email-verification code, throwing {@link InvalidOtpException} otherwise. */
+    public void verifyEmailVerificationOtp(String email, String code) {
+        consume(OtpPurpose.EMAIL_VERIFICATION, normalize(email), code);
+    }
+
+    private void issue(OtpPurpose purpose, String normalizedEmail, BooleanSupplier shouldDeliver) {
+        String prefix = keyPrefix(purpose, normalizedEmail);
 
         String cooldownKey = prefix + ":cooldown";
         if (!redisService.setIfAbsent(cooldownKey, "1", properties.resendCooldown())) {
@@ -51,20 +79,18 @@ public class OtpService {
             throw new OtpRateLimitException(retryAfter(requestsKey));
         }
 
-        Optional<User> admin = findAdmin(normalizedEmail);
-        if (admin.isEmpty()) {
+        if (!shouldDeliver.getAsBoolean()) {
             return;
         }
 
         String code = otpGenerator.generate();
         redisService.set(prefix + ":code", code, properties.ttl());
         redisService.delete(prefix + ":attempts");
-        emailTemplateService.sendOtp(admin.get().getEmail(), code, (int) properties.ttl().toMinutes());
+        emailTemplateService.sendOtp(normalizedEmail, code, (int) properties.ttl().toMinutes());
     }
 
-    public User verifyAdminOtp(String email, String code) {
-        String normalizedEmail = normalize(email);
-        String prefix = keyPrefix(OtpPurpose.ADMIN_LOGIN, normalizedEmail);
+    private void consume(OtpPurpose purpose, String normalizedEmail, String code) {
+        String prefix = keyPrefix(purpose, normalizedEmail);
         String codeKey = prefix + ":code";
         String attemptsKey = prefix + ":attempts";
 
@@ -81,12 +107,12 @@ public class OtpService {
 
         redisService.delete(codeKey);
         redisService.delete(attemptsKey);
-
-        return findAdmin(normalizedEmail).orElseThrow(InvalidOtpException::new);
     }
 
-    private Optional<User> findAdmin(String normalizedEmail) {
-        return userRepository.findByEmailIgnoreCaseAndRoles_Role(normalizedEmail, PlatformRole.ADMIN);
+    private User findAdmin(String normalizedEmail) {
+        return userRepository
+                .findByEmailIgnoreCaseAndAuthorities_Authority(normalizedEmail, AppAuthority.ROLE_ADMIN)
+                .orElse(null);
     }
 
     private long retryAfter(String key) {

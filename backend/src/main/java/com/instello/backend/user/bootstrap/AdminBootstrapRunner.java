@@ -13,9 +13,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.instello.backend.user.entity.PlatformRole;
+import com.instello.backend.user.entity.AppAuthority;
+import com.instello.backend.user.entity.Authority;
 import com.instello.backend.user.entity.User;
-import com.instello.backend.user.entity.UserPlatformRole;
 import com.instello.backend.user.repository.UserRepository;
 
 @Component
@@ -62,18 +62,19 @@ public class AdminBootstrapRunner implements ApplicationRunner {
                     .emailVerifiedAt(Instant.now())
                     .build();
         }
-        if (user.getRoles() == null) {
-            user.setRoles(new ArrayList<>());
+        if (user.getAuthorities() == null) {
+            user.setAuthorities(new ArrayList<>());
         }
 
-        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getRole() == PlatformRole.ADMIN);
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority() == AppAuthority.ROLE_ADMIN);
         if (isAdmin) {
             logger.info("Bootstrap admin already exists");
             return;
         }
 
-        user.getRoles().add(UserPlatformRole.builder()
-                .role(PlatformRole.ADMIN)
+        user.getAuthorities().add(Authority.builder()
+                .authority(AppAuthority.ROLE_ADMIN)
                 .user(user)
                 .build());
         userRepository.save(user);
@@ -81,7 +82,7 @@ public class AdminBootstrapRunner implements ApplicationRunner {
         if (isNewUser) {
             logger.info("✅ Created bootstrap admin");
         } else {
-            logger.info("Granted ADMIN role to existing user");
+            logger.info("Granted ROLE_ADMIN authority to existing user");
         }
     }
 }

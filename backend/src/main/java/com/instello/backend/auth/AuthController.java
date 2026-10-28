@@ -5,6 +5,7 @@ import com.instello.backend.auth.dto.LoginRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -22,13 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final SecurityContextRepository securityContextRepository;
+    private final LoginService loginService;
 
-    public AuthController(SecurityContextRepository securityContextRepository) {
+    public AuthController(SecurityContextRepository securityContextRepository, LoginService loginService) {
         this.securityContextRepository = securityContextRepository;
+        this.loginService = loginService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest requestBody) {
+    public ResponseEntity<Void> login(
+            @Valid @RequestBody LoginRequest requestBody,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        loginService.login(requestBody.email(), requestBody.password(), request, response);
         return ResponseEntity.noContent().build();
     }
 
