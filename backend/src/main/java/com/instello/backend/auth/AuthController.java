@@ -1,6 +1,7 @@
 package com.instello.backend.auth;
 
-import com.instello.backend.common.response.ApiResponse;
+import com.instello.backend.auth.dto.CsrfTokenResponse;
+import com.instello.backend.auth.dto.LoginRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,15 +11,14 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name="auth", description = "Authentication operations for common users")
+@Tag(name = "auth", description = "Authentication operations for common users")
 public class AuthController {
 
     private final SecurityContextRepository securityContextRepository;
@@ -28,34 +28,29 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login(@RequestBody Map<String,String> requestBody) {
-        
-        return ResponseEntity.ok(Map.of(
-            "message", "Login successful"
-        ));
+    public ResponseEntity<Void> login(@RequestBody LoginRequest requestBody) {
+        return ResponseEntity.noContent().build();
     }
-    
+
     @GetMapping("/csrf-token")
-    public ResponseEntity<Map<String,Object>> getCsrfToken(CsrfToken csrfToken){
-        return ResponseEntity.ok(Map.of(
-                "data", Map.of(
-                        "token", csrfToken.getToken(),
-                        "headerName", csrfToken.getHeaderName(),
-                        "parameterName", csrfToken.getParameterName()
-                )
+    public ResponseEntity<CsrfTokenResponse> getCsrfToken(CsrfToken csrfToken) {
+        return ResponseEntity.ok(new CsrfTokenResponse(
+                csrfToken.getToken(),
+                csrfToken.getHeaderName(),
+                csrfToken.getParameterName()
         ));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(
+    public ResponseEntity<Void> logout(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication
-    ){
+    ) {
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.setSecurityContextRepository(securityContextRepository);
         logoutHandler.logout(request, response, authentication);
 
-        return ResponseEntity.ok(ApiResponse.ok("Logout successful"));
+        return ResponseEntity.noContent().build();
     }
 }

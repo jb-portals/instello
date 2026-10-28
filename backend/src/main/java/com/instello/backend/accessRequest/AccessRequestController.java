@@ -8,14 +8,15 @@ import com.instello.backend.accessRequest.dto.CreateAccessRequestResponse;
 import com.instello.backend.accessRequest.dto.RejectAccessRequestRequest;
 import com.instello.backend.accessRequest.dto.UpdateAccessRequestRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
-import com.instello.backend.common.response.ApiResponse;
 import com.instello.backend.common.response.PageResponse;
+import com.instello.backend.common.web.ApiVersions;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -42,79 +45,68 @@ public class AccessRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CreateAccessRequestResponse>> submit(
+    public ResponseEntity<CreateAccessRequestResponse> submit(
             @Valid @RequestBody CreateAccessRequestRequest requestBody,
             HttpServletRequest request
     ) {
         CreateAccessRequestResponse response = accessRequestService.submit(requestBody, request.getRemoteAddr());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(
-                "Your request has been received. Our team will contact you shortly.",
-                response
-        ));
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/v{version}/access-requests/{id}")
+                .buildAndExpand(ApiVersions.V0_1, response.id())
+                .toUri();
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.LOCATION, location.toString())
+                .body(response);
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<AccessRequestSummary>>> list(
+    public ResponseEntity<PageResponse<AccessRequestSummary>> list(
             @RequestParam(required = false) AccessRequestStatus status,
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Access requests fetched",
-                accessRequestService.list(status, search, pageable)
-        ));
+        return ResponseEntity.ok(accessRequestService.list(status, search, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<AccessRequestDetail>> get(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.ok("Access request fetched", accessRequestService.get(id)));
+    public ResponseEntity<AccessRequestDetail> get(@PathVariable UUID id) {
+        return ResponseEntity.ok(accessRequestService.get(id));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<AccessRequestDetail>> update(
+    public ResponseEntity<AccessRequestDetail> update(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateAccessRequestRequest requestBody,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Access request updated",
-                accessRequestService.update(id, requestBody, authentication.getName())
-        ));
+        return ResponseEntity.ok(accessRequestService.update(id, requestBody, authentication.getName()));
     }
 
     @PostMapping("/{id}/reject")
-    public ResponseEntity<ApiResponse<AccessRequestDetail>> reject(
+    public ResponseEntity<AccessRequestDetail> reject(
             @PathVariable UUID id,
             @Valid @RequestBody RejectAccessRequestRequest requestBody,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Access request rejected",
-                accessRequestService.reject(id, requestBody.reason(), authentication.getName())
-        ));
+        return ResponseEntity.ok(accessRequestService.reject(id, requestBody.reason(), authentication.getName()));
     }
 
     @PostMapping("/{id}/approve")
-    public ResponseEntity<ApiResponse<AccessRequestDetail>> approve(
+    public ResponseEntity<AccessRequestDetail> approve(
             @PathVariable UUID id,
             @Valid @RequestBody(required = false) ApproveAccessRequestRequest requestBody,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Access request approved and invitation sent",
-                accessRequestService.approve(id, requestBody, authentication.getName())
-        ));
+        return ResponseEntity.ok(accessRequestService.approve(id, requestBody, authentication.getName()));
     }
 
     @PostMapping("/{id}/resend-invitation")
-    public ResponseEntity<ApiResponse<AccessRequestDetail>> resendInvitation(
+    public ResponseEntity<AccessRequestDetail> resendInvitation(
             @PathVariable UUID id,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Invitation resent",
-                accessRequestService.resendInvitation(id, authentication.getName())
-        ));
+        return ResponseEntity.ok(accessRequestService.resendInvitation(id, authentication.getName()));
     }
 }

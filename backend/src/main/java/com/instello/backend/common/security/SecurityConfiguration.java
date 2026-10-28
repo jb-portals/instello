@@ -22,15 +22,20 @@ import org.springframework.security.web.context.SecurityContextRepository;
 public class SecurityConfiguration {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception{
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
+            ApiAuthenticationEntryPoint authenticationEntryPoint,
+            ApiAccessDeniedHandler accessDeniedHandler
+    ) throws Exception {
         return http
                 .csrf(Customizer.withDefaults())
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
-                .authorizeHttpRequests(auth->
+                .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api-docs/**").permitAll()
-                                
+
                                 .requestMatchers(HttpMethod.POST, "/v{version}/auth/login", "/v{version}/auth/admin/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/v{version}/auth/csrf-token").permitAll()
 
@@ -41,9 +46,13 @@ public class SecurityConfiguration {
                                 .anyRequest()
                                 .authenticated()
                 )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(session->
+                .sessionManagement(session ->
                         session
                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                                 .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
@@ -52,15 +61,15 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    SecurityContextRepository securityContextRepository(){
+    SecurityContextRepository securityContextRepository() {
         return new DelegatingSecurityContextRepository(
                 new RequestAttributeSecurityContextRepository(),
                 new HttpSessionSecurityContextRepository()
         );
     }
 
-    @Bean 
-    PasswordEncoder passwordEncoder(){
+    @Bean
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
