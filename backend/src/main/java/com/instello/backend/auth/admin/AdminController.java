@@ -7,6 +7,7 @@ import com.instello.backend.auth.otp.OtpService;
 import com.instello.backend.common.security.SessionAuthenticator;
 import com.instello.backend.user.entity.AppAuthority;
 import com.instello.backend.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,13 +34,15 @@ public class AdminController {
     }
 
     @PostMapping("/otp")
-    public ResponseEntity<Void> requestOTP(@Valid @RequestBody AdminOtpRequest requestBody) {
+    @Operation(operationId = "requestAdminOtp")
+    public ResponseEntity<Void> requestOtp(@Valid @RequestBody AdminOtpRequest requestBody) {
         otpService.requestAdminOtp(requestBody.email());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<AdminLoginResponse> verifyOTP(
+    @Operation(operationId = "verifyAdminOtp")
+    public ResponseEntity<AdminLoginResponse> verifyOtp(
             @Valid @RequestBody AdminVerifyOtpRequest requestBody,
             HttpServletRequest request,
             HttpServletResponse response

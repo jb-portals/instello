@@ -2,6 +2,7 @@ package com.instello.backend.auth.emailverification;
 
 import com.instello.backend.auth.emailverification.dto.EmailOtpRequest;
 import com.instello.backend.auth.emailverification.dto.VerifyEmailRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,14 @@ public class EmailVerificationController {
     }
 
     @PostMapping("/otp")
+    @Operation(operationId = "emailVerificationResendOtp")
     public ResponseEntity<Void> resendOtp(@Valid @RequestBody EmailOtpRequest requestBody) {
         emailVerificationService.resendOtp(requestBody.email());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/verify")
+    @Operation(operationId = "emailVerificationVerifyOtp")
     public ResponseEntity<Void> verify(@Valid @RequestBody VerifyEmailRequest requestBody) {
         emailVerificationService.verify(requestBody.email(), requestBody.code());
         return ResponseEntity.noContent().build();

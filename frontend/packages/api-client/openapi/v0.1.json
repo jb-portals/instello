@@ -298,7 +298,7 @@
     },
     "/v0.1/auth/admin/otp": {
       "post": {
-        "operationId": "requestOTP",
+        "operationId": "requestAdminOtp",
         "requestBody": {
           "content": {
             "application/json": {
@@ -321,7 +321,7 @@
     },
     "/v0.1/auth/admin/verify-otp": {
       "post": {
-        "operationId": "verifyOTP",
+        "operationId": "verifyAdminOtp",
         "requestBody": {
           "content": {
             "application/json": {
@@ -381,7 +381,7 @@
     },
     "/v0.1/auth/email-verification/otp": {
       "post": {
-        "operationId": "resendOtp",
+        "operationId": "emailVerificationResendOtp",
         "requestBody": {
           "content": {
             "application/json": {
@@ -404,7 +404,7 @@
     },
     "/v0.1/auth/email-verification/verify": {
       "post": {
-        "operationId": "verify",
+        "operationId": "emailVerificationVerifyOtp",
         "requestBody": {
           "content": {
             "application/json": {

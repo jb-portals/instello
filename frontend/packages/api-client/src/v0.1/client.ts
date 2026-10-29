@@ -342,17 +342,17 @@ export const resendInvitation = async (id: string, options?: Parameters<typeof a
 
 
 
-export type requestOTPResponse200 = {
+export type requestAdminOtpResponse200 = {
   data: void
   status: 200
 }
 
-export type requestOTPResponseSuccess = (requestOTPResponse200) & {
+export type requestAdminOtpResponseSuccess = (requestAdminOtpResponse200) & {
   headers: Headers;
 };
 ;
 
-export const getRequestOTPUrl = () => {
+export const getRequestAdminOtpUrl = () => {
 
 
 
@@ -360,7 +360,7 @@ export const getRequestOTPUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/admin/otp`
 }
 
-export const requestOTP = async (adminOtpRequest: AdminOtpRequest, options?: Parameters<typeof apiFetch>[1]): Promise<requestOTPResponseSuccess> => {
+export const requestAdminOtp = async (adminOtpRequest: AdminOtpRequest, options?: Parameters<typeof apiFetch>[1]): Promise<requestAdminOtpResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -376,7 +376,7 @@ export const requestOTP = async (adminOtpRequest: AdminOtpRequest, options?: Par
     }
     return headers;
   };
-return apiFetch<requestOTPResponseSuccess>(getRequestOTPUrl(),
+return apiFetch<requestAdminOtpResponseSuccess>(getRequestAdminOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -387,17 +387,17 @@ return apiFetch<requestOTPResponseSuccess>(getRequestOTPUrl(),
 
 
 
-export type verifyOTPResponse200 = {
+export type verifyAdminOtpResponse200 = {
   data: AdminLoginResponse
   status: 200
 }
 
-export type verifyOTPResponseSuccess = (verifyOTPResponse200) & {
+export type verifyAdminOtpResponseSuccess = (verifyAdminOtpResponse200) & {
   headers: Headers;
 };
 ;
 
-export const getVerifyOTPUrl = () => {
+export const getVerifyAdminOtpUrl = () => {
 
 
 
@@ -405,7 +405,7 @@ export const getVerifyOTPUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/admin/verify-otp`
 }
 
-export const verifyOTP = async (adminVerifyOtpRequest: AdminVerifyOtpRequest, options?: Parameters<typeof apiFetch>[1]): Promise<verifyOTPResponseSuccess> => {
+export const verifyAdminOtp = async (adminVerifyOtpRequest: AdminVerifyOtpRequest, options?: Parameters<typeof apiFetch>[1]): Promise<verifyAdminOtpResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -421,7 +421,7 @@ export const verifyOTP = async (adminVerifyOtpRequest: AdminVerifyOtpRequest, op
     }
     return headers;
   };
-return apiFetch<verifyOTPResponseSuccess>(getVerifyOTPUrl(),
+return apiFetch<verifyAdminOtpResponseSuccess>(getVerifyAdminOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -488,17 +488,17 @@ export const getCsrfToken = async (params: GetCsrfTokenParams, options?: Paramet
 
 
 
-export type resendOtpResponse200 = {
+export type emailVerificationResendOtpResponse200 = {
   data: void
   status: 200
 }
 
-export type resendOtpResponseSuccess = (resendOtpResponse200) & {
+export type emailVerificationResendOtpResponseSuccess = (emailVerificationResendOtpResponse200) & {
   headers: Headers;
 };
 ;
 
-export const getResendOtpUrl = () => {
+export const getEmailVerificationResendOtpUrl = () => {
 
 
 
@@ -506,7 +506,7 @@ export const getResendOtpUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/email-verification/otp`
 }
 
-export const resendOtp = async (emailOtpRequest: EmailOtpRequest, options?: Parameters<typeof apiFetch>[1]): Promise<resendOtpResponseSuccess> => {
+export const emailVerificationResendOtp = async (emailOtpRequest: EmailOtpRequest, options?: Parameters<typeof apiFetch>[1]): Promise<emailVerificationResendOtpResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -522,7 +522,7 @@ export const resendOtp = async (emailOtpRequest: EmailOtpRequest, options?: Para
     }
     return headers;
   };
-return apiFetch<resendOtpResponseSuccess>(getResendOtpUrl(),
+return apiFetch<emailVerificationResendOtpResponseSuccess>(getEmailVerificationResendOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -533,17 +533,17 @@ return apiFetch<resendOtpResponseSuccess>(getResendOtpUrl(),
 
 
 
-export type verifyResponse200 = {
+export type emailVerificationVerifyOtpResponse200 = {
   data: void
   status: 200
 }
 
-export type verifyResponseSuccess = (verifyResponse200) & {
+export type emailVerificationVerifyOtpResponseSuccess = (emailVerificationVerifyOtpResponse200) & {
   headers: Headers;
 };
 ;
 
-export const getVerifyUrl = () => {
+export const getEmailVerificationVerifyOtpUrl = () => {
 
 
 
@@ -551,7 +551,7 @@ export const getVerifyUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/email-verification/verify`
 }
 
-export const verify = async (verifyEmailRequest: VerifyEmailRequest, options?: Parameters<typeof apiFetch>[1]): Promise<verifyResponseSuccess> => {
+export const emailVerificationVerifyOtp = async (verifyEmailRequest: VerifyEmailRequest, options?: Parameters<typeof apiFetch>[1]): Promise<emailVerificationVerifyOtpResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -567,7 +567,7 @@ export const verify = async (verifyEmailRequest: VerifyEmailRequest, options?: P
     }
     return headers;
   };
-return apiFetch<verifyResponseSuccess>(getVerifyUrl(),
+return apiFetch<emailVerificationVerifyOtpResponseSuccess>(getEmailVerificationVerifyOtpUrl(),
   {
     ...options,
     method: 'POST',

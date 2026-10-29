@@ -687,7 +687,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getResendInvitationMutationOptions(options), queryClient);
     }
 
-export const getRequestOTPUrl = () => {
+export const getRequestAdminOtpUrl = () => {
 
 
 
@@ -695,7 +695,7 @@ export const getRequestOTPUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/admin/otp`
 }
 
-export const requestOTP = async (adminOtpRequest: AdminOtpRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<void> => {
+export const requestAdminOtp = async (adminOtpRequest: AdminOtpRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<void> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -711,7 +711,7 @@ export const requestOTP = async (adminOtpRequest: AdminOtpRequest, options?: Par
     }
     return headers;
   };
-return apiFetchData<void>(getRequestOTPUrl(),
+return apiFetchData<void>(getRequestAdminOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -724,13 +724,13 @@ return apiFetchData<void>(getRequestOTPUrl(),
 
 
 
-export const getRequestOTPMutationKey = () => ['requestOTP'] as const;
+export const getRequestAdminOtpMutationKey = () => ['requestAdminOtp'] as const;
 
-export const getRequestOTPMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestOTP>>, TError,RequestOTPMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
-): UseMutationOptions<Awaited<ReturnType<typeof requestOTP>>, TError,RequestOTPMutationVariables, TContext> => {
+export const getRequestAdminOtpMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestAdminOtp>>, TError,RequestAdminOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestAdminOtp>>, TError,RequestAdminOtpMutationVariables, TContext> => {
 
-const mutationKey = getRequestOTPMutationKey();
+const mutationKey = getRequestAdminOtpMutationKey();
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -740,10 +740,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestOTP>>, RequestOTPMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestAdminOtp>>, RequestAdminOtpMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  requestOTP(data,requestOptions)
+          return  requestAdminOtp(data,requestOptions)
         }
 
 
@@ -753,23 +753,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type RequestOTPMutationResult = NonNullable<Awaited<ReturnType<typeof requestOTP>>>
-    export type RequestOTPMutationBody = BodyType<AdminOtpRequest>
-    export type RequestOTPMutationError = ErrorType<unknown>
-    export type RequestOTPMutationVariables = {data: BodyType<AdminOtpRequest>}
+    export type RequestAdminOtpMutationResult = NonNullable<Awaited<ReturnType<typeof requestAdminOtp>>>
+    export type RequestAdminOtpMutationBody = BodyType<AdminOtpRequest>
+    export type RequestAdminOtpMutationError = ErrorType<unknown>
+    export type RequestAdminOtpMutationVariables = {data: BodyType<AdminOtpRequest>}
 
-    export const useRequestOTP = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestOTP>>, TError,RequestOTPMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+    export const useRequestAdminOtp = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestAdminOtp>>, TError,RequestAdminOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof requestOTP>>,
+        Awaited<ReturnType<typeof requestAdminOtp>>,
         TError,
-        RequestOTPMutationVariables,
+        RequestAdminOtpMutationVariables,
         TContext
       > => {
-      return useMutation(getRequestOTPMutationOptions(options), queryClient);
+      return useMutation(getRequestAdminOtpMutationOptions(options), queryClient);
     }
 
-export const getVerifyOTPUrl = () => {
+export const getVerifyAdminOtpUrl = () => {
 
 
 
@@ -777,7 +777,7 @@ export const getVerifyOTPUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/admin/verify-otp`
 }
 
-export const verifyOTP = async (adminVerifyOtpRequest: AdminVerifyOtpRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<AdminLoginResponse> => {
+export const verifyAdminOtp = async (adminVerifyOtpRequest: AdminVerifyOtpRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<AdminLoginResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -793,7 +793,7 @@ export const verifyOTP = async (adminVerifyOtpRequest: AdminVerifyOtpRequest, op
     }
     return headers;
   };
-return apiFetchData<AdminLoginResponse>(getVerifyOTPUrl(),
+return apiFetchData<AdminLoginResponse>(getVerifyAdminOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -806,13 +806,13 @@ return apiFetchData<AdminLoginResponse>(getVerifyOTPUrl(),
 
 
 
-export const getVerifyOTPMutationKey = () => ['verifyOTP'] as const;
+export const getVerifyAdminOtpMutationKey = () => ['verifyAdminOtp'] as const;
 
-export const getVerifyOTPMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyOTP>>, TError,VerifyOTPMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
-): UseMutationOptions<Awaited<ReturnType<typeof verifyOTP>>, TError,VerifyOTPMutationVariables, TContext> => {
+export const getVerifyAdminOtpMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyAdminOtp>>, TError,VerifyAdminOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyAdminOtp>>, TError,VerifyAdminOtpMutationVariables, TContext> => {
 
-const mutationKey = getVerifyOTPMutationKey();
+const mutationKey = getVerifyAdminOtpMutationKey();
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -822,10 +822,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyOTP>>, VerifyOTPMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyAdminOtp>>, VerifyAdminOtpMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  verifyOTP(data,requestOptions)
+          return  verifyAdminOtp(data,requestOptions)
         }
 
 
@@ -835,20 +835,20 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type VerifyOTPMutationResult = NonNullable<Awaited<ReturnType<typeof verifyOTP>>>
-    export type VerifyOTPMutationBody = BodyType<AdminVerifyOtpRequest>
-    export type VerifyOTPMutationError = ErrorType<unknown>
-    export type VerifyOTPMutationVariables = {data: BodyType<AdminVerifyOtpRequest>}
+    export type VerifyAdminOtpMutationResult = NonNullable<Awaited<ReturnType<typeof verifyAdminOtp>>>
+    export type VerifyAdminOtpMutationBody = BodyType<AdminVerifyOtpRequest>
+    export type VerifyAdminOtpMutationError = ErrorType<unknown>
+    export type VerifyAdminOtpMutationVariables = {data: BodyType<AdminVerifyOtpRequest>}
 
-    export const useVerifyOTP = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyOTP>>, TError,VerifyOTPMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+    export const useVerifyAdminOtp = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyAdminOtp>>, TError,VerifyAdminOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof verifyOTP>>,
+        Awaited<ReturnType<typeof verifyAdminOtp>>,
         TError,
-        VerifyOTPMutationVariables,
+        VerifyAdminOtpMutationVariables,
         TContext
       > => {
-      return useMutation(getVerifyOTPMutationOptions(options), queryClient);
+      return useMutation(getVerifyAdminOtpMutationOptions(options), queryClient);
     }
 
 export const getGetCsrfTokenUrl = (params: GetCsrfTokenParams,) => {
@@ -971,7 +971,7 @@ export function useGetCsrfToken<TData = Awaited<ReturnType<typeof getCsrfToken>>
 
 
 
-export const getResendOtpUrl = () => {
+export const getEmailVerificationResendOtpUrl = () => {
 
 
 
@@ -979,7 +979,7 @@ export const getResendOtpUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/email-verification/otp`
 }
 
-export const resendOtp = async (emailOtpRequest: EmailOtpRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<void> => {
+export const emailVerificationResendOtp = async (emailOtpRequest: EmailOtpRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<void> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -995,7 +995,7 @@ export const resendOtp = async (emailOtpRequest: EmailOtpRequest, options?: Para
     }
     return headers;
   };
-return apiFetchData<void>(getResendOtpUrl(),
+return apiFetchData<void>(getEmailVerificationResendOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -1008,13 +1008,13 @@ return apiFetchData<void>(getResendOtpUrl(),
 
 
 
-export const getResendOtpMutationKey = () => ['resendOtp'] as const;
+export const getEmailVerificationResendOtpMutationKey = () => ['emailVerificationResendOtp'] as const;
 
-export const getResendOtpMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resendOtp>>, TError,ResendOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
-): UseMutationOptions<Awaited<ReturnType<typeof resendOtp>>, TError,ResendOtpMutationVariables, TContext> => {
+export const getEmailVerificationResendOtpMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof emailVerificationResendOtp>>, TError,EmailVerificationResendOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof emailVerificationResendOtp>>, TError,EmailVerificationResendOtpMutationVariables, TContext> => {
 
-const mutationKey = getResendOtpMutationKey();
+const mutationKey = getEmailVerificationResendOtpMutationKey();
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -1024,10 +1024,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resendOtp>>, ResendOtpMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof emailVerificationResendOtp>>, EmailVerificationResendOtpMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  resendOtp(data,requestOptions)
+          return  emailVerificationResendOtp(data,requestOptions)
         }
 
 
@@ -1037,23 +1037,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type ResendOtpMutationResult = NonNullable<Awaited<ReturnType<typeof resendOtp>>>
-    export type ResendOtpMutationBody = BodyType<EmailOtpRequest>
-    export type ResendOtpMutationError = ErrorType<unknown>
-    export type ResendOtpMutationVariables = {data: BodyType<EmailOtpRequest>}
+    export type EmailVerificationResendOtpMutationResult = NonNullable<Awaited<ReturnType<typeof emailVerificationResendOtp>>>
+    export type EmailVerificationResendOtpMutationBody = BodyType<EmailOtpRequest>
+    export type EmailVerificationResendOtpMutationError = ErrorType<unknown>
+    export type EmailVerificationResendOtpMutationVariables = {data: BodyType<EmailOtpRequest>}
 
-    export const useResendOtp = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resendOtp>>, TError,ResendOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+    export const useEmailVerificationResendOtp = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof emailVerificationResendOtp>>, TError,EmailVerificationResendOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof resendOtp>>,
+        Awaited<ReturnType<typeof emailVerificationResendOtp>>,
         TError,
-        ResendOtpMutationVariables,
+        EmailVerificationResendOtpMutationVariables,
         TContext
       > => {
-      return useMutation(getResendOtpMutationOptions(options), queryClient);
+      return useMutation(getEmailVerificationResendOtpMutationOptions(options), queryClient);
     }
 
-export const getVerifyUrl = () => {
+export const getEmailVerificationVerifyOtpUrl = () => {
 
 
 
@@ -1061,7 +1061,7 @@ export const getVerifyUrl = () => {
   return `${apiBaseUrl()}/v0.1/auth/email-verification/verify`
 }
 
-export const verify = async (verifyEmailRequest: VerifyEmailRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<void> => {
+export const emailVerificationVerifyOtp = async (verifyEmailRequest: VerifyEmailRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<void> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -1077,7 +1077,7 @@ export const verify = async (verifyEmailRequest: VerifyEmailRequest, options?: P
     }
     return headers;
   };
-return apiFetchData<void>(getVerifyUrl(),
+return apiFetchData<void>(getEmailVerificationVerifyOtpUrl(),
   {
     ...options,
     method: 'POST',
@@ -1090,13 +1090,13 @@ return apiFetchData<void>(getVerifyUrl(),
 
 
 
-export const getVerifyMutationKey = () => ['verify'] as const;
+export const getEmailVerificationVerifyOtpMutationKey = () => ['emailVerificationVerifyOtp'] as const;
 
-export const getVerifyMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verify>>, TError,VerifyMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
-): UseMutationOptions<Awaited<ReturnType<typeof verify>>, TError,VerifyMutationVariables, TContext> => {
+export const getEmailVerificationVerifyOtpMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof emailVerificationVerifyOtp>>, TError,EmailVerificationVerifyOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof emailVerificationVerifyOtp>>, TError,EmailVerificationVerifyOtpMutationVariables, TContext> => {
 
-const mutationKey = getVerifyMutationKey();
+const mutationKey = getEmailVerificationVerifyOtpMutationKey();
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -1106,10 +1106,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verify>>, VerifyMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof emailVerificationVerifyOtp>>, EmailVerificationVerifyOtpMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  verify(data,requestOptions)
+          return  emailVerificationVerifyOtp(data,requestOptions)
         }
 
 
@@ -1119,20 +1119,20 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type VerifyMutationResult = NonNullable<Awaited<ReturnType<typeof verify>>>
-    export type VerifyMutationBody = BodyType<VerifyEmailRequest>
-    export type VerifyMutationError = ErrorType<unknown>
-    export type VerifyMutationVariables = {data: BodyType<VerifyEmailRequest>}
+    export type EmailVerificationVerifyOtpMutationResult = NonNullable<Awaited<ReturnType<typeof emailVerificationVerifyOtp>>>
+    export type EmailVerificationVerifyOtpMutationBody = BodyType<VerifyEmailRequest>
+    export type EmailVerificationVerifyOtpMutationError = ErrorType<unknown>
+    export type EmailVerificationVerifyOtpMutationVariables = {data: BodyType<VerifyEmailRequest>}
 
-    export const useVerify = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verify>>, TError,VerifyMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+    export const useEmailVerificationVerifyOtp = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof emailVerificationVerifyOtp>>, TError,EmailVerificationVerifyOtpMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof verify>>,
+        Awaited<ReturnType<typeof emailVerificationVerifyOtp>>,
         TError,
-        VerifyMutationVariables,
+        EmailVerificationVerifyOtpMutationVariables,
         TContext
       > => {
-      return useMutation(getVerifyMutationOptions(options), queryClient);
+      return useMutation(getEmailVerificationVerifyOtpMutationOptions(options), queryClient);
     }
 
 export const getLoginUrl = () => {

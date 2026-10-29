@@ -1,6 +1,5 @@
 "use client"
 
-import { useRequestOTP, useVerifyOTP } from "@instello/api-client/query"
 import { Button } from "@instello/ui/components/button"
 import {
   Card,
@@ -15,6 +14,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@instello/ui/components/i
 import { useRouter } from "next/navigation"
 import { SubmitEventHandler, useEffect, useState } from "react"
 import { errorMessage } from "@/lib/auth"
+import { useRequestAdminOtp, useVerifyAdminOtp } from "@instello/api-client/query"
 
 const RESEND_COOLDOWN_SECONDS = 60
 const otpSlotClass =
@@ -22,8 +22,8 @@ const otpSlotClass =
 
 export function LoginForm() {
   const router = useRouter()
-  const requestOtp = useRequestOTP()
-  const verifyOtp = useVerifyOTP()
+  const requestAdminOtp = useRequestAdminOtp()
+  const verifyAdminOtp = useVerifyAdminOtp()
   const [step, setStep] = useState<"email" | "code">("email")
   const [email, setEmail] = useState("")
   const [code, setCode] = useState("")
@@ -40,7 +40,7 @@ export function LoginForm() {
     event.preventDefault()
     setError(null)
     try {
-      await requestOtp.mutateAsync({ data: { email: email.trim() } })
+      await requestAdminOtp.mutateAsync({ data: { email: email.trim() } })
       setStep("code")
       setSecondsLeft(RESEND_COOLDOWN_SECONDS)
     } catch (requestError) {
@@ -52,7 +52,7 @@ export function LoginForm() {
     event.preventDefault()
     setError(null)
     try {
-      await verifyOtp.mutateAsync({ data: { email: email.trim(), code } })
+      await verifyAdminOtp.mutateAsync({ data: { email: email.trim(), code } })
       router.replace("/")
       router.refresh()
     } catch (verifyError) {
@@ -63,7 +63,7 @@ export function LoginForm() {
   async function onResend() {
     setError(null)
     try {
-      await requestOtp.mutateAsync({ data: { email: email.trim() } })
+      await requestAdminOtp.mutateAsync({ data: { email: email.trim() } })
       setSecondsLeft(RESEND_COOLDOWN_SECONDS)
     } catch (requestError) {
       setError(errorMessage(requestError))
@@ -95,8 +95,8 @@ export function LoginForm() {
                 />
                 <FieldError>{error}</FieldError>
               </Field>
-              <Button type="submit" className="h-10 w-full" disabled={requestOtp.isPending}>
-                {requestOtp.isPending ? "Sending code..." : "Continue"}
+              <Button type="submit" className="h-10 w-full" disabled={requestAdminOtp.isPending}>
+                {requestAdminOtp.isPending ? "Sending code..." : "Continue"}
               </Button>
             </CardContent>
           </Card>
@@ -138,7 +138,7 @@ export function LoginForm() {
                     type="button"
                     variant="link"
                     className="h-auto px-0"
-                    disabled={requestOtp.isPending}
+                    disabled={requestAdminOtp.isPending}
                     onClick={() => void onResend()}
                   >
                     Resend
@@ -148,9 +148,9 @@ export function LoginForm() {
               <Button
                 type="submit"
                 className="h-10 w-full"
-                disabled={verifyOtp.isPending || code.length !== 6}
+                disabled={verifyAdminOtp.isPending || code.length !== 6}
               >
-                {verifyOtp.isPending ? "Verifying..." : "Verify & Continue"}
+                {verifyAdminOtp.isPending ? "Verifying..." : "Verify & Continue"}
               </Button>
               <Button
                 type="button"
