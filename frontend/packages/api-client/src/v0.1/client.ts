@@ -31,7 +31,7 @@ import type {
   ListParams,
   LoginRequest,
   PageResponseAccessRequestSummary,
-  PreviewParams,
+  PreviewInvitationParams,
   RejectAccessRequestRequest,
   UpdateAcademicPatternRequest,
   UpdateAcademicStageRequest,
@@ -578,89 +578,6 @@ return apiFetch<verifyResponseSuccess>(getVerifyUrl(),
 
 
 
-export type previewResponse200 = {
-  data: InvitationPreviewResponse
-  status: 200
-}
-
-export type previewResponseSuccess = (previewResponse200) & {
-  headers: Headers;
-};
-;
-
-export const getPreviewUrl = (params: PreviewParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `${apiBaseUrl()}/v0.1/auth/invitations?${stringifiedParams}` : `${apiBaseUrl()}/v0.1/auth/invitations`
-}
-
-export const preview = async (params: PreviewParams, options?: Parameters<typeof apiFetch>[1]): Promise<previewResponseSuccess> => {
-
-  return apiFetch<previewResponseSuccess>(getPreviewUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-export type acceptResponse200 = {
-  data: AcceptInvitationResponse
-  status: 200
-}
-
-export type acceptResponseSuccess = (acceptResponse200) & {
-  headers: Headers;
-};
-;
-
-export const getAcceptUrl = () => {
-
-
-
-
-  return `${apiBaseUrl()}/v0.1/auth/invitations/accept`
-}
-
-export const accept = async (acceptInvitationRequest: AcceptInvitationRequest, options?: Parameters<typeof apiFetch>[1]): Promise<acceptResponseSuccess> => {
-
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return apiFetch<acceptResponseSuccess>(getAcceptUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(acceptInvitationRequest)
-  }
-);}
-
-
-
 export type loginResponse200 = {
   data: void
   status: 200
@@ -732,6 +649,89 @@ export const logout = async ( options?: Parameters<typeof apiFetch>[1]): Promise
     method: 'POST'
 
 
+  }
+);}
+
+
+
+export type previewInvitationResponse200 = {
+  data: InvitationPreviewResponse
+  status: 200
+}
+
+export type previewInvitationResponseSuccess = (previewInvitationResponse200) & {
+  headers: Headers;
+};
+;
+
+export const getPreviewInvitationUrl = (params: PreviewInvitationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `${apiBaseUrl()}/v0.1/organizations/invitations?${stringifiedParams}` : `${apiBaseUrl()}/v0.1/organizations/invitations`
+}
+
+export const previewInvitation = async (params: PreviewInvitationParams, options?: Parameters<typeof apiFetch>[1]): Promise<previewInvitationResponseSuccess> => {
+
+  return apiFetch<previewInvitationResponseSuccess>(getPreviewInvitationUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type acceptInvitationResponse200 = {
+  data: AcceptInvitationResponse
+  status: 200
+}
+
+export type acceptInvitationResponseSuccess = (acceptInvitationResponse200) & {
+  headers: Headers;
+};
+;
+
+export const getAcceptInvitationUrl = () => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/invitations/accept`
+}
+
+export const acceptInvitation = async (acceptInvitationRequest: AcceptInvitationRequest, options?: Parameters<typeof apiFetch>[1]): Promise<acceptInvitationResponseSuccess> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<acceptInvitationResponseSuccess>(getAcceptInvitationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(acceptInvitationRequest)
   }
 );}
 

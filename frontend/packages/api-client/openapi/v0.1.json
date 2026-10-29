@@ -17,16 +17,16 @@
       "name": "auth/admin"
     },
     {
+      "description": "Accept an owner invitation and create an account",
+      "name": "organizations/invitations"
+    },
+    {
       "description": "Users operations",
       "name": "users"
     },
     {
       "description": "Authentication operations for common users",
       "name": "auth"
-    },
-    {
-      "description": "Accept an owner invitation and create an account",
-      "name": "auth/invitations"
     },
     {
       "description": "Verify an account email with a one-time code",
@@ -425,66 +425,6 @@
         ]
       }
     },
-    "/v0.1/auth/invitations": {
-      "get": {
-        "operationId": "preview",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InvitationPreviewResponse"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "tags": [
-          "auth/invitations"
-        ]
-      }
-    },
-    "/v0.1/auth/invitations/accept": {
-      "post": {
-        "operationId": "accept",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AcceptInvitationRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AcceptInvitationResponse"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "tags": [
-          "auth/invitations"
-        ]
-      }
-    },
     "/v0.1/auth/login": {
       "post": {
         "operationId": "login",
@@ -518,6 +458,66 @@
         },
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/v0.1/organizations/invitations": {
+      "get": {
+        "operationId": "previewInvitation",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationPreviewResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "organizations/invitations"
+        ]
+      }
+    },
+    "/v0.1/organizations/invitations/accept": {
+      "post": {
+        "operationId": "acceptInvitation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptInvitationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInvitationResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "organizations/invitations"
         ]
       }
     },

@@ -283,6 +283,5 @@ public class AcademicPatternService {
             String name,
             String description,
             int durationInYears
-    ) {
-    }
+    ) {}
 }

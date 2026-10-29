@@ -101,8 +101,8 @@ All endpoints below are public, served under `/v0.1`, and (like every `POST`) ne
 
 | Step | Endpoint | Body | Success |
 |------|----------|------|---------|
-| 1. Preview invitation | `GET /auth/invitations?token=` | – | `200 { email, organizationName, expiresAt }` (the email is locked, show it read-only) |
-| 2. Accept invitation | `POST /auth/invitations/accept` | `{ token, password }` (8–72 chars) | `200 { email }`; an unverified account is created and a 6-digit OTP is emailed |
+| 1. Preview invitation | `GET /organizations/invitations?token=` | – | `200 { email, organizationName, expiresAt }` (the email is locked, show it read-only) |
+| 2. Accept invitation | `POST /organizations/invitations/accept` | `{ token, password }` (8–72 chars) | `200 { email }`; an unverified account is created and a 6-digit OTP is emailed |
 | 2b. Resend code | `POST /auth/email-verification/otp` | `{ email }` | `204` (always, to avoid account probing; `429` when rate limited) |
 | 3. Verify email | `POST /auth/email-verification/verify` | `{ email, code }` | `204`; grants `ROLE_OWNER` and marks the invitation accepted |
 | 4. Log in | `POST /auth/login` | `{ email, password }` | `204` + session cookie |

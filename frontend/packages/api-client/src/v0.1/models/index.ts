@@ -34,7 +34,7 @@ export * from './loginRequest';
 export * from './organizationInfo';
 export * from './pageable';
 export * from './pageResponseAccessRequestSummary';
-export * from './previewParams';
+export * from './previewInvitationParams';
 export * from './profile';
 export * from './rejectAccessRequestRequest';
 export * from './updateAcademicPatternRequest';

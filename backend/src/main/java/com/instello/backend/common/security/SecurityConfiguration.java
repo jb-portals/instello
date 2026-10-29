@@ -46,8 +46,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/v{version}/auth/csrf-token").permitAll()
 
                                 // Owner onboarding: preview + accept an invitation, then verify the email with an OTP
-                                .requestMatchers(HttpMethod.GET, "/v{version}/auth/invitations").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/v{version}/auth/invitations/accept").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v{version}/organizations/invitations").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/v{version}/organizations/invitations/accept").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/v{version}/auth/email-verification/**").permitAll()
 
                                 // Anybody can create access request

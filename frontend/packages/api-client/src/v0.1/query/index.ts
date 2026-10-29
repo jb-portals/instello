@@ -42,7 +42,7 @@ import type {
   ListParams,
   LoginRequest,
   PageResponseAccessRequestSummary,
-  PreviewParams,
+  PreviewInvitationParams,
   RejectAccessRequestRequest,
   UpdateAcademicPatternRequest,
   UpdateAcademicStageRequest,
@@ -1135,190 +1135,6 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getVerifyMutationOptions(options), queryClient);
     }
 
-export const getPreviewUrl = (params: PreviewParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `${apiBaseUrl()}/v0.1/auth/invitations?${stringifiedParams}` : `${apiBaseUrl()}/v0.1/auth/invitations`
-}
-
-export const preview = async (params: PreviewParams, options?: Parameters<typeof apiFetchData>[1]): Promise<InvitationPreviewResponse> => {
-
-  return apiFetchData<InvitationPreviewResponse>(getPreviewUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getPreviewQueryKey = (params?: PreviewParams,) => {
-    return [
-    `${apiBaseUrl()}/v0.1/auth/invitations`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getPreviewQueryOptions = <TData = Awaited<ReturnType<typeof preview>>, TError = ErrorType<unknown>>(params: PreviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof preview>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPreviewQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof preview>>> = ({ signal }) => preview(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof preview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PreviewQueryResult = NonNullable<Awaited<ReturnType<typeof preview>>>
-export type PreviewQueryError = ErrorType<unknown>
-
-
-export function usePreview<TData = Awaited<ReturnType<typeof preview>>, TError = ErrorType<unknown>>(
- params: PreviewParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof preview>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof preview>>,
-          TError,
-          Awaited<ReturnType<typeof preview>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiFetchData>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePreview<TData = Awaited<ReturnType<typeof preview>>, TError = ErrorType<unknown>>(
- params: PreviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof preview>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof preview>>,
-          TError,
-          Awaited<ReturnType<typeof preview>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiFetchData>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePreview<TData = Awaited<ReturnType<typeof preview>>, TError = ErrorType<unknown>>(
- params: PreviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof preview>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function usePreview<TData = Awaited<ReturnType<typeof preview>>, TError = ErrorType<unknown>>(
- params: PreviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof preview>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getPreviewQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-
-export const getAcceptUrl = () => {
-
-
-
-
-  return `${apiBaseUrl()}/v0.1/auth/invitations/accept`
-}
-
-export const accept = async (acceptInvitationRequest: AcceptInvitationRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<AcceptInvitationResponse> => {
-
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return apiFetchData<AcceptInvitationResponse>(getAcceptUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(acceptInvitationRequest)
-  }
-);}
-
-
-
-
-
-export const getAcceptMutationKey = () => ['accept'] as const;
-
-export const getAcceptMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accept>>, TError,AcceptMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
-): UseMutationOptions<Awaited<ReturnType<typeof accept>>, TError,AcceptMutationVariables, TContext> => {
-
-const mutationKey = getAcceptMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accept>>, AcceptMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  accept(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type AcceptMutationResult = NonNullable<Awaited<ReturnType<typeof accept>>>
-    export type AcceptMutationBody = BodyType<AcceptInvitationRequest>
-    export type AcceptMutationError = ErrorType<unknown>
-    export type AcceptMutationVariables = {data: BodyType<AcceptInvitationRequest>}
-
-    export const useAccept = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accept>>, TError,AcceptMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof accept>>,
-        TError,
-        AcceptMutationVariables,
-        TContext
-      > => {
-      return useMutation(getAcceptMutationOptions(options), queryClient);
-    }
-
 export const getLoginUrl = () => {
 
 
@@ -1467,6 +1283,190 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getLogoutMutationOptions(options), queryClient);
+    }
+
+export const getPreviewInvitationUrl = (params: PreviewInvitationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `${apiBaseUrl()}/v0.1/organizations/invitations?${stringifiedParams}` : `${apiBaseUrl()}/v0.1/organizations/invitations`
+}
+
+export const previewInvitation = async (params: PreviewInvitationParams, options?: Parameters<typeof apiFetchData>[1]): Promise<InvitationPreviewResponse> => {
+
+  return apiFetchData<InvitationPreviewResponse>(getPreviewInvitationUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getPreviewInvitationQueryKey = (params?: PreviewInvitationParams,) => {
+    return [
+    `${apiBaseUrl()}/v0.1/organizations/invitations`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getPreviewInvitationQueryOptions = <TData = Awaited<ReturnType<typeof previewInvitation>>, TError = ErrorType<unknown>>(params: PreviewInvitationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof previewInvitation>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPreviewInvitationQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof previewInvitation>>> = ({ signal }) => previewInvitation(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof previewInvitation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PreviewInvitationQueryResult = NonNullable<Awaited<ReturnType<typeof previewInvitation>>>
+export type PreviewInvitationQueryError = ErrorType<unknown>
+
+
+export function usePreviewInvitation<TData = Awaited<ReturnType<typeof previewInvitation>>, TError = ErrorType<unknown>>(
+ params: PreviewInvitationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof previewInvitation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof previewInvitation>>,
+          TError,
+          Awaited<ReturnType<typeof previewInvitation>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePreviewInvitation<TData = Awaited<ReturnType<typeof previewInvitation>>, TError = ErrorType<unknown>>(
+ params: PreviewInvitationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof previewInvitation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof previewInvitation>>,
+          TError,
+          Awaited<ReturnType<typeof previewInvitation>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePreviewInvitation<TData = Awaited<ReturnType<typeof previewInvitation>>, TError = ErrorType<unknown>>(
+ params: PreviewInvitationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof previewInvitation>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function usePreviewInvitation<TData = Awaited<ReturnType<typeof previewInvitation>>, TError = ErrorType<unknown>>(
+ params: PreviewInvitationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof previewInvitation>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getPreviewInvitationQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAcceptInvitationUrl = () => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/invitations/accept`
+}
+
+export const acceptInvitation = async (acceptInvitationRequest: AcceptInvitationRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<AcceptInvitationResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetchData<AcceptInvitationResponse>(getAcceptInvitationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(acceptInvitationRequest)
+  }
+);}
+
+
+
+
+
+export const getAcceptInvitationMutationKey = () => ['acceptInvitation'] as const;
+
+export const getAcceptInvitationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof acceptInvitation>>, TError,AcceptInvitationMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof acceptInvitation>>, TError,AcceptInvitationMutationVariables, TContext> => {
+
+const mutationKey = getAcceptInvitationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof acceptInvitation>>, AcceptInvitationMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  acceptInvitation(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AcceptInvitationMutationResult = NonNullable<Awaited<ReturnType<typeof acceptInvitation>>>
+    export type AcceptInvitationMutationBody = BodyType<AcceptInvitationRequest>
+    export type AcceptInvitationMutationError = ErrorType<unknown>
+    export type AcceptInvitationMutationVariables = {data: BodyType<AcceptInvitationRequest>}
+
+    export const useAcceptInvitation = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof acceptInvitation>>, TError,AcceptInvitationMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof acceptInvitation>>,
+        TError,
+        AcceptInvitationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAcceptInvitationMutationOptions(options), queryClient);
     }
 
 export const getListAcademicPatternsUrl = (organizationId: string,) => {
