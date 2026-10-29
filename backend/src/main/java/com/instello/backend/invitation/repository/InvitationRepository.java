@@ -18,4 +18,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, UUID> {
     Optional<Invitation> findFirstByEmailAndAcceptedAtIsNullAndRevokedAtIsNullOrderByCreatedAtDesc(String email);
 
     boolean existsByEmailAndAcceptedAtIsNullAndRevokedAtIsNull(String email);
+
+    List<Invitation> findByAcceptedAtIsNotNull();
 }

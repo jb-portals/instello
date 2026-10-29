@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ import com.instello.backend.auth.otp.OtpService;
 import com.instello.backend.common.exception.ConflictException;
 import com.instello.backend.invitation.entity.Invitation;
 import com.instello.backend.invitation.repository.InvitationRepository;
+import com.instello.backend.organization.OrganizationMembershipService;
+import com.instello.backend.organization.entity.Organization;
 import com.instello.backend.user.entity.AppAuthority;
 import com.instello.backend.user.entity.User;
 import com.instello.backend.user.repository.UserRepository;
@@ -41,6 +44,8 @@ class EmailVerificationServiceTest {
     private UserRepository userRepository;
     @Mock
     private InvitationRepository invitationRepository;
+    @Mock
+    private OrganizationMembershipService membershipService;
     @InjectMocks
     private EmailVerificationService service;
 
@@ -56,6 +61,13 @@ class EmailVerificationServiceTest {
     void validCodeVerifiesEmailAcceptsInvitationAndGrantsOwnerAuthority() {
         User user = unverifiedUser();
         Invitation invitation = openInvitation();
+        Organization organization = Organization.builder()
+                .name("Acme")
+                .email("acme@example.com")
+                .phone("1234567890")
+                .build();
+        organization.setId(UUID.randomUUID());
+        invitation.setOrganization(organization);
         when(userRepository.findWithAuthoritiesByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(user));
         when(invitationRepository.findFirstByEmailAndAcceptedAtIsNullAndRevokedAtIsNullOrderByCreatedAtDesc(EMAIL))
                 .thenReturn(Optional.of(invitation));
@@ -67,6 +79,7 @@ class EmailVerificationServiceTest {
         assertThat(invitation.getAcceptedAt()).isNotNull();
         assertThat(user.getAuthorities()).hasSize(1);
         assertThat(user.getAuthorities().getFirst().getAuthority()).isEqualTo(AppAuthority.ROLE_OWNER);
+        Mockito.verify(membershipService).ensureMember(user, organization, AppAuthority.ROLE_OWNER);
     }
 
     @Test

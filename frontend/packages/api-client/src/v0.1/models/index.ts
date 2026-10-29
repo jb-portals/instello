@@ -1,5 +1,9 @@
 'use client'
 
+export * from './academicPatternResponse';
+export * from './academicPatternResponseSystemType';
+export * from './academicPatternResponseTemplateKey';
+export * from './academicStageResponse';
 export * from './acceptInvitationRequest';
 export * from './acceptInvitationResponse';
 export * from './accessRequestDetail';
@@ -33,6 +37,9 @@ export * from './pageResponseAccessRequestSummary';
 export * from './previewParams';
 export * from './profile';
 export * from './rejectAccessRequestRequest';
+export * from './updateAcademicPatternRequest';
+export * from './updateAcademicPatternRequestSystemType';
+export * from './updateAcademicStageRequest';
 export * from './updateAccessRequestRequest';
 export * from './updateAccessRequestRequestStatus';
 export * from './verifyEmailRequest';

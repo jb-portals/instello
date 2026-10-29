@@ -53,6 +53,11 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, ex.getMessage());
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiErrorResponse> handleForbiddenException(ForbiddenException ex) {
+        return error(HttpStatus.FORBIDDEN, ErrorCodes.FORBIDDEN, ex.getMessage());
+    }
+
     // Only raised after the password was proven correct (see SecurityConfiguration), so it is safe to disclose
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ApiErrorResponse> handleDisabledException(DisabledException ex) {

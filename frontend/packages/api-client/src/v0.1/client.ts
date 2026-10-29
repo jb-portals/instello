@@ -12,6 +12,8 @@ import {
 } from '../mutator';
 
 import type {
+  AcademicPatternResponse,
+  AcademicStageResponse,
   AcceptInvitationRequest,
   AcceptInvitationResponse,
   AccessRequestDetail,
@@ -31,6 +33,8 @@ import type {
   PageResponseAccessRequestSummary,
   PreviewParams,
   RejectAccessRequestRequest,
+  UpdateAcademicPatternRequest,
+  UpdateAcademicStageRequest,
   UpdateAccessRequestRequest,
   VerifyEmailRequest
 } from './models';
@@ -728,6 +732,168 @@ export const logout = async ( options?: Parameters<typeof apiFetch>[1]): Promise
     method: 'POST'
 
 
+  }
+);}
+
+
+
+export type listAcademicPatternsResponse200 = {
+  data: AcademicPatternResponse[]
+  status: 200
+}
+
+export type listAcademicPatternsResponseSuccess = (listAcademicPatternsResponse200) & {
+  headers: Headers;
+};
+;
+
+export const getListAcademicPatternsUrl = (organizationId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns`
+}
+
+export const listAcademicPatterns = async (organizationId: string, options?: Parameters<typeof apiFetch>[1]): Promise<listAcademicPatternsResponseSuccess> => {
+
+  return apiFetch<listAcademicPatternsResponseSuccess>(getListAcademicPatternsUrl(organizationId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type getAcademicPatternResponse200 = {
+  data: AcademicPatternResponse
+  status: 200
+}
+
+export type getAcademicPatternResponseSuccess = (getAcademicPatternResponse200) & {
+  headers: Headers;
+};
+;
+
+export const getGetAcademicPatternUrl = (organizationId: string,
+    patternId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}`
+}
+
+export const getAcademicPattern = async (organizationId: string,
+    patternId: string, options?: Parameters<typeof apiFetch>[1]): Promise<getAcademicPatternResponseSuccess> => {
+
+  return apiFetch<getAcademicPatternResponseSuccess>(getGetAcademicPatternUrl(organizationId,patternId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type updateAcademicPatternResponse200 = {
+  data: AcademicPatternResponse
+  status: 200
+}
+
+export type updateAcademicPatternResponseSuccess = (updateAcademicPatternResponse200) & {
+  headers: Headers;
+};
+;
+
+export const getUpdateAcademicPatternUrl = (organizationId: string,
+    patternId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}`
+}
+
+export const updateAcademicPattern = async (organizationId: string,
+    patternId: string,
+    updateAcademicPatternRequest: UpdateAcademicPatternRequest, options?: Parameters<typeof apiFetch>[1]): Promise<updateAcademicPatternResponseSuccess> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<updateAcademicPatternResponseSuccess>(getUpdateAcademicPatternUrl(organizationId,patternId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateAcademicPatternRequest)
+  }
+);}
+
+
+
+export type updateAcademicStageResponse200 = {
+  data: AcademicStageResponse
+  status: 200
+}
+
+export type updateAcademicStageResponseSuccess = (updateAcademicStageResponse200) & {
+  headers: Headers;
+};
+;
+
+export const getUpdateAcademicStageUrl = (organizationId: string,
+    patternId: string,
+    stageId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}/stages/${stageId}`
+}
+
+export const updateAcademicStage = async (organizationId: string,
+    patternId: string,
+    stageId: string,
+    updateAcademicStageRequest: UpdateAcademicStageRequest, options?: Parameters<typeof apiFetch>[1]): Promise<updateAcademicStageResponseSuccess> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<updateAcademicStageResponseSuccess>(getUpdateAcademicStageUrl(organizationId,patternId,stageId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateAcademicStageRequest)
   }
 );}
 

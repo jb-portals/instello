@@ -521,6 +521,187 @@
         ]
       }
     },
+    "/v0.1/organizations/{organizationId}/academic-patterns": {
+      "get": {
+        "operationId": "listAcademicPatterns",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organizationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AcademicPatternResponse"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "academicPatterns"
+        ]
+      }
+    },
+    "/v0.1/organizations/{organizationId}/academic-patterns/{patternId}": {
+      "get": {
+        "operationId": "getAcademicPattern",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organizationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "patternId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicPatternResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "academicPatterns"
+        ]
+      },
+      "patch": {
+        "operationId": "updateAcademicPattern",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organizationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "patternId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAcademicPatternRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicPatternResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "academicPatterns"
+        ]
+      }
+    },
+    "/v0.1/organizations/{organizationId}/academic-patterns/{patternId}/stages/{stageId}": {
+      "patch": {
+        "operationId": "updateAcademicStage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organizationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "patternId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "stageId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAcademicStageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicStageResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "academicPatterns"
+        ]
+      }
+    },
     "/v0.1/users/me": {
       "get": {
         "operationId": "currentUser",
@@ -544,6 +725,94 @@
   },
   "components": {
     "schemas": {
+      "AcademicPatternResponse": {
+        "type": "object",
+        "properties": {
+          "canBeEdited": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "durationInYears": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AcademicStageResponse"
+            }
+          },
+          "systemType": {
+            "type": "string",
+            "enum": [
+              "SEMESTER",
+              "ANNUAL"
+            ]
+          },
+          "templateKey": {
+            "type": "string",
+            "enum": [
+              "ENGINEERING",
+              "DIPLOMA"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AcademicStageResponse": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sequenceNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "yearNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "AcceptInvitationRequest": {
         "type": "object",
         "properties": {
@@ -1074,6 +1343,65 @@
         "required": [
           "reason"
         ]
+      },
+      "UpdateAcademicPatternRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 0
+          },
+          "durationInYears": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 20,
+            "minimum": 1
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "systemType": {
+            "type": "string",
+            "enum": [
+              "SEMESTER",
+              "ANNUAL"
+            ]
+          }
+        }
+      },
+      "UpdateAcademicStageRequest": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 0
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "sequenceNumber": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "yearNumber": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 20,
+            "minimum": 1
+          }
+        }
       },
       "UpdateAccessRequestRequest": {
         "type": "object",

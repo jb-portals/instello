@@ -3,6 +3,7 @@ package com.instello.backend.organization;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.instello.backend.academicpattern.AcademicPatternService;
 import com.instello.backend.common.entity.Address;
 import com.instello.backend.organization.entity.Organization;
 import com.instello.backend.organization.repository.OrganizationRepository;
@@ -12,9 +13,14 @@ import com.instello.backend.user.entity.User;
 public class OrganizationService {
 
     private final OrganizationRepository organizationRepository;
+    private final AcademicPatternService academicPatternService;
 
-    public OrganizationService(OrganizationRepository organizationRepository) {
+    public OrganizationService(
+            OrganizationRepository organizationRepository,
+            AcademicPatternService academicPatternService
+    ) {
         this.organizationRepository = organizationRepository;
+        this.academicPatternService = academicPatternService;
     }
 
     @Transactional
@@ -27,6 +33,8 @@ public class OrganizationService {
                 .createdBy(createdBy)
                 .build();
 
-        return organizationRepository.save(organization);
+        Organization saved = organizationRepository.save(organization);
+        academicPatternService.seedDefaults(saved);
+        return saved;
     }
 }

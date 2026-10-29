@@ -12,6 +12,7 @@ import com.instello.backend.auth.otp.OtpService;
 import com.instello.backend.common.exception.ConflictException;
 import com.instello.backend.invitation.entity.Invitation;
 import com.instello.backend.invitation.repository.InvitationRepository;
+import com.instello.backend.organization.OrganizationMembershipService;
 import com.instello.backend.user.entity.Authority;
 import com.instello.backend.user.entity.User;
 import com.instello.backend.user.repository.UserRepository;
@@ -22,15 +23,18 @@ public class EmailVerificationService {
     private final OtpService otpService;
     private final UserRepository userRepository;
     private final InvitationRepository invitationRepository;
+    private final OrganizationMembershipService membershipService;
 
     public EmailVerificationService(
             OtpService otpService,
             UserRepository userRepository,
-            InvitationRepository invitationRepository
+            InvitationRepository invitationRepository,
+            OrganizationMembershipService membershipService
     ) {
         this.otpService = otpService;
         this.userRepository = userRepository;
         this.invitationRepository = invitationRepository;
+        this.membershipService = membershipService;
     }
 
     /**
@@ -74,6 +78,7 @@ public class EmailVerificationService {
                     .user(user)
                     .build());
         }
+        membershipService.ensureMember(user, invitation.getOrganization(), invitation.getRole());
     }
 
     private boolean isAwaitingVerification(String normalizedEmail) {

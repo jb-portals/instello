@@ -23,6 +23,8 @@ import {
 } from '../../mutator';
 
 import type {
+  AcademicPatternResponse,
+  AcademicStageResponse,
   AcceptInvitationRequest,
   AcceptInvitationResponse,
   AccessRequestDetail,
@@ -42,6 +44,8 @@ import type {
   PageResponseAccessRequestSummary,
   PreviewParams,
   RejectAccessRequestRequest,
+  UpdateAcademicPatternRequest,
+  UpdateAcademicStageRequest,
   UpdateAccessRequestRequest,
   VerifyEmailRequest
 } from '../models';
@@ -1463,6 +1467,376 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getLogoutMutationOptions(options), queryClient);
+    }
+
+export const getListAcademicPatternsUrl = (organizationId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns`
+}
+
+export const listAcademicPatterns = async (organizationId: string, options?: Parameters<typeof apiFetchData>[1]): Promise<AcademicPatternResponse[]> => {
+
+  return apiFetchData<AcademicPatternResponse[]>(getListAcademicPatternsUrl(organizationId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAcademicPatternsQueryKey = (organizationId: string,) => {
+    return [
+    `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns`
+    ] as const;
+    }
+
+
+export const getListAcademicPatternsQueryOptions = <TData = Awaited<ReturnType<typeof listAcademicPatterns>>, TError = ErrorType<unknown>>(organizationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listAcademicPatterns>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAcademicPatternsQueryKey(organizationId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAcademicPatterns>>> = ({ signal }) => listAcademicPatterns(organizationId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: organizationId !== null && organizationId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAcademicPatterns>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListAcademicPatternsQueryResult = NonNullable<Awaited<ReturnType<typeof listAcademicPatterns>>>
+export type ListAcademicPatternsQueryError = ErrorType<unknown>
+
+
+export function useListAcademicPatterns<TData = Awaited<ReturnType<typeof listAcademicPatterns>>, TError = ErrorType<unknown>>(
+ organizationId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listAcademicPatterns>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAcademicPatterns>>,
+          TError,
+          Awaited<ReturnType<typeof listAcademicPatterns>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListAcademicPatterns<TData = Awaited<ReturnType<typeof listAcademicPatterns>>, TError = ErrorType<unknown>>(
+ organizationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listAcademicPatterns>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAcademicPatterns>>,
+          TError,
+          Awaited<ReturnType<typeof listAcademicPatterns>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListAcademicPatterns<TData = Awaited<ReturnType<typeof listAcademicPatterns>>, TError = ErrorType<unknown>>(
+ organizationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listAcademicPatterns>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useListAcademicPatterns<TData = Awaited<ReturnType<typeof listAcademicPatterns>>, TError = ErrorType<unknown>>(
+ organizationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listAcademicPatterns>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListAcademicPatternsQueryOptions(organizationId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetAcademicPatternUrl = (organizationId: string,
+    patternId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}`
+}
+
+export const getAcademicPattern = async (organizationId: string,
+    patternId: string, options?: Parameters<typeof apiFetchData>[1]): Promise<AcademicPatternResponse> => {
+
+  return apiFetchData<AcademicPatternResponse>(getGetAcademicPatternUrl(organizationId,patternId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAcademicPatternQueryKey = (organizationId: string,
+    patternId: string,) => {
+    return [
+    `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}`
+    ] as const;
+    }
+
+
+export const getGetAcademicPatternQueryOptions = <TData = Awaited<ReturnType<typeof getAcademicPattern>>, TError = ErrorType<unknown>>(organizationId: string,
+    patternId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAcademicPattern>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAcademicPatternQueryKey(organizationId,patternId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAcademicPattern>>> = ({ signal }) => getAcademicPattern(organizationId,patternId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: organizationId !== null && organizationId !== undefined && patternId !== null && patternId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAcademicPattern>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAcademicPatternQueryResult = NonNullable<Awaited<ReturnType<typeof getAcademicPattern>>>
+export type GetAcademicPatternQueryError = ErrorType<unknown>
+
+
+export function useGetAcademicPattern<TData = Awaited<ReturnType<typeof getAcademicPattern>>, TError = ErrorType<unknown>>(
+ organizationId: string,
+    patternId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAcademicPattern>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAcademicPattern>>,
+          TError,
+          Awaited<ReturnType<typeof getAcademicPattern>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAcademicPattern<TData = Awaited<ReturnType<typeof getAcademicPattern>>, TError = ErrorType<unknown>>(
+ organizationId: string,
+    patternId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAcademicPattern>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAcademicPattern>>,
+          TError,
+          Awaited<ReturnType<typeof getAcademicPattern>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAcademicPattern<TData = Awaited<ReturnType<typeof getAcademicPattern>>, TError = ErrorType<unknown>>(
+ organizationId: string,
+    patternId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAcademicPattern>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetAcademicPattern<TData = Awaited<ReturnType<typeof getAcademicPattern>>, TError = ErrorType<unknown>>(
+ organizationId: string,
+    patternId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAcademicPattern>>, TError, TData>>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAcademicPatternQueryOptions(organizationId,patternId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateAcademicPatternUrl = (organizationId: string,
+    patternId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}`
+}
+
+export const updateAcademicPattern = async (organizationId: string,
+    patternId: string,
+    updateAcademicPatternRequest: UpdateAcademicPatternRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<AcademicPatternResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetchData<AcademicPatternResponse>(getUpdateAcademicPatternUrl(organizationId,patternId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateAcademicPatternRequest)
+  }
+);}
+
+
+
+
+
+export const getUpdateAcademicPatternMutationKey = () => ['updateAcademicPattern'] as const;
+
+export const getUpdateAcademicPatternMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAcademicPattern>>, TError,UpdateAcademicPatternMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAcademicPattern>>, TError,UpdateAcademicPatternMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAcademicPatternMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAcademicPattern>>, UpdateAcademicPatternMutationVariables> = (props) => {
+          const {organizationId,patternId,data} = props ?? {};
+
+          return  updateAcademicPattern(organizationId,patternId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAcademicPatternMutationResult = NonNullable<Awaited<ReturnType<typeof updateAcademicPattern>>>
+    export type UpdateAcademicPatternMutationBody = BodyType<UpdateAcademicPatternRequest>
+    export type UpdateAcademicPatternMutationError = ErrorType<unknown>
+    export type UpdateAcademicPatternMutationVariables = {organizationId: string;patternId: string;data: BodyType<UpdateAcademicPatternRequest>}
+
+    export const useUpdateAcademicPattern = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAcademicPattern>>, TError,UpdateAcademicPatternMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateAcademicPattern>>,
+        TError,
+        UpdateAcademicPatternMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAcademicPatternMutationOptions(options), queryClient);
+    }
+
+export const getUpdateAcademicStageUrl = (organizationId: string,
+    patternId: string,
+    stageId: string,) => {
+
+
+
+
+  return `${apiBaseUrl()}/v0.1/organizations/${organizationId}/academic-patterns/${patternId}/stages/${stageId}`
+}
+
+export const updateAcademicStage = async (organizationId: string,
+    patternId: string,
+    stageId: string,
+    updateAcademicStageRequest: UpdateAcademicStageRequest, options?: Parameters<typeof apiFetchData>[1]): Promise<AcademicStageResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetchData<AcademicStageResponse>(getUpdateAcademicStageUrl(organizationId,patternId,stageId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateAcademicStageRequest)
+  }
+);}
+
+
+
+
+
+export const getUpdateAcademicStageMutationKey = () => ['updateAcademicStage'] as const;
+
+export const getUpdateAcademicStageMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAcademicStage>>, TError,UpdateAcademicStageMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAcademicStage>>, TError,UpdateAcademicStageMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAcademicStageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAcademicStage>>, UpdateAcademicStageMutationVariables> = (props) => {
+          const {organizationId,patternId,stageId,data} = props ?? {};
+
+          return  updateAcademicStage(organizationId,patternId,stageId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAcademicStageMutationResult = NonNullable<Awaited<ReturnType<typeof updateAcademicStage>>>
+    export type UpdateAcademicStageMutationBody = BodyType<UpdateAcademicStageRequest>
+    export type UpdateAcademicStageMutationError = ErrorType<unknown>
+    export type UpdateAcademicStageMutationVariables = {organizationId: string;patternId: string;stageId: string;data: BodyType<UpdateAcademicStageRequest>}
+
+    export const useUpdateAcademicStage = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAcademicStage>>, TError,UpdateAcademicStageMutationVariables, TContext>, request?: SecondParameter<typeof apiFetchData>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateAcademicStage>>,
+        TError,
+        UpdateAcademicStageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAcademicStageMutationOptions(options), queryClient);
     }
 
 export const getCurrentUserUrl = () => {
