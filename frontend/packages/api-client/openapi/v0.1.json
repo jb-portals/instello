@@ -523,7 +523,7 @@
     },
     "/v0.1/users/me": {
       "get": {
-        "operationId": "me",
+        "operationId": "currentUser",
         "responses": {
           "200": {
             "content": {

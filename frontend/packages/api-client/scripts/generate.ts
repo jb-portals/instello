@@ -46,7 +46,7 @@ for (const version of apiVersions) {
 
 await writeFile(
   join(packageRoot, "src", "index.ts"),
-  `export { ApiError } from "./mutator"\nexport * from "./${latestApiVersion}/client"\n`,
+  `export { ApiError, clearCsrfCache } from "./mutator"\nexport { ListStatus } from "./${latestApiVersion}/models/listStatus"\nexport * from "./${latestApiVersion}/client"\n`,
 )
 
 await writeFile(

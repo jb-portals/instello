@@ -8,7 +8,7 @@
 @source "../**/*.{ts,tsx}";
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --background: oklch(0.9931 0.0034 247.86);
   --foreground: oklch(0.2201 0.0544 253.5);
   --card: oklch(0.9931 0.0034 247.86);

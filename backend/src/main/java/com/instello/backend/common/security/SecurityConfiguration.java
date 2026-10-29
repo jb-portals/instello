@@ -34,6 +34,7 @@ public class SecurityConfiguration {
             ApiAccessDeniedHandler accessDeniedHandler
     ) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(Customizer.withDefaults())
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth ->

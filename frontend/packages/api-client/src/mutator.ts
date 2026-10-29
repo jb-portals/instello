@@ -7,6 +7,10 @@ type CsrfToken = {
 
 const csrfByOriginAndVersion = new Map<string, CsrfToken>()
 
+export function clearCsrfCache(): void {
+  csrfByOriginAndVersion.clear()
+}
+
 export class ApiError extends Error {
   readonly status: number
   readonly body: unknown
@@ -23,7 +27,11 @@ export type ErrorType<ErrorBody> = ApiError & { body: ErrorBody }
 export type BodyType<Body> = Body
 
 export function apiBaseUrl(): string {
-  return (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "")
+  const configured =
+    typeof window === "undefined"
+      ? (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL)
+      : process.env.NEXT_PUBLIC_API_BASE_URL
+  return (configured ?? "http://localhost:8080").replace(/\/$/, "")
 }
 
 function isCsrfToken(body: unknown): body is CsrfToken {

@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<CurrentUserResponse> me(@AuthenticationPrincipal String email) {
+    public ResponseEntity<CurrentUserResponse> currentUser(@AuthenticationPrincipal String email) {
         return ResponseEntity.ok(userService.getCurrentUser(email));
     }
 }

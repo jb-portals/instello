@@ -58,12 +58,12 @@ public class OtpService {
      * when {@code shouldDeliver} returns true so callers cannot probe which accounts exist.
      */
     public void requestEmailVerificationOtp(String email, BooleanSupplier shouldDeliver) {
-        issue(OtpPurpose.EMAIL_VERIFICATION, normalize(email), shouldDeliver);
+        this.issue(OtpPurpose.EMAIL_VERIFICATION, normalize(email), shouldDeliver);
     }
 
     /** Validates and consumes an email-verification code, throwing {@link InvalidOtpException} otherwise. */
     public void verifyEmailVerificationOtp(String email, String code) {
-        consume(OtpPurpose.EMAIL_VERIFICATION, normalize(email), code);
+        this.consume(OtpPurpose.EMAIL_VERIFICATION, normalize(email), code);
     }
 
     private void issue(OtpPurpose purpose, String normalizedEmail, BooleanSupplier shouldDeliver) {
@@ -93,6 +93,7 @@ public class OtpService {
         String prefix = keyPrefix(purpose, normalizedEmail);
         String codeKey = prefix + ":code";
         String attemptsKey = prefix + ":attempts";
+        String requestsKey = prefix + ":requests";
 
         String expected = redisService.get(codeKey).orElseThrow(InvalidOtpException::new);
 
@@ -107,6 +108,7 @@ public class OtpService {
 
         redisService.delete(codeKey);
         redisService.delete(attemptsKey);
+        redisService.delete(requestsKey);
     }
 
     private User findAdmin(String normalizedEmail) {

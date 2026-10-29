@@ -52,6 +52,9 @@ spring:
         "[format_sql]": true
 
 instello:
+  cors:
+    allowed-origins:
+      - http://localhost:3000
   auth:
     otp:
       ttl: 10m

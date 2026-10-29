@@ -733,17 +733,17 @@ export const logout = async ( options?: Parameters<typeof apiFetch>[1]): Promise
 
 
 
-export type meResponse200 = {
+export type currentUserResponse200 = {
   data: CurrentUserResponse
   status: 200
 }
 
-export type meResponseSuccess = (meResponse200) & {
+export type currentUserResponseSuccess = (currentUserResponse200) & {
   headers: Headers;
 };
 ;
 
-export const getMeUrl = () => {
+export const getCurrentUserUrl = () => {
 
 
 
@@ -751,9 +751,9 @@ export const getMeUrl = () => {
   return `${apiBaseUrl()}/v0.1/users/me`
 }
 
-export const me = async ( options?: Parameters<typeof apiFetch>[1]): Promise<meResponseSuccess> => {
+export const currentUser = async ( options?: Parameters<typeof apiFetch>[1]): Promise<currentUserResponseSuccess> => {
 
-  return apiFetch<meResponseSuccess>(getMeUrl(),
+  return apiFetch<currentUserResponseSuccess>(getCurrentUserUrl(),
   {
     ...options,
     method: 'GET'
