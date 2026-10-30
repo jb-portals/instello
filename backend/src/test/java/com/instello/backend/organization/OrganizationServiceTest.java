@@ -31,7 +31,7 @@ class OrganizationServiceTest {
 
     @Test
     void createSeedsAcademicPatterns() {
-        String organizationId = CUID.fromString("dddddddd-dddd-dddd-dddd-dddddddddddd").toString();
+        String organizationId = CUID.fromString("d12345678901234567890123").toString();
         when(organizationRepository.save(any())).thenAnswer(invocation -> {
             Organization organization = invocation.getArgument(0);
             organization.setId(organizationId);

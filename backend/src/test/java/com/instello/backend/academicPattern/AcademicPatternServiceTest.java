@@ -38,9 +38,9 @@ import com.instello.backend.organization.entity.Organization;
 @ExtendWith(MockitoExtension.class)
 class AcademicPatternServiceTest {
 
-    private static final String ORGANIZATION_ID = CUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa").toString();
-    private static final String ENGINEERING_ID = CUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb").toString();
-    private static final String DIPLOMA_ID = CUID.fromString("cccccccc-cccc-cccc-cccc-cccccccccccc").toString();
+    private static final String ORGANIZATION_ID = CUID.fromString("a12345678901234567890123").toString();
+    private static final String ENGINEERING_ID = CUID.fromString("b12345678901234567890123").toString();
+    private static final String DIPLOMA_ID = CUID.fromString("c12345678901234567890123").toString();
     private static final String EMAIL = "owner@example.com";
 
     @Mock
