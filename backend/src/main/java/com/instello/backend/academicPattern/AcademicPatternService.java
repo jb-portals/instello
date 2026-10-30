@@ -1,26 +1,26 @@
-package com.instello.backend.academicpattern;
+package com.instello.backend.academicPattern;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.instello.backend.academicpattern.dto.AcademicPatternResponse;
-import com.instello.backend.academicpattern.dto.AcademicStageResponse;
-import com.instello.backend.academicpattern.dto.UpdateAcademicPatternRequest;
-import com.instello.backend.academicpattern.dto.UpdateAcademicStageRequest;
-import com.instello.backend.academicpattern.entity.AcademicPattern;
-import com.instello.backend.academicpattern.entity.AcademicStage;
-import com.instello.backend.academicpattern.entity.AcademicSystemType;
-import com.instello.backend.academicpattern.entity.AcademicTemplateKey;
-import com.instello.backend.academicpattern.repository.AcademicPatternAllocationRepository;
-import com.instello.backend.academicpattern.repository.AcademicPatternRepository;
-import com.instello.backend.academicpattern.repository.AcademicStageRepository;
+import com.instello.backend.academicPattern.dto.AcademicPatternResponse;
+import com.instello.backend.academicPattern.dto.AcademicStageResponse;
+import com.instello.backend.academicPattern.dto.UpdateAcademicPatternRequest;
+import com.instello.backend.academicPattern.dto.UpdateAcademicStageRequest;
+import com.instello.backend.academicPattern.entity.AcademicPattern;
+import com.instello.backend.academicPattern.entity.AcademicStage;
+import com.instello.backend.academicPattern.entity.AcademicSystemType;
+import com.instello.backend.academicPattern.entity.AcademicTemplateKey;
+import com.instello.backend.academicPattern.repository.AcademicPatternAllocationRepository;
+import com.instello.backend.academicPattern.repository.AcademicPatternRepository;
+import com.instello.backend.academicPattern.repository.AcademicStageRepository;
 import com.instello.backend.common.exception.BadRequestException;
 import com.instello.backend.common.exception.ConflictException;
 import com.instello.backend.common.exception.ResourceNotFoundException;
@@ -90,13 +90,13 @@ public class AcademicPatternService {
     }
 
     @Transactional(readOnly = true)
-    public List<AcademicPatternResponse> list(UUID organizationId, String email) {
+    public List<AcademicPatternResponse> list(String organizationId, String email) {
         membershipService.requireMember(organizationId, email);
         List<AcademicPattern> patterns = patternRepository.findByOrganization_IdOrderByNameAsc(organizationId);
         if (patterns.isEmpty()) {
             return List.of();
         }
-        Set<UUID> allocated = allocationRepository.findAllocatedPatternIds(
+        Set<String> allocated = allocationRepository.findAllocatedPatternIds(
                 patterns.stream().map(AcademicPattern::getId).toList()
         );
         return patterns.stream()
@@ -105,7 +105,7 @@ public class AcademicPatternService {
     }
 
     @Transactional(readOnly = true)
-    public AcademicPatternResponse get(UUID organizationId, UUID patternId, String email) {
+    public AcademicPatternResponse get(String organizationId, String patternId, String email) {
         membershipService.requireMember(organizationId, email);
         AcademicPattern pattern = findPattern(organizationId, patternId);
         return toResponse(pattern, !allocationRepository.existsByAcademicPattern_Id(pattern.getId()));
@@ -113,8 +113,8 @@ public class AcademicPatternService {
 
     @Transactional
     public AcademicPatternResponse update(
-            UUID organizationId,
-            UUID patternId,
+            String organizationId,
+            String patternId,
             UpdateAcademicPatternRequest request,
             String email
     ) {
@@ -147,9 +147,9 @@ public class AcademicPatternService {
 
     @Transactional
     public AcademicStageResponse updateStage(
-            UUID organizationId,
-            UUID patternId,
-            UUID stageId,
+            String organizationId,
+            String patternId,
+            String stageId,
             UpdateAcademicStageRequest request,
             String email
     ) {
@@ -189,7 +189,7 @@ public class AcademicPatternService {
         return toStage(stage);
     }
 
-    private AcademicPattern findPattern(UUID organizationId, UUID patternId) {
+    private AcademicPattern findPattern(String organizationId, String patternId) {
         return patternRepository.findByIdAndOrganization_Id(patternId, organizationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Academic pattern not found"));
     }
@@ -257,7 +257,7 @@ public class AcademicPatternService {
         return stages.stream().map(AcademicStage::getYearNumber).toList();
     }
 
-    private static List<Integer> yearsReplacing(List<AcademicStage> stages, UUID stageId, int year) {
+    private static List<Integer> yearsReplacing(List<AcademicStage> stages, String stageId, int year) {
         List<Integer> years = new ArrayList<>();
         for (AcademicStage stage : stages) {
             years.add(stage.getId().equals(stageId) ? year : stage.getYearNumber());

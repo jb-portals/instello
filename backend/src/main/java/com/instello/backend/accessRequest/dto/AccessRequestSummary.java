@@ -3,11 +3,11 @@ package com.instello.backend.accessRequest.dto;
 import com.instello.backend.accessRequest.entity.AccessRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 
+
 import java.time.Instant;
-import java.util.UUID;
 
 public record AccessRequestSummary(
-        UUID id,
+        String id,
         String organizationName,
         String firstName,
         String lastName,

@@ -1,7 +1,7 @@
-package com.instello.backend.academicpattern;
+package com.instello.backend.academicPattern;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.instello.backend.academicpattern.dto.AcademicPatternResponse;
-import com.instello.backend.academicpattern.dto.AcademicStageResponse;
-import com.instello.backend.academicpattern.dto.UpdateAcademicPatternRequest;
-import com.instello.backend.academicpattern.dto.UpdateAcademicStageRequest;
+import com.instello.backend.academicPattern.dto.AcademicPatternResponse;
+import com.instello.backend.academicPattern.dto.AcademicStageResponse;
+import com.instello.backend.academicPattern.dto.UpdateAcademicPatternRequest;
+import com.instello.backend.academicPattern.dto.UpdateAcademicStageRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +35,7 @@ public class AcademicPatternController {
     @GetMapping
     @Operation(operationId = "listAcademicPatterns")
     public ResponseEntity<List<AcademicPatternResponse>> list(
-            @PathVariable UUID organizationId,
+            @PathVariable String organizationId,
             Authentication authentication
     ) {
         return ResponseEntity.ok(academicPatternService.list(organizationId, authentication.getName()));
@@ -44,8 +44,8 @@ public class AcademicPatternController {
     @GetMapping("/{patternId}")
     @Operation(operationId = "getAcademicPattern")
     public ResponseEntity<AcademicPatternResponse> get(
-            @PathVariable UUID organizationId,
-            @PathVariable UUID patternId,
+            @PathVariable String organizationId,
+            @PathVariable String patternId,
             Authentication authentication
     ) {
         return ResponseEntity.ok(academicPatternService.get(organizationId, patternId, authentication.getName()));
@@ -54,8 +54,8 @@ public class AcademicPatternController {
     @PatchMapping("/{patternId}")
     @Operation(operationId = "updateAcademicPattern")
     public ResponseEntity<AcademicPatternResponse> update(
-            @PathVariable UUID organizationId,
-            @PathVariable UUID patternId,
+            @PathVariable String organizationId,
+            @PathVariable String patternId,
             @Valid @RequestBody UpdateAcademicPatternRequest requestBody,
             Authentication authentication
     ) {
@@ -70,9 +70,9 @@ public class AcademicPatternController {
     @PatchMapping("/{patternId}/stages/{stageId}")
     @Operation(operationId = "updateAcademicStage")
     public ResponseEntity<AcademicStageResponse> updateStage(
-            @PathVariable UUID organizationId,
-            @PathVariable UUID patternId,
-            @PathVariable UUID stageId,
+            @PathVariable String organizationId,
+            @PathVariable String patternId,
+            @PathVariable String stageId,
             @Valid @RequestBody UpdateAcademicStageRequest requestBody,
             Authentication authentication
     ) {

@@ -1,15 +1,17 @@
 package com.instello.backend.accessRequest.entity;
 
+import com.instello.backend.common.annotations.GeneratedCuid;
 import com.instello.backend.common.entity.Address;
 import com.instello.backend.organization.entity.Organization;
 import com.instello.backend.user.entity.User;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.UUID;
+
 
 @Entity
 @Builder
@@ -27,8 +29,8 @@ import java.util.UUID;
 public class AccessRequest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedCuid
+    private String id;
 
     @Column(nullable = false)
     private String organizationName;

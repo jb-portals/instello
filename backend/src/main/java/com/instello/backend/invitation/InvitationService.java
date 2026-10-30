@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
+
+
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -152,7 +153,7 @@ public class InvitationService {
     }
 
     @Transactional
-    public void revokeActive(UUID accessRequestId) {
+    public void revokeActive(String accessRequestId) {
         Instant now = Instant.now();
         invitationRepository.findByAccessRequestIdAndAcceptedAtIsNullAndRevokedAtIsNull(accessRequestId)
                 .forEach(invitation -> invitation.setRevokedAt(now));

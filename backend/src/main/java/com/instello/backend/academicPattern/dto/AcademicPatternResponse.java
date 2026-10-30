@@ -1,15 +1,15 @@
-package com.instello.backend.academicpattern.dto;
+package com.instello.backend.academicPattern.dto;
 
-import com.instello.backend.academicpattern.entity.AcademicSystemType;
-import com.instello.backend.academicpattern.entity.AcademicTemplateKey;
+import com.instello.backend.academicPattern.entity.AcademicSystemType;
+import com.instello.backend.academicPattern.entity.AcademicTemplateKey;
+
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 public record AcademicPatternResponse(
-        UUID id,
-        UUID organizationId,
+        String id,
+        String organizationId,
         String name,
         String description,
         int durationInYears,

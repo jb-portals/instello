@@ -1,10 +1,11 @@
-package com.instello.backend.academicpattern.dto;
+package com.instello.backend.academicPattern.dto;
+
+
 
 import java.time.Instant;
-import java.util.UUID;
 
 public record AcademicStageResponse(
-        UUID id,
+        String id,
         String name,
         String alias,
         String description,

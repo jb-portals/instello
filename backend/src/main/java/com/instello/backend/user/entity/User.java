@@ -1,5 +1,7 @@
 package com.instello.backend.user.entity;
 
+import com.instello.backend.common.annotations.GeneratedCuid;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
+
 
 @Entity
 @Builder
@@ -19,8 +21,8 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedCuid
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String email;

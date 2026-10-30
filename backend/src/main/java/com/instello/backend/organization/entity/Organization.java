@@ -1,14 +1,16 @@
 package com.instello.backend.organization.entity;
 
+import com.instello.backend.common.annotations.GeneratedCuid;
 import com.instello.backend.common.entity.Address;
 import com.instello.backend.user.entity.User;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.UUID;
+
 
 @Entity
 @Builder
@@ -20,8 +22,8 @@ import java.util.UUID;
 public class Organization {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedCuid
+    private String id;
 
     @Column(nullable = false)
     private String name;

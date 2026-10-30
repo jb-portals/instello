@@ -10,6 +10,7 @@ import com.instello.backend.accessRequest.dto.UpdateAccessRequestRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 import com.instello.backend.common.response.PageResponse;
 import com.instello.backend.common.web.ApiVersions;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/access-requests")
@@ -71,13 +71,13 @@ public class AccessRequestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccessRequestDetail> get(@PathVariable UUID id) {
+    public ResponseEntity<AccessRequestDetail> get(@PathVariable String id) {
         return ResponseEntity.ok(accessRequestService.get(id));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<AccessRequestDetail> update(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody UpdateAccessRequestRequest requestBody,
             Authentication authentication
     ) {
@@ -86,7 +86,7 @@ public class AccessRequestController {
 
     @PostMapping("/{id}/reject")
     public ResponseEntity<AccessRequestDetail> reject(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody RejectAccessRequestRequest requestBody,
             Authentication authentication
     ) {
@@ -95,7 +95,7 @@ public class AccessRequestController {
 
     @PostMapping("/{id}/approve")
     public ResponseEntity<AccessRequestDetail> approve(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody(required = false) ApproveAccessRequestRequest requestBody,
             Authentication authentication
     ) {
@@ -104,7 +104,7 @@ public class AccessRequestController {
 
     @PostMapping("/{id}/resend-invitation")
     public ResponseEntity<AccessRequestDetail> resendInvitation(
-            @PathVariable UUID id,
+            @PathVariable String id,
             Authentication authentication
     ) {
         return ResponseEntity.ok(accessRequestService.resendInvitation(id, authentication.getName()));

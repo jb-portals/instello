@@ -1,9 +1,11 @@
 package com.instello.backend.invitation.entity;
 
 import com.instello.backend.accessRequest.entity.AccessRequest;
+import com.instello.backend.common.annotations.GeneratedCuid;
 import com.instello.backend.organization.entity.Organization;
 import com.instello.backend.user.entity.AppAuthority;
 import com.instello.backend.user.entity.User;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,7 +14,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
+
 
 @Entity
 @Builder
@@ -24,8 +26,8 @@ import java.util.UUID;
 public class Invitation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedCuid
+    private String id;
 
     @Column(nullable = false)
     private String email;

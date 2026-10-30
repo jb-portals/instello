@@ -3,7 +3,7 @@ package com.instello.backend.organization;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.instello.backend.academicpattern.AcademicPatternService;
+import com.instello.backend.academicPattern.AcademicPatternService;
 import com.instello.backend.common.entity.Address;
 import com.instello.backend.organization.entity.Organization;
 import com.instello.backend.organization.repository.OrganizationRepository;

@@ -1,6 +1,7 @@
 package com.instello.backend.organization;
 
-import java.util.UUID;
+
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +52,7 @@ public class OrganizationMembershipService {
     }
 
     @Transactional(readOnly = true)
-    public void requireMember(UUID organizationId, String email) {
+    public void requireMember(String organizationId, String email) {
         if (!organizationRepository.existsById(organizationId)) {
             throw new ResourceNotFoundException("Organization not found");
         }

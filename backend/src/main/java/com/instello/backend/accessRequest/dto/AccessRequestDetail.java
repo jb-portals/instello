@@ -3,11 +3,11 @@ package com.instello.backend.accessRequest.dto;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 import com.instello.backend.invitation.entity.InvitationStatus;
 
+
 import java.time.Instant;
-import java.util.UUID;
 
 public record AccessRequestDetail(
-        UUID id,
+        String id,
         String organizationName,
         String firstName,
         String lastName,
@@ -26,11 +26,11 @@ public record AccessRequestDetail(
         Instant updatedAt
 ) {
 
-    public record OrganizationInfo(UUID id, String name) {
+    public record OrganizationInfo(String id, String name) {
     }
 
     public record InvitationInfo(
-            UUID id,
+            String id,
             String email,
             InvitationStatus status,
             Instant expiresAt,

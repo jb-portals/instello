@@ -1,4 +1,4 @@
-package com.instello.backend.academicpattern.entity;
+package com.instello.backend.academicPattern.entity;
 
 public enum AcademicSystemType {
     SEMESTER,

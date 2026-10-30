@@ -1,4 +1,4 @@
-package com.instello.backend.academicpattern;
+package com.instello.backend.academicPattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import io.github.thibaultmeyer.cuid.CUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,17 +19,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.instello.backend.academicpattern.dto.AcademicPatternResponse;
-import com.instello.backend.academicpattern.dto.AcademicStageResponse;
-import com.instello.backend.academicpattern.dto.UpdateAcademicPatternRequest;
-import com.instello.backend.academicpattern.dto.UpdateAcademicStageRequest;
-import com.instello.backend.academicpattern.entity.AcademicPattern;
-import com.instello.backend.academicpattern.entity.AcademicStage;
-import com.instello.backend.academicpattern.entity.AcademicSystemType;
-import com.instello.backend.academicpattern.entity.AcademicTemplateKey;
-import com.instello.backend.academicpattern.repository.AcademicPatternAllocationRepository;
-import com.instello.backend.academicpattern.repository.AcademicPatternRepository;
-import com.instello.backend.academicpattern.repository.AcademicStageRepository;
+import com.instello.backend.academicPattern.dto.AcademicPatternResponse;
+import com.instello.backend.academicPattern.dto.AcademicStageResponse;
+import com.instello.backend.academicPattern.dto.UpdateAcademicPatternRequest;
+import com.instello.backend.academicPattern.dto.UpdateAcademicStageRequest;
+import com.instello.backend.academicPattern.entity.AcademicPattern;
+import com.instello.backend.academicPattern.entity.AcademicStage;
+import com.instello.backend.academicPattern.entity.AcademicSystemType;
+import com.instello.backend.academicPattern.entity.AcademicTemplateKey;
+import com.instello.backend.academicPattern.repository.AcademicPatternAllocationRepository;
+import com.instello.backend.academicPattern.repository.AcademicPatternRepository;
+import com.instello.backend.academicPattern.repository.AcademicStageRepository;
 import com.instello.backend.common.exception.BadRequestException;
 import com.instello.backend.common.exception.ConflictException;
 import com.instello.backend.organization.OrganizationMembershipService;
@@ -38,9 +38,9 @@ import com.instello.backend.organization.entity.Organization;
 @ExtendWith(MockitoExtension.class)
 class AcademicPatternServiceTest {
 
-    private static final UUID ORGANIZATION_ID = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-    private static final UUID ENGINEERING_ID = UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
-    private static final UUID DIPLOMA_ID = UUID.fromString("cccccccc-cccc-cccc-cccc-cccccccccccc");
+    private static final String ORGANIZATION_ID = CUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa").toString();
+    private static final String ENGINEERING_ID = CUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb").toString();
+    private static final String DIPLOMA_ID = CUID.fromString("cccccccc-cccc-cccc-cccc-cccccccccccc").toString();
     private static final String EMAIL = "owner@example.com";
 
     @Mock
@@ -288,7 +288,7 @@ class AcademicPatternServiceTest {
                     .sequenceNumber(sequence)
                     .yearNumber((sequence + 1) / 2)
                     .build();
-            stage.setId(UUID.randomUUID());
+            stage.setId(CUID.randomCUID2().toString());
             stages.add(stage);
         }
         return stages;

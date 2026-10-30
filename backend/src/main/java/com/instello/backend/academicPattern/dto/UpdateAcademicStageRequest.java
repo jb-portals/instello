@@ -1,4 +1,4 @@
-package com.instello.backend.academicpattern.dto;
+package com.instello.backend.academicPattern.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

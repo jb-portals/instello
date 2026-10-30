@@ -7,7 +7,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.UUID;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -135,12 +135,12 @@ public class AccessRequestService {
     }
 
     @Transactional(readOnly = true)
-    public AccessRequestDetail get(UUID id) {
+    public AccessRequestDetail get(String id) {
         return toDetail(findById(id));
     }
 
     @Transactional
-    public AccessRequestDetail update(UUID id, UpdateAccessRequestRequest body, String adminEmail) {
+    public AccessRequestDetail update(String id, UpdateAccessRequestRequest body, String adminEmail) {
         AccessRequest accessRequest = findById(id);
         requireOpen(accessRequest);
 
@@ -160,7 +160,7 @@ public class AccessRequestService {
     }
 
     @Transactional
-    public AccessRequestDetail reject(UUID id, String reason, String adminEmail) {
+    public AccessRequestDetail reject(String id, String reason, String adminEmail) {
         AccessRequest accessRequest = findById(id);
         requireOpen(accessRequest);
 
@@ -173,7 +173,7 @@ public class AccessRequestService {
     }
 
     @Transactional
-    public AccessRequestDetail approve(UUID id, ApproveAccessRequestRequest body, String adminEmail) {
+    public AccessRequestDetail approve(String id, ApproveAccessRequestRequest body, String adminEmail) {
         AccessRequest accessRequest = findById(id);
         requireOpen(accessRequest);
         User admin = findAdmin(adminEmail);
@@ -207,7 +207,7 @@ public class AccessRequestService {
     }
 
     @Transactional
-    public AccessRequestDetail resendInvitation(UUID id, String adminEmail) {
+    public AccessRequestDetail resendInvitation(String id, String adminEmail) {
         AccessRequest accessRequest = findById(id);
         if (accessRequest.getStatus() != AccessRequestStatus.APPROVED || accessRequest.getOrganization() == null) {
             throw new ConflictException("Only approved requests can have their invitation resent");
@@ -232,7 +232,7 @@ public class AccessRequestService {
         return toDetail(accessRequest);
     }
 
-    private AccessRequest findById(UUID id) {
+    private AccessRequest findById(String id) {
         return accessRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Access request not found"));
     }

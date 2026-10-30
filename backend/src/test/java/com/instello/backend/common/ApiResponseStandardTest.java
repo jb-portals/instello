@@ -13,6 +13,7 @@ import com.instello.backend.common.security.ApiErrorWriter;
 import com.instello.backend.user.UserController;
 import com.instello.backend.user.UserService;
 import com.instello.backend.user.dto.CurrentUserResponse;
+import io.github.thibaultmeyer.cuid.CUID;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -109,7 +109,7 @@ class ApiResponseStandardTest {
 
     @Test
     void createAccessRequestReturnsResourceWithLocation() throws Exception {
-        UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111");
+        String id = CUID.fromString("l4pto4mg2wo6usf7tvz8wvuk").toString();
         when(accessRequestService.submit(any(), anyString()))
                 .thenReturn(new CreateAccessRequestResponse(id, AccessRequestStatus.PENDING));
 
@@ -193,7 +193,7 @@ class ApiResponseStandardTest {
 
     @Test
     void authenticatedMeReturnsBareCurrentUser() throws Exception {
-        UUID id = UUID.fromString("22222222-2222-2222-2222-222222222222");
+        String id = CUID.fromString("q4u5b8y7en4zh2jif5w8vy8w").toString();
         when(userService.getCurrentUser("admin@example.com"))
                 .thenReturn(new CurrentUserResponse(id, "admin@example.com", null, List.of(), null));
 

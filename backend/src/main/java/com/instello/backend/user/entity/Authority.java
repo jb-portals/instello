@@ -1,11 +1,12 @@
 package com.instello.backend.user.entity;
 
+import com.instello.backend.common.annotations.GeneratedCuid;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Builder
@@ -20,8 +21,8 @@ import java.util.UUID;
 public class Authority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedCuid
+    private String id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

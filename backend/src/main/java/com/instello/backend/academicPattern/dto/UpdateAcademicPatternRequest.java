@@ -1,6 +1,6 @@
-package com.instello.backend.academicpattern.dto;
+package com.instello.backend.academicPattern.dto;
 
-import com.instello.backend.academicpattern.entity.AcademicSystemType;
+import com.instello.backend.academicPattern.entity.AcademicSystemType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;

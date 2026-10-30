@@ -1,4 +1,6 @@
-package com.instello.backend.academicpattern.entity;
+package com.instello.backend.academicPattern.entity;
+
+import com.instello.backend.common.annotations.GeneratedCuid;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Builder
@@ -21,8 +22,8 @@ import java.util.UUID;
 public class AcademicStage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedCuid
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "academic_pattern_id", nullable = false)

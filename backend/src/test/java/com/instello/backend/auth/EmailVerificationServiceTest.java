@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
+import io.github.thibaultmeyer.cuid.CUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -66,7 +67,7 @@ class EmailVerificationServiceTest {
                 .email("acme@example.com")
                 .phone("1234567890")
                 .build();
-        organization.setId(UUID.randomUUID());
+        organization.setId(CUID.randomCUID2().toString());
         invitation.setOrganization(organization);
         when(userRepository.findWithAuthoritiesByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(user));
         when(invitationRepository.findFirstByEmailAndAcceptedAtIsNullAndRevokedAtIsNullOrderByCreatedAtDesc(EMAIL))
