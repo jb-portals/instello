@@ -25,6 +25,7 @@ public class OrganizationMember {
 
     @Id
     @GeneratedCuid
+    @Column(length = 24, nullable = false, updatable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

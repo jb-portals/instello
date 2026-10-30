@@ -23,6 +23,7 @@ public class Organization {
 
     @Id
     @GeneratedCuid
+    @Column(length = 24, nullable = false, updatable = false)
     private String id;
 
     @Column(nullable = false)
