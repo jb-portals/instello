@@ -1,5 +1,6 @@
 package com.instello.backend.accessRequest.dto;
 
+import com.instello.backend.common.entity.dto.AddressRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -2,6 +2,7 @@ package com.instello.backend.organization.entity;
 
 import com.instello.backend.common.annotations.GeneratedCuid;
 import com.instello.backend.common.entity.Address;
+import com.instello.backend.institution.entity.Institution;
 import com.instello.backend.user.entity.User;
 
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.Collection;
 
 
 @Entity
@@ -41,6 +43,9 @@ public class Organization {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id")
     private User createdBy;
+
+    @OneToMany(mappedBy = "organization",fetch = FetchType.LAZY)
+    private Collection<Institution> institutions;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

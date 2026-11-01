@@ -1,7 +1,7 @@
 package com.instello.backend.common.security;
 
-import com.instello.backend.common.response.ApiErrorResponse;
-import com.instello.backend.common.response.ErrorCodes;
+import com.instello.backend.common.exception.response.ApiErrorResponse;
+import com.instello.backend.common.exception.response.ErrorCodes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;

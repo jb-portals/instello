@@ -1,4 +1,4 @@
-package com.instello.backend.common.response;
+package com.instello.backend.common.exception.response;
 
 import java.util.List;
 

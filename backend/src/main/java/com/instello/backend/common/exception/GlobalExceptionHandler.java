@@ -2,9 +2,9 @@ package com.instello.backend.common.exception;
 
 import com.instello.backend.auth.otp.InvalidOtpException;
 import com.instello.backend.auth.otp.OtpRateLimitException;
-import com.instello.backend.common.response.ApiErrorDetail;
-import com.instello.backend.common.response.ApiErrorResponse;
-import com.instello.backend.common.response.ErrorCodes;
+import com.instello.backend.common.exception.response.ApiErrorDetail;
+import com.instello.backend.common.exception.response.ApiErrorResponse;
+import com.instello.backend.common.exception.response.ErrorCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;

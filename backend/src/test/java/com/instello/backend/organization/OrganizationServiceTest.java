@@ -42,7 +42,7 @@ class OrganizationServiceTest {
                 "Acme",
                 "acme@example.com",
                 "1234567890",
-                Address.builder().addressLine("1 Main").city("Pune").state("MH").build(),
+                Address.builder().lineOne("1 Main").lineTwo("2nd Main").city("Pune").state("MH").postalCode("563106").build(),
                 User.builder().email("admin@example.com").build()
         );
 

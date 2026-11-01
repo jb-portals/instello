@@ -1,6 +1,7 @@
 package com.instello.backend.accessRequest.dto;
 
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
+import com.instello.backend.common.entity.dto.AddressResponse;
 import com.instello.backend.invitation.entity.InvitationStatus;
 
 

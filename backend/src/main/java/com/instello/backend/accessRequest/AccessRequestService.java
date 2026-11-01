@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.instello.backend.accessRequest.dto.AccessRequestDetail;
 import com.instello.backend.accessRequest.dto.AccessRequestSummary;
-import com.instello.backend.accessRequest.dto.AddressRequest;
-import com.instello.backend.accessRequest.dto.AddressResponse;
+import com.instello.backend.common.entity.dto.AddressRequest;
+import com.instello.backend.common.entity.dto.AddressResponse;
 import com.instello.backend.accessRequest.dto.ApproveAccessRequestRequest;
 import com.instello.backend.accessRequest.dto.CreateAccessRequestRequest;
 import com.instello.backend.accessRequest.dto.CreateAccessRequestResponse;
@@ -35,7 +35,7 @@ import com.instello.backend.common.exception.RateLimitExceededException;
 import com.instello.backend.common.exception.ResourceNotFoundException;
 import com.instello.backend.common.exception.UnauthorizedException;
 import com.instello.backend.common.redis.RedisService;
-import com.instello.backend.common.response.PageResponse;
+import com.instello.backend.common.exception.response.PageResponse;
 import com.instello.backend.invitation.InvitationService;
 import com.instello.backend.invitation.entity.Invitation;
 import com.instello.backend.invitation.repository.InvitationRepository;
@@ -100,7 +100,7 @@ public class AccessRequestService {
                 .lastName(body.lastName().trim())
                 .email(email)
                 .phone(body.phone().trim())
-                .address(toAddress(body.address()))
+                .address(body.address().toAddress())
                 .message(trimToNull(body.message()))
                 .build());
 
@@ -186,7 +186,7 @@ public class AccessRequestService {
                 firstNonBlank(overrides.organizationName(), accessRequest.getOrganizationName()),
                 overrides.email() != null ? normalizeEmail(overrides.email()) : accessRequest.getEmail(),
                 firstNonBlank(overrides.phone(), accessRequest.getPhone()),
-                overrides.address() != null ? toAddress(overrides.address()) : copy(accessRequest.getAddress()),
+                overrides.address() != null ? overrides.address().toAddress() : copy(accessRequest.getAddress()),
                 admin
         );
 
@@ -303,18 +303,10 @@ public class AccessRequestService {
         return PageRequest.of(pageable.getPageNumber(), Math.min(pageable.getPageSize(), MAX_PAGE_SIZE), sort);
     }
 
-    private static Address toAddress(AddressRequest address) {
-        return Address.builder()
-                .addressLine(address.addressLine().trim())
-                .city(address.city().trim())
-                .state(address.state().trim())
-                .country(firstNonBlank(address.country(), Address.DEFAULT_COUNTRY))
-                .build();
-    }
-
     private static Address copy(Address address) {
         return Address.builder()
-                .addressLine(address.getAddressLine())
+                .lineOne(address.getLineOne())
+                .lineTwo(address.getLineTwo())
                 .city(address.getCity())
                 .state(address.getState())
                 .country(address.getCountry())

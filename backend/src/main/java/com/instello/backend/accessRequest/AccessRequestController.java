@@ -8,7 +8,7 @@ import com.instello.backend.accessRequest.dto.CreateAccessRequestResponse;
 import com.instello.backend.accessRequest.dto.RejectAccessRequestRequest;
 import com.instello.backend.accessRequest.dto.UpdateAccessRequestRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
-import com.instello.backend.common.response.PageResponse;
+import com.instello.backend.common.exception.response.PageResponse;
 import com.instello.backend.common.web.ApiVersions;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
