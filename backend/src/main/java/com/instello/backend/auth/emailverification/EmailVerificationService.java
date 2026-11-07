@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.instello.backend.auth.otp.InvalidOtpException;
 import com.instello.backend.auth.otp.OtpService;
-import com.instello.backend.common.exception.ConflictException;
+import com.instello.backend.common.exception.app.ConflictException;
 import com.instello.backend.invitation.entity.Invitation;
 import com.instello.backend.invitation.repository.InvitationRepository;
 import com.instello.backend.organization.OrganizationMembershipService;

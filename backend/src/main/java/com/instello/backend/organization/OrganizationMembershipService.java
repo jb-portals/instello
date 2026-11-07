@@ -6,8 +6,8 @@ package com.instello.backend.organization;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.instello.backend.common.exception.ForbiddenException;
-import com.instello.backend.common.exception.ResourceNotFoundException;
+import com.instello.backend.common.exception.app.ForbiddenException;
+import com.instello.backend.common.exception.app.ResourceNotFoundException;
 import com.instello.backend.invitation.entity.Invitation;
 import com.instello.backend.invitation.repository.InvitationRepository;
 import com.instello.backend.organization.entity.Organization;

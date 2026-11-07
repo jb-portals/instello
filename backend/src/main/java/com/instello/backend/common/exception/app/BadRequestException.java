@@ -1,4 +1,4 @@
-package com.instello.backend.common.exception;
+package com.instello.backend.common.exception.app;
 
 public class BadRequestException extends RuntimeException {
 

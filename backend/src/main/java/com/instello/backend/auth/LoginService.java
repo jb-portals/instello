@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.instello.backend.common.exception.RateLimitExceededException;
+import com.instello.backend.common.exception.app.RateLimitExceededException;
 import com.instello.backend.common.redis.RedisService;
 import com.instello.backend.common.security.SessionAuthenticator;
 

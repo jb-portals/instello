@@ -21,8 +21,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.instello.backend.accessRequest.entity.AccessRequest;
 import com.instello.backend.auth.otp.OtpService;
-import com.instello.backend.common.exception.ConflictException;
-import com.instello.backend.common.exception.ResourceNotFoundException;
+import com.instello.backend.common.exception.app.ConflictException;
+import com.instello.backend.common.exception.app.ResourceNotFoundException;
 import com.instello.backend.common.notification.email.EmailTemplateService;
 import com.instello.backend.invitation.dto.AcceptInvitationResponse;
 import com.instello.backend.invitation.dto.InvitationPreviewResponse;

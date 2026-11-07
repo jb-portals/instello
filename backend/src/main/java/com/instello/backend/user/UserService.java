@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.instello.backend.common.exception.UnauthorizedException;
+import com.instello.backend.common.exception.app.UnauthorizedException;
 import com.instello.backend.user.dto.CurrentUserResponse;
 import com.instello.backend.user.entity.Authority;
 import com.instello.backend.user.entity.User;

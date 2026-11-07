@@ -21,9 +21,9 @@ import com.instello.backend.academicPattern.entity.AcademicTemplateKey;
 import com.instello.backend.academicPattern.repository.AcademicPatternAllocationRepository;
 import com.instello.backend.academicPattern.repository.AcademicPatternRepository;
 import com.instello.backend.academicPattern.repository.AcademicStageRepository;
-import com.instello.backend.common.exception.BadRequestException;
-import com.instello.backend.common.exception.ConflictException;
-import com.instello.backend.common.exception.ResourceNotFoundException;
+import com.instello.backend.common.exception.app.BadRequestException;
+import com.instello.backend.common.exception.app.ConflictException;
+import com.instello.backend.common.exception.app.ResourceNotFoundException;
 import com.instello.backend.organization.OrganizationMembershipService;
 import com.instello.backend.organization.entity.Organization;
 

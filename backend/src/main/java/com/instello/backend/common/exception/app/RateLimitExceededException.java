@@ -1,9 +1,9 @@
-package com.instello.backend.common.exception;
+package com.instello.backend.common.exception.app;
 
 import lombok.Getter;
 
 @Getter
-public class RateLimitExceededException extends RuntimeException {
+public class RateLimitExceededException extends RuntimeException implements TooManyRequestsException {
 
     private final long retryAfterSeconds;
 

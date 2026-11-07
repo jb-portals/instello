@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 import io.github.thibaultmeyer.cuid.CUID;
@@ -25,7 +24,7 @@ import com.instello.backend.auth.emailverification.EmailVerificationService;
 import com.instello.backend.auth.otp.InvalidOtpException;
 import com.instello.backend.auth.otp.OtpRateLimitException;
 import com.instello.backend.auth.otp.OtpService;
-import com.instello.backend.common.exception.ConflictException;
+import com.instello.backend.common.exception.app.ConflictException;
 import com.instello.backend.invitation.entity.Invitation;
 import com.instello.backend.invitation.repository.InvitationRepository;
 import com.instello.backend.organization.OrganizationMembershipService;

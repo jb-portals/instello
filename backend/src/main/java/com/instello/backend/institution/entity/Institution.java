@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class Institution {
     @Column(nullable = false, unique = true)
     private String slug;
 
-    private String logo;
+    private @Nullable String logo;
 
     @Column(nullable = false, unique = true)
     private String code;

@@ -1,8 +1,10 @@
 package com.instello.backend.institution;
 
-import com.instello.backend.common.exception.ResourceNotFoundException;
+import com.instello.backend.common.exception.app.ResourceNotFoundException;
 import com.instello.backend.institution.dto.CreateInstitutionRequest;
 import com.instello.backend.institution.dto.CreateInstitutionResponse;
+import com.instello.backend.institution.dto.InstitutionResponse;
+import com.instello.backend.institution.dto.UpdateInstitutionDetailsRequest;
 import com.instello.backend.institution.entity.Institution;
 import com.instello.backend.institution.repository.InstitutionRepository;
 import com.instello.backend.organization.entity.Organization;
@@ -22,7 +24,7 @@ public class InstitutionService {
 
     public CreateInstitutionResponse create(CreateInstitutionRequest createInstitutionRequest, String organizationId){
 
-        Organization organization = organizationRepository.findById(organizationId).orElseThrow(()-> new ResourceNotFoundException("Organization not found, so can't create institution"));
+        Organization organization = findOrganization(organizationId);
 
         Institution newInstitution = institutionRepository.save(
                 Institution.builder()
@@ -35,6 +37,36 @@ public class InstitutionService {
         );
 
         return CreateInstitutionResponse.fromInstitution(newInstitution);
+    }
+
+    public InstitutionResponse get(String organizationId, String institutionId){
+        Organization organization = findOrganization(organizationId);
+        Institution institution =  institutionRepository
+                .findInstitutionByOrganizationAndId(organization,institutionId)
+                .orElseThrow(()-> new ResourceNotFoundException("Institution not found"));
+
+        return InstitutionResponse.from(institution);
+    }
+
+    public InstitutionResponse updateDetails(
+            UpdateInstitutionDetailsRequest updateInstitutionDetails,
+            String organizationId,
+            String institutionId
+    ){
+        Organization organization = findOrganization(organizationId);
+        Institution institution =  institutionRepository
+                .findInstitutionByOrganizationAndId(organization,institutionId)
+                .orElseThrow(()-> new ResourceNotFoundException("Institution not found"));
+
+        institution.setName(updateInstitutionDetails.name());
+
+
+        return InstitutionResponse.from(institution);
+    }
+
+    private Organization findOrganization(String organizationId){
+        return organizationRepository.findById(organizationId)
+                .orElseThrow(()-> new ResourceNotFoundException("Organization not found"));
     }
 
 }

@@ -2,6 +2,7 @@ package com.instello.backend.common.exception;
 
 import com.instello.backend.auth.otp.InvalidOtpException;
 import com.instello.backend.auth.otp.OtpRateLimitException;
+import com.instello.backend.common.exception.app.*;
 import com.instello.backend.common.exception.response.ApiErrorDetail;
 import com.instello.backend.common.exception.response.ApiErrorResponse;
 import com.instello.backend.common.exception.response.ErrorCodes;
@@ -28,13 +29,8 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(NoResourceFoundException.class)
+    @ExceptionHandler({NoResourceFoundException.class, ResourceNotFoundException.class})
     public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex) {
-        return error(HttpStatus.NOT_FOUND, ErrorCodes.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return error(HttpStatus.NOT_FOUND, ErrorCodes.NOT_FOUND, ex.getMessage());
     }
 
@@ -43,14 +39,14 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.CONFLICT, ErrorCodes.CONFLICT, ex.getMessage());
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiErrorResponse> handleBadRequestException(BadRequestException ex) {
-        return error(HttpStatus.BAD_REQUEST, ErrorCodes.BAD_REQUEST, ex.getMessage());
+    @ExceptionHandler({UnauthorizedException.class, InvalidOtpException.class})
+    public ResponseEntity<ApiErrorResponse> handleUnauthorizedException(RuntimeException ex) {
+        return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, ex.getMessage());
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ApiErrorResponse> handleUnauthorizedException(UnauthorizedException ex) {
-        return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, ex.getMessage());
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiErrorResponse> handleBadRequestException(UnauthorizedException ex) {
+        return error(HttpStatus.BAD_REQUEST, ErrorCodes.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)
@@ -69,13 +65,8 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, "Invalid email or password");
     }
 
-    @ExceptionHandler(InvalidOtpException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidOtpException(InvalidOtpException ex) {
-        return error(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, ex.getMessage());
-    }
-
-    @ExceptionHandler(OtpRateLimitException.class)
-    public ResponseEntity<ApiErrorResponse> handleOtpRateLimitException(OtpRateLimitException ex) {
+    @ExceptionHandler({OtpRateLimitException.class, RateLimitExceededException.class})
+    public ResponseEntity<ApiErrorResponse> handleRateLimitException(RuntimeException ex) {
         return error(
                 HttpStatus.TOO_MANY_REQUESTS,
                 ErrorCodes.RATE_LIMITED,
@@ -85,16 +76,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(RateLimitExceededException.class)
-    public ResponseEntity<ApiErrorResponse> handleRateLimitExceededException(RateLimitExceededException ex) {
-        return error(
-                HttpStatus.TOO_MANY_REQUESTS,
-                ErrorCodes.RATE_LIMITED,
-                ex.getMessage(),
-                HttpHeaders.RETRY_AFTER,
-                String.valueOf(ex.getRetryAfterSeconds())
-        );
-    }
 
     @ExceptionHandler(InvalidApiVersionException.class)
     public ResponseEntity<ApiErrorResponse> handleInvalidApiVersionException(InvalidApiVersionException ex) {
