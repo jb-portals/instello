@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 
@@ -37,7 +38,7 @@ public class AcademicStage {
     private String alias;
 
     @Column(length = 2000)
-    private String description;
+    private @Nullable String description;
 
     @Column(nullable = false)
     private int sequenceNumber;

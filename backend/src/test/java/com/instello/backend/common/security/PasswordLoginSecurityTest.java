@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -45,7 +47,7 @@ class PasswordLoginSecurityTest {
         authenticationManager = new SecurityConfiguration().authenticationManager(userDetailsService, passwordEncoder);
     }
 
-    private User user(String passwordHash, Instant verifiedAt, AppAuthority... authorities) {
+    private User user(@Nullable String passwordHash, @Nullable Instant verifiedAt, AppAuthority... authorities) {
         User user = User.builder()
                 .email(EMAIL)
                 .passwordHash(passwordHash)
@@ -53,7 +55,7 @@ class PasswordLoginSecurityTest {
                 .authorities(new ArrayList<>())
                 .build();
         for (AppAuthority authority : authorities) {
-            user.getAuthorities().add(Authority.builder().authority(authority).user(user).build());
+            Objects.requireNonNull(user.getAuthorities()).add(Authority.builder().authority(authority).user(user).build());
         }
         return user;
     }

@@ -2,9 +2,10 @@ package com.instello.backend.accessRequest.dto;
 
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
 import jakarta.validation.constraints.Size;
+import org.jspecify.annotations.Nullable;
 
 public record UpdateAccessRequestRequest(
-        AccessRequestStatus status,
-        @Size(max = 5000) String adminNotes
+        @Nullable AccessRequestStatus status,
+        @Nullable @Size(max = 5000) String adminNotes
 ) {
 }

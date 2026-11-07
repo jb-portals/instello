@@ -2,6 +2,7 @@ package com.instello.backend.accessRequest.dto;
 
 import com.instello.backend.accessRequest.entity.AccessRequest;
 import com.instello.backend.accessRequest.entity.AccessRequestStatus;
+import org.jspecify.annotations.Nullable;
 
 
 import java.time.Instant;
@@ -13,8 +14,8 @@ public record AccessRequestSummary(
         String lastName,
         String email,
         String phone,
-        String city,
-        String state,
+        @Nullable String city,
+        @Nullable String state,
         AccessRequestStatus status,
         Instant createdAt
 ) {

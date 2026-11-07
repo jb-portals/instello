@@ -2,6 +2,7 @@ package com.instello.backend.user.bootstrap;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.jspecify.annotations.NonNull;
@@ -54,26 +55,26 @@ public class AdminBootstrapRunner implements ApplicationRunner {
     }
 
     private void ensureAdmin(String email) {
-        User user = userRepository.findByEmailIgnoreCase(email).orElse(null);
-        boolean isNewUser = user == null;
-        if (isNewUser) {
-            user = User.builder()
+        var existingUser = userRepository.findByEmailIgnoreCase(email);
+        boolean isNewUser = existingUser.isEmpty();
+        User user = existingUser.orElseGet(() -> User.builder()
                     .email(email)
                     .emailVerifiedAt(Instant.now())
-                    .build();
-        }
-        if (user.getAuthorities() == null) {
-            user.setAuthorities(new ArrayList<>());
+                    .build());
+        List<Authority> authorities = user.getAuthorities();
+        if (authorities == null) {
+            authorities = new ArrayList<>();
+            user.setAuthorities(authorities);
         }
 
-        boolean isAdmin = user.getAuthorities().stream()
+        boolean isAdmin = authorities.stream()
                 .anyMatch(authority -> authority.getAuthority() == AppAuthority.ROLE_ADMIN);
         if (isAdmin) {
             logger.info("Bootstrap admin already exists");
             return;
         }
 
-        user.getAuthorities().add(Authority.builder()
+        authorities.add(Authority.builder()
                 .authority(AppAuthority.ROLE_ADMIN)
                 .user(user)
                 .build());

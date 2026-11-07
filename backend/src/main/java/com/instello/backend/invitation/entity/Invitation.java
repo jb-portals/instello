@@ -14,6 +14,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 
 @Entity
@@ -43,7 +44,7 @@ public class Invitation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "access_request_id")
-    private AccessRequest accessRequest;
+    private @Nullable AccessRequest accessRequest;
 
     // SHA-256 of the emailed token; the raw token is never persisted
     @Column(nullable = false, unique = true)
@@ -55,15 +56,15 @@ public class Invitation {
     // Free-form data captured at invite time, e.g. {"email": "..."} so the invitee cannot change the email
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private Map<String, String> metadata;
+    private @Nullable Map<String, String> metadata;
 
-    private Instant acceptedAt;
+    private @Nullable Instant acceptedAt;
 
-    private Instant revokedAt;
+    private @Nullable Instant revokedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invited_by_id")
-    private User invitedBy;
+    private @Nullable User invitedBy;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

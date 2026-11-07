@@ -1,6 +1,7 @@
 package com.instello.backend.common.exception.response;
 
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 public record ApiErrorResponse(ApiError error) {
 
@@ -8,15 +9,15 @@ public record ApiErrorResponse(ApiError error) {
         return of(code, message, null, null);
     }
 
-    public static ApiErrorResponse of(String code, String message, String target) {
+    public static ApiErrorResponse of(String code, String message, @Nullable String target) {
         return of(code, message, target, null);
     }
 
     public static ApiErrorResponse of(
             String code,
             String message,
-            String target,
-            List<ApiErrorDetail> details
+            @Nullable String target,
+            @Nullable List<ApiErrorDetail> details
     ) {
         return new ApiErrorResponse(new ApiError(code, message, target, details));
     }

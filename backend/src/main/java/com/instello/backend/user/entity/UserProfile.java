@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 
@@ -26,7 +27,7 @@ public class UserProfile {
     @Column(nullable = false)
     private String firstName;
 
-    private String lastName;
+    private @Nullable String lastName;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

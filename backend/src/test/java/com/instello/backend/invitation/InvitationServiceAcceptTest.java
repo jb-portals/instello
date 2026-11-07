@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
@@ -99,7 +100,7 @@ class InvitationServiceAcceptTest {
         assertThat(saved.getAuthorities()).isEmpty();
         assertThat(saved.getPasswordHash()).isNotEqualTo("s3cret-password");
         assertThat(passwordEncoder.matches("s3cret-password", saved.getPasswordHash())).isTrue();
-        assertThat(saved.getUserProfile().getFirstName()).isEqualTo("Olivia");
+        assertThat(Objects.requireNonNull(saved.getUserProfile()).getFirstName()).isEqualTo("Olivia");
         verify(otpService).requestEmailVerificationOtp(any(), any());
     }
 

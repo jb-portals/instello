@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 
 @Entity
@@ -30,21 +31,21 @@ public class User {
 
     // For platform administrators there will be no password
     @Column(columnDefinition = "TEXT")
-    private String passwordHash;
+    private @Nullable String passwordHash;
 
     @Column(columnDefinition = "TIMESTAMP")
-    private Instant emailVerifiedAt;
+    private @Nullable Instant emailVerifiedAt;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     @UpdateTimestamp
-    private Instant updatedAt;
+    private @Nullable Instant updatedAt;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Authority> authorities;
+    private @Nullable List<Authority> authorities;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserProfile userProfile;
+    private @Nullable UserProfile userProfile;
 }

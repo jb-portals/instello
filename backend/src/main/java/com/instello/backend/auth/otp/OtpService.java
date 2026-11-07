@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.function.BooleanSupplier;
 
 import org.springframework.stereotype.Service;
+import org.jspecify.annotations.Nullable;
 
 import com.instello.backend.common.notification.email.EmailTemplateService;
 import com.instello.backend.common.redis.RedisService;
@@ -111,7 +112,7 @@ public class OtpService {
         redisService.delete(requestsKey);
     }
 
-    private User findAdmin(String normalizedEmail) {
+    private @Nullable User findAdmin(String normalizedEmail) {
         return userRepository
                 .findByEmailIgnoreCaseAndAuthorities_Authority(normalizedEmail, AppAuthority.ROLE_ADMIN)
                 .orElse(null);

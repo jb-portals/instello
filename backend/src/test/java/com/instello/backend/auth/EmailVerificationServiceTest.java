@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -78,7 +79,7 @@ class EmailVerificationServiceTest {
         assertThat(user.getEmailVerifiedAt()).isNotNull();
         assertThat(invitation.getAcceptedAt()).isNotNull();
         assertThat(user.getAuthorities()).hasSize(1);
-        assertThat(user.getAuthorities().getFirst().getAuthority()).isEqualTo(AppAuthority.ROLE_OWNER);
+        assertThat(Objects.requireNonNull(user.getAuthorities()).getFirst().getAuthority()).isEqualTo(AppAuthority.ROLE_OWNER);
         Mockito.verify(membershipService).ensureMember(user, organization, AppAuthority.ROLE_OWNER);
     }
 

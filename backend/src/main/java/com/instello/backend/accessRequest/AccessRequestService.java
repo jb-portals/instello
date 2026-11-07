@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.jspecify.annotations.Nullable;
 
 import com.instello.backend.accessRequest.dto.AccessRequestDetail;
 import com.instello.backend.accessRequest.dto.AccessRequestSummary;
@@ -172,7 +173,7 @@ public class AccessRequestService {
     }
 
     @Transactional
-    public AccessRequestDetail approve(String id, ApproveAccessRequestRequest body, String adminEmail) {
+    public AccessRequestDetail approve(String id, @Nullable ApproveAccessRequestRequest body, String adminEmail) {
         AccessRequest accessRequest = findById(id);
         requireOpen(accessRequest);
         User admin = findAdmin(adminEmail);
@@ -180,12 +181,18 @@ public class AccessRequestService {
         ApproveAccessRequestRequest overrides = body != null
                 ? body
                 : new ApproveAccessRequestRequest(null, null, null, null);
+        Address address = overrides.address() != null
+                ? overrides.address().toAddress()
+                : accessRequest.getAddress();
+        if (address == null) {
+            throw new BadRequestException("An address is required to approve an access request");
+        }
 
         Organization organization = organizationService.create(
                 firstNonBlank(overrides.organizationName(), accessRequest.getOrganizationName()),
                 overrides.email() != null ? normalizeEmail(overrides.email()) : accessRequest.getEmail(),
                 firstNonBlank(overrides.phone(), accessRequest.getPhone()),
-                overrides.address() != null ? overrides.address().toAddress() : copy(accessRequest.getAddress()),
+                address,
                 admin
         );
 
@@ -312,12 +319,12 @@ public class AccessRequestService {
                 .build();
     }
 
-    private static String firstNonBlank(String value, String fallback) {
+    private static String firstNonBlank(@Nullable String value, String fallback) {
         String trimmed = trimToNull(value);
         return trimmed != null ? trimmed : fallback;
     }
 
-    private static String trimToNull(String value) {
+    private static @Nullable String trimToNull(@Nullable String value) {
         if (value == null) {
             return null;
         }

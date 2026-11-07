@@ -1,7 +1,7 @@
 package com.instello.backend.common.entity.dto;
 
 import com.instello.backend.common.entity.Address;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -26,7 +26,7 @@ public record AddressRequest(
         public Address toAddress(){
             return Address.builder()
                         .lineOne(lineOne().trim())
-                        .lineTwo(lineTwo() != null ? lineTwo().trim() : null)
+                        .lineTwo(lineTwo() == null ? null : lineTwo().trim())
                         .city(city().trim())
                         .country(Address.DEFAULT_COUNTRY)
                         .state(state().trim())

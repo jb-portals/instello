@@ -6,6 +6,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.Check;
+import org.jspecify.annotations.Nullable;
 
 @Embeddable
 @Builder
@@ -21,7 +22,7 @@ public class Address {
     @Column(nullable = false)
     private String lineOne;
 
-    private String lineTwo;
+    private @Nullable String lineTwo;
 
     @Column(nullable = false)
     private String city;

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.jspecify.annotations.Nullable;
 
 import com.instello.backend.academicPattern.dto.AcademicPatternResponse;
 import com.instello.backend.academicPattern.dto.AcademicStageResponse;
@@ -273,7 +274,7 @@ public class AcademicPatternService {
         return trimmed;
     }
 
-    private static String blankToNull(String value) {
+    private static @Nullable String blankToNull(String value) {
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
     }

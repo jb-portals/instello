@@ -58,7 +58,9 @@ public class InstitutionService {
                 .findInstitutionByOrganizationAndId(organization,institutionId)
                 .orElseThrow(()-> new ResourceNotFoundException("Institution not found"));
 
-        institution.setName(updateInstitutionDetails.name());
+        if (updateInstitutionDetails.name() != null) {
+            institution.setName(updateInstitutionDetails.name());
+        }
 
 
         return InstitutionResponse.from(institution);

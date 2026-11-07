@@ -2,6 +2,7 @@ package com.instello.backend.auth.emailverification;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.stereotype.Service;
@@ -67,13 +68,15 @@ public class EmailVerificationService {
         user.setEmailVerifiedAt(now);
         invitation.setAcceptedAt(now);
 
-        if (user.getAuthorities() == null) {
-            user.setAuthorities(new ArrayList<>());
+        List<Authority> authorities = user.getAuthorities();
+        if (authorities == null) {
+            authorities = new ArrayList<>();
+            user.setAuthorities(authorities);
         }
-        boolean alreadyGranted = user.getAuthorities().stream()
+        boolean alreadyGranted = authorities.stream()
                 .anyMatch(authority -> authority.getAuthority() == invitation.getRole());
         if (!alreadyGranted) {
-            user.getAuthorities().add(Authority.builder()
+            authorities.add(Authority.builder()
                     .authority(invitation.getRole())
                     .user(user)
                     .build());

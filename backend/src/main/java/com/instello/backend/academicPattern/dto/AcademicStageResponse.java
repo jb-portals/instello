@@ -1,4 +1,5 @@
 package com.instello.backend.academicPattern.dto;
+import org.jspecify.annotations.Nullable;
 
 
 
@@ -8,7 +9,7 @@ public record AcademicStageResponse(
         String id,
         String name,
         String alias,
-        String description,
+        @Nullable String description,
         int sequenceNumber,
         int yearNumber,
         Instant createdAt,

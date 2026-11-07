@@ -1,11 +1,12 @@
 package com.instello.backend.common.exception.response;
 
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 public record ApiError(
         String code,
         String message,
-        String target,
-        List<ApiErrorDetail> details
+        @Nullable String target,
+        @Nullable List<ApiErrorDetail> details
 ) {
 }

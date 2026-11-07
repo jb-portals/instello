@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import org.jspecify.annotations.Nullable;
 
 
 @Entity
@@ -49,10 +50,10 @@ public class AccessRequest {
     private String phone;
 
     @Embedded
-    private Address address;
+    private @Nullable Address address;
 
     @Column(columnDefinition = "TEXT")
-    private String message;
+    private @Nullable String message;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -60,20 +61,20 @@ public class AccessRequest {
     private AccessRequestStatus status = AccessRequestStatus.PENDING;
 
     @Column(columnDefinition = "TEXT")
-    private String adminNotes;
+    private @Nullable String adminNotes;
 
     @Column(columnDefinition = "TEXT")
-    private String rejectionReason;
+    private @Nullable String rejectionReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewed_by_id")
-    private User reviewedBy;
+    private @Nullable User reviewedBy;
 
-    private Instant reviewedAt;
+    private @Nullable Instant reviewedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id", unique = true)
-    private Organization organization;
+    private @Nullable Organization organization;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

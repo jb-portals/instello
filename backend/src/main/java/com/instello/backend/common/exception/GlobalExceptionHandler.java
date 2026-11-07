@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -67,12 +68,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({OtpRateLimitException.class, RateLimitExceededException.class})
     public ResponseEntity<ApiErrorResponse> handleRateLimitException(RuntimeException ex) {
+        long retryAfterSeconds = switch (ex) {
+            case OtpRateLimitException rateLimitException -> rateLimitException.getRetryAfterSeconds();
+            case RateLimitExceededException rateLimitException -> rateLimitException.getRetryAfterSeconds();
+            default -> throw new IllegalArgumentException("Unsupported rate limit exception", ex);
+        };
         return error(
                 HttpStatus.TOO_MANY_REQUESTS,
                 ErrorCodes.RATE_LIMITED,
                 ex.getMessage(),
                 HttpHeaders.RETRY_AFTER,
-                String.valueOf(ex.getRetryAfterSeconds())
+                String.valueOf(retryAfterSeconds)
         );
     }
 
@@ -129,20 +135,20 @@ public class GlobalExceptionHandler {
         return new ApiErrorDetail(code, fieldError.getField(), message);
     }
 
-    private static ResponseEntity<ApiErrorResponse> error(HttpStatus status, String code, String message) {
-        return ResponseEntity.status(status).body(ApiErrorResponse.of(code, message));
+    private static ResponseEntity<ApiErrorResponse> error(HttpStatus status, String code, @Nullable String message) {
+        return ResponseEntity.status(status).body(ApiErrorResponse.of(code, message != null ? message : status.getReasonPhrase()));
     }
 
     private static ResponseEntity<ApiErrorResponse> error(
             HttpStatus status,
             String code,
-            String message,
+                @Nullable String message,
             String headerName,
             String headerValue
     ) {
         return ResponseEntity.status(status)
                 .header(headerName, headerValue)
-                .body(ApiErrorResponse.of(code, message));
+                .body(ApiErrorResponse.of(code, message != null ? message : status.getReasonPhrase()));
     }
 
     static String codeForStatus(HttpStatus status) {
