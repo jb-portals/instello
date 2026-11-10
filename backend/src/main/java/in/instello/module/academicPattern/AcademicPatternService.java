@@ -1,16 +1,8 @@
 package in.instello.module.academicPattern;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.jspecify.annotations.Nullable;
-
+import in.instello.common.exception.app.BadRequestException;
+import in.instello.common.exception.app.ConflictException;
+import in.instello.common.exception.app.ResourceNotFoundException;
 import in.instello.module.academicPattern.dto.AcademicPatternResponse;
 import in.instello.module.academicPattern.dto.AcademicStageResponse;
 import in.instello.module.academicPattern.dto.UpdateAcademicPatternRequest;
@@ -22,267 +14,274 @@ import in.instello.module.academicPattern.entity.AcademicTemplateKey;
 import in.instello.module.academicPattern.repository.AcademicPatternAllocationRepository;
 import in.instello.module.academicPattern.repository.AcademicPatternRepository;
 import in.instello.module.academicPattern.repository.AcademicStageRepository;
-import in.instello.common.exception.app.BadRequestException;
-import in.instello.common.exception.app.ConflictException;
-import in.instello.common.exception.app.ResourceNotFoundException;
 import in.instello.module.organization.OrganizationMembershipService;
 import in.instello.module.organization.entity.Organization;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.jspecify.annotations.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AcademicPatternService {
 
-    static final String LOCKED_MESSAGE = "Pattern structure is locked because an institution uses this pattern";
+  static final String LOCKED_MESSAGE =
+      "Pattern structure is locked because an institution uses this pattern";
 
-    private static final List<Template> TEMPLATES = List.of(
-            new Template(
-                    AcademicTemplateKey.ENGINEERING,
-                    "Engineering",
-                    "4-year semester-based engineering program",
-                    4
-            ),
-            new Template(
-                    AcademicTemplateKey.DIPLOMA,
-                    "Diploma",
-                    "3-year semester-based diploma program",
-                    3
-            )
-    );
+  private static final List<Template> TEMPLATES =
+      List.of(
+          new Template(
+              AcademicTemplateKey.ENGINEERING,
+              "Engineering",
+              "4-year semester-based engineering program",
+              4),
+          new Template(
+              AcademicTemplateKey.DIPLOMA, "Diploma", "3-year semester-based diploma program", 3));
 
-    private final AcademicPatternRepository patternRepository;
-    private final AcademicStageRepository stageRepository;
-    private final AcademicPatternAllocationRepository allocationRepository;
-    private final OrganizationMembershipService membershipService;
+  private final AcademicPatternRepository patternRepository;
+  private final AcademicStageRepository stageRepository;
+  private final AcademicPatternAllocationRepository allocationRepository;
+  private final OrganizationMembershipService membershipService;
 
-    public AcademicPatternService(
-            AcademicPatternRepository patternRepository,
-            AcademicStageRepository stageRepository,
-            AcademicPatternAllocationRepository allocationRepository,
-            OrganizationMembershipService membershipService
-    ) {
-        this.patternRepository = patternRepository;
-        this.stageRepository = stageRepository;
-        this.allocationRepository = allocationRepository;
-        this.membershipService = membershipService;
+  public AcademicPatternService(
+      AcademicPatternRepository patternRepository,
+      AcademicStageRepository stageRepository,
+      AcademicPatternAllocationRepository allocationRepository,
+      OrganizationMembershipService membershipService) {
+    this.patternRepository = patternRepository;
+    this.stageRepository = stageRepository;
+    this.allocationRepository = allocationRepository;
+    this.membershipService = membershipService;
+  }
+
+  @Transactional
+  public void seedDefaults(Organization organization) {
+    for (Template template : TEMPLATES) {
+      AcademicPattern pattern =
+          patternRepository.save(
+              AcademicPattern.builder()
+                  .organization(organization)
+                  .name(template.name())
+                  .description(template.description())
+                  .durationInYears(template.durationInYears())
+                  .systemType(AcademicSystemType.SEMESTER)
+                  .templateKey(template.key())
+                  .build());
+
+      int stageCount = template.durationInYears() * 2;
+      for (int sequence = 1; sequence <= stageCount; sequence++) {
+        stageRepository.save(
+            AcademicStage.builder()
+                .academicPattern(pattern)
+                .name("Semester " + sequence)
+                .alias("Sem " + sequence)
+                .sequenceNumber(sequence)
+                .yearNumber((sequence + 1) / 2)
+                .build());
+      }
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public List<AcademicPatternResponse> list(String organizationId, String email) {
+    membershipService.requireMember(organizationId, email);
+    List<AcademicPattern> patterns =
+        patternRepository.findByOrganization_IdOrderByNameAsc(organizationId);
+    if (patterns.isEmpty()) {
+      return List.of();
+    }
+    Set<String> allocated =
+        allocationRepository.findAllocatedPatternIds(
+            patterns.stream().map(AcademicPattern::getId).toList());
+    return patterns.stream()
+        .map(pattern -> toResponse(pattern, !allocated.contains(pattern.getId())))
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public AcademicPatternResponse get(String organizationId, String patternId, String email) {
+    membershipService.requireMember(organizationId, email);
+    AcademicPattern pattern = findPattern(organizationId, patternId);
+    return toResponse(pattern, !allocationRepository.existsByAcademicPattern_Id(pattern.getId()));
+  }
+
+  @Transactional
+  public AcademicPatternResponse update(
+      String organizationId, String patternId, UpdateAcademicPatternRequest request, String email) {
+    membershipService.requireMember(organizationId, email);
+    AcademicPattern pattern = findPattern(organizationId, patternId);
+    List<AcademicStage> stages = stagesOf(pattern);
+
+    int duration =
+        request.durationInYears() != null
+            ? request.durationInYears()
+            : pattern.getDurationInYears();
+    AcademicSystemType systemType =
+        request.systemType() != null ? request.systemType() : pattern.getSystemType();
+    boolean structuralChange =
+        duration != pattern.getDurationInYears() || systemType != pattern.getSystemType();
+    boolean allocated = allocationRepository.existsByAcademicPattern_Id(pattern.getId());
+    if (allocated && structuralChange) {
+      throw new ConflictException(LOCKED_MESSAGE);
+    }
+    if (structuralChange) {
+      assertStagesFit(systemType, duration, yearsOf(stages));
     }
 
-    @Transactional
-    public void seedDefaults(Organization organization) {
-        for (Template template : TEMPLATES) {
-            AcademicPattern pattern = patternRepository.save(AcademicPattern.builder()
-                    .organization(organization)
-                    .name(template.name())
-                    .description(template.description())
-                    .durationInYears(template.durationInYears())
-                    .systemType(AcademicSystemType.SEMESTER)
-                    .templateKey(template.key())
-                    .build());
+    if (request.name() != null) {
+      pattern.setName(requiredText(request.name(), "Name"));
+    }
+    if (request.description() != null) {
+      pattern.setDescription(blankToNull(request.description()));
+    }
+    pattern.setDurationInYears(duration);
+    pattern.setSystemType(systemType);
 
-            int stageCount = template.durationInYears() * 2;
-            for (int sequence = 1; sequence <= stageCount; sequence++) {
-                stageRepository.save(AcademicStage.builder()
-                        .academicPattern(pattern)
-                        .name("Semester " + sequence)
-                        .alias("Sem " + sequence)
-                        .sequenceNumber(sequence)
-                        .yearNumber((sequence + 1) / 2)
-                        .build());
-            }
-        }
+    return toResponse(pattern, stages, !allocated);
+  }
+
+  @Transactional
+  public AcademicStageResponse updateStage(
+      String organizationId,
+      String patternId,
+      String stageId,
+      UpdateAcademicStageRequest request,
+      String email) {
+    membershipService.requireMember(organizationId, email);
+    AcademicPattern pattern = findPattern(organizationId, patternId);
+    AcademicStage stage =
+        stageRepository
+            .findByIdAndAcademicPattern_Id(stageId, pattern.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Academic stage not found"));
+    List<AcademicStage> stages = stagesOf(pattern);
+
+    int sequence =
+        request.sequenceNumber() != null ? request.sequenceNumber() : stage.getSequenceNumber();
+    int year = request.yearNumber() != null ? request.yearNumber() : stage.getYearNumber();
+    boolean structuralChange =
+        sequence != stage.getSequenceNumber() || year != stage.getYearNumber();
+    boolean allocated = allocationRepository.existsByAcademicPattern_Id(pattern.getId());
+    if (allocated && structuralChange) {
+      throw new ConflictException(LOCKED_MESSAGE);
+    }
+    if (structuralChange) {
+      if (stages.stream()
+          .anyMatch(
+              other ->
+                  !other.getId().equals(stage.getId()) && other.getSequenceNumber() == sequence)) {
+        throw new BadRequestException("Sequence number is already used");
+      }
+      assertStagesFit(
+          pattern.getSystemType(),
+          pattern.getDurationInYears(),
+          yearsReplacing(stages, stage.getId(), year));
     }
 
-    @Transactional(readOnly = true)
-    public List<AcademicPatternResponse> list(String organizationId, String email) {
-        membershipService.requireMember(organizationId, email);
-        List<AcademicPattern> patterns = patternRepository.findByOrganization_IdOrderByNameAsc(organizationId);
-        if (patterns.isEmpty()) {
-            return List.of();
-        }
-        Set<String> allocated = allocationRepository.findAllocatedPatternIds(
-                patterns.stream().map(AcademicPattern::getId).toList()
-        );
-        return patterns.stream()
-                .map(pattern -> toResponse(pattern, !allocated.contains(pattern.getId())))
-                .toList();
+    if (request.name() != null) {
+      stage.setName(requiredText(request.name(), "Name"));
     }
-
-    @Transactional(readOnly = true)
-    public AcademicPatternResponse get(String organizationId, String patternId, String email) {
-        membershipService.requireMember(organizationId, email);
-        AcademicPattern pattern = findPattern(organizationId, patternId);
-        return toResponse(pattern, !allocationRepository.existsByAcademicPattern_Id(pattern.getId()));
+    if (request.alias() != null) {
+      stage.setAlias(requiredText(request.alias(), "Alias"));
     }
-
-    @Transactional
-    public AcademicPatternResponse update(
-            String organizationId,
-            String patternId,
-            UpdateAcademicPatternRequest request,
-            String email
-    ) {
-        membershipService.requireMember(organizationId, email);
-        AcademicPattern pattern = findPattern(organizationId, patternId);
-        List<AcademicStage> stages = stagesOf(pattern);
-
-        int duration = request.durationInYears() != null ? request.durationInYears() : pattern.getDurationInYears();
-        AcademicSystemType systemType = request.systemType() != null ? request.systemType() : pattern.getSystemType();
-        boolean structuralChange = duration != pattern.getDurationInYears() || systemType != pattern.getSystemType();
-        boolean allocated = allocationRepository.existsByAcademicPattern_Id(pattern.getId());
-        if (allocated && structuralChange) {
-            throw new ConflictException(LOCKED_MESSAGE);
-        }
-        if (structuralChange) {
-            assertStagesFit(systemType, duration, yearsOf(stages));
-        }
-
-        if (request.name() != null) {
-            pattern.setName(requiredText(request.name(), "Name"));
-        }
-        if (request.description() != null) {
-            pattern.setDescription(blankToNull(request.description()));
-        }
-        pattern.setDurationInYears(duration);
-        pattern.setSystemType(systemType);
-
-        return toResponse(pattern, stages, !allocated);
+    if (request.description() != null) {
+      stage.setDescription(blankToNull(request.description()));
     }
+    stage.setSequenceNumber(sequence);
+    stage.setYearNumber(year);
 
-    @Transactional
-    public AcademicStageResponse updateStage(
-            String organizationId,
-            String patternId,
-            String stageId,
-            UpdateAcademicStageRequest request,
-            String email
-    ) {
-        membershipService.requireMember(organizationId, email);
-        AcademicPattern pattern = findPattern(organizationId, patternId);
-        AcademicStage stage = stageRepository.findByIdAndAcademicPattern_Id(stageId, pattern.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Academic stage not found"));
-        List<AcademicStage> stages = stagesOf(pattern);
+    return toStage(stage);
+  }
 
-        int sequence = request.sequenceNumber() != null ? request.sequenceNumber() : stage.getSequenceNumber();
-        int year = request.yearNumber() != null ? request.yearNumber() : stage.getYearNumber();
-        boolean structuralChange = sequence != stage.getSequenceNumber() || year != stage.getYearNumber();
-        boolean allocated = allocationRepository.existsByAcademicPattern_Id(pattern.getId());
-        if (allocated && structuralChange) {
-            throw new ConflictException(LOCKED_MESSAGE);
-        }
-        if (structuralChange) {
-            if (stages.stream().anyMatch(other -> !other.getId().equals(stage.getId())
-                    && other.getSequenceNumber() == sequence)) {
-                throw new BadRequestException("Sequence number is already used");
-            }
-            assertStagesFit(pattern.getSystemType(), pattern.getDurationInYears(), yearsReplacing(stages, stage.getId(), year));
-        }
+  private AcademicPattern findPattern(String organizationId, String patternId) {
+    return patternRepository
+        .findByIdAndOrganization_Id(patternId, organizationId)
+        .orElseThrow(() -> new ResourceNotFoundException("Academic pattern not found"));
+  }
 
-        if (request.name() != null) {
-            stage.setName(requiredText(request.name(), "Name"));
-        }
-        if (request.alias() != null) {
-            stage.setAlias(requiredText(request.alias(), "Alias"));
-        }
-        if (request.description() != null) {
-            stage.setDescription(blankToNull(request.description()));
-        }
-        stage.setSequenceNumber(sequence);
-        stage.setYearNumber(year);
+  private List<AcademicStage> stagesOf(AcademicPattern pattern) {
+    return stageRepository.findByAcademicPattern_IdOrderBySequenceNumberAsc(pattern.getId());
+  }
 
-        return toStage(stage);
+  private AcademicPatternResponse toResponse(AcademicPattern pattern, boolean canBeEdited) {
+    return toResponse(pattern, stagesOf(pattern), canBeEdited);
+  }
+
+  private AcademicPatternResponse toResponse(
+      AcademicPattern pattern, List<AcademicStage> stages, boolean canBeEdited) {
+    return new AcademicPatternResponse(
+        pattern.getId(),
+        pattern.getOrganization().getId(),
+        pattern.getName(),
+        pattern.getDescription(),
+        pattern.getDurationInYears(),
+        pattern.getSystemType(),
+        pattern.getTemplateKey(),
+        canBeEdited,
+        stages.stream().map(this::toStage).toList(),
+        pattern.getCreatedAt(),
+        pattern.getUpdatedAt());
+  }
+
+  private AcademicStageResponse toStage(AcademicStage stage) {
+    return new AcademicStageResponse(
+        stage.getId(),
+        stage.getName(),
+        stage.getAlias(),
+        stage.getDescription(),
+        stage.getSequenceNumber(),
+        stage.getYearNumber(),
+        stage.getCreatedAt(),
+        stage.getUpdatedAt());
+  }
+
+  /**
+   * Semester patterns hold at most two stages in a year. Annual patterns hold one. Every stage year
+   * must sit inside the duration.
+   */
+  private static void assertStagesFit(
+      AcademicSystemType systemType, int duration, List<Integer> years) {
+    int maxPerYear = systemType == AcademicSystemType.ANNUAL ? 1 : 2;
+    Map<Integer, Integer> perYear = new HashMap<>();
+    for (Integer year : years) {
+      if (year < 1 || year > duration) {
+        throw new BadRequestException("Duration must cover every stage year");
+      }
+      perYear.merge(year, 1, Integer::sum);
     }
-
-    private AcademicPattern findPattern(String organizationId, String patternId) {
-        return patternRepository.findByIdAndOrganization_Id(patternId, organizationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Academic pattern not found"));
+    if (perYear.values().stream().anyMatch(count -> count > maxPerYear)) {
+      throw new BadRequestException("Stages do not fit the selected system type");
     }
+  }
 
-    private List<AcademicStage> stagesOf(AcademicPattern pattern) {
-        return stageRepository.findByAcademicPattern_IdOrderBySequenceNumberAsc(pattern.getId());
+  private static List<Integer> yearsOf(List<AcademicStage> stages) {
+    return stages.stream().map(AcademicStage::getYearNumber).toList();
+  }
+
+  private static List<Integer> yearsReplacing(
+      List<AcademicStage> stages, String stageId, int year) {
+    List<Integer> years = new ArrayList<>();
+    for (AcademicStage stage : stages) {
+      years.add(stage.getId().equals(stageId) ? year : stage.getYearNumber());
     }
+    return years;
+  }
 
-    private AcademicPatternResponse toResponse(AcademicPattern pattern, boolean canBeEdited) {
-        return toResponse(pattern, stagesOf(pattern), canBeEdited);
+  private static String requiredText(String value, String field) {
+    String trimmed = value.trim();
+    if (trimmed.isEmpty()) {
+      throw new BadRequestException(field + " must not be blank");
     }
+    return trimmed;
+  }
 
-    private AcademicPatternResponse toResponse(
-            AcademicPattern pattern,
-            List<AcademicStage> stages,
-            boolean canBeEdited
-    ) {
-        return new AcademicPatternResponse(
-                pattern.getId(),
-                pattern.getOrganization().getId(),
-                pattern.getName(),
-                pattern.getDescription(),
-                pattern.getDurationInYears(),
-                pattern.getSystemType(),
-                pattern.getTemplateKey(),
-                canBeEdited,
-                stages.stream().map(this::toStage).toList(),
-                pattern.getCreatedAt(),
-                pattern.getUpdatedAt()
-        );
-    }
+  private static @Nullable String blankToNull(String value) {
+    String trimmed = value.trim();
+    return trimmed.isEmpty() ? null : trimmed;
+  }
 
-    private AcademicStageResponse toStage(AcademicStage stage) {
-        return new AcademicStageResponse(
-                stage.getId(),
-                stage.getName(),
-                stage.getAlias(),
-                stage.getDescription(),
-                stage.getSequenceNumber(),
-                stage.getYearNumber(),
-                stage.getCreatedAt(),
-                stage.getUpdatedAt()
-        );
-    }
-
-    /**
-     * Semester patterns hold at most two stages in a year. Annual patterns hold one.
-     * Every stage year must sit inside the duration.
-     */
-    private static void assertStagesFit(AcademicSystemType systemType, int duration, List<Integer> years) {
-        int maxPerYear = systemType == AcademicSystemType.ANNUAL ? 1 : 2;
-        Map<Integer, Integer> perYear = new HashMap<>();
-        for (Integer year : years) {
-            if (year < 1 || year > duration) {
-                throw new BadRequestException("Duration must cover every stage year");
-            }
-            perYear.merge(year, 1, Integer::sum);
-        }
-        if (perYear.values().stream().anyMatch(count -> count > maxPerYear)) {
-            throw new BadRequestException("Stages do not fit the selected system type");
-        }
-    }
-
-    private static List<Integer> yearsOf(List<AcademicStage> stages) {
-        return stages.stream().map(AcademicStage::getYearNumber).toList();
-    }
-
-    private static List<Integer> yearsReplacing(List<AcademicStage> stages, String stageId, int year) {
-        List<Integer> years = new ArrayList<>();
-        for (AcademicStage stage : stages) {
-            years.add(stage.getId().equals(stageId) ? year : stage.getYearNumber());
-        }
-        return years;
-    }
-
-    private static String requiredText(String value, String field) {
-        String trimmed = value.trim();
-        if (trimmed.isEmpty()) {
-            throw new BadRequestException(field + " must not be blank");
-        }
-        return trimmed;
-    }
-
-    private static @Nullable String blankToNull(String value) {
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed;
-    }
-
-    private record Template(
-            AcademicTemplateKey key,
-            String name,
-            String description,
-            int durationInYears
-    ) {}
+  private record Template(
+      AcademicTemplateKey key, String name, String description, int durationInYears) {}
 }

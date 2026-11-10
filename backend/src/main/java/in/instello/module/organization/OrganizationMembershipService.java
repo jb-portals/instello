@@ -1,11 +1,5 @@
 package in.instello.module.organization;
 
-
-
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import in.instello.common.exception.app.ForbiddenException;
 import in.instello.common.exception.app.ResourceNotFoundException;
 import in.instello.module.invitation.entity.Invitation;
@@ -17,69 +11,70 @@ import in.instello.module.organization.repository.OrganizationRepository;
 import in.instello.module.user.entity.AppAuthority;
 import in.instello.module.user.entity.User;
 import in.instello.module.user.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrganizationMembershipService {
 
-    private final OrganizationMemberRepository memberRepository;
-    private final OrganizationRepository organizationRepository;
-    private final UserRepository userRepository;
-    private final InvitationRepository invitationRepository;
+  private final OrganizationMemberRepository memberRepository;
+  private final OrganizationRepository organizationRepository;
+  private final UserRepository userRepository;
+  private final InvitationRepository invitationRepository;
 
-    public OrganizationMembershipService(
-            OrganizationMemberRepository memberRepository,
-            OrganizationRepository organizationRepository,
-            UserRepository userRepository,
-            InvitationRepository invitationRepository
-    ) {
-        this.memberRepository = memberRepository;
-        this.organizationRepository = organizationRepository;
-        this.userRepository = userRepository;
-        this.invitationRepository = invitationRepository;
-    }
+  public OrganizationMembershipService(
+      OrganizationMemberRepository memberRepository,
+      OrganizationRepository organizationRepository,
+      UserRepository userRepository,
+      InvitationRepository invitationRepository) {
+    this.memberRepository = memberRepository;
+    this.organizationRepository = organizationRepository;
+    this.userRepository = userRepository;
+    this.invitationRepository = invitationRepository;
+  }
 
-    @Transactional
-    public boolean ensureMember(User user, Organization organization, AppAuthority role) {
-        if (memberRepository.existsByUser_IdAndOrganization_Id(user.getId(), organization.getId())) {
-            return false;
-        }
-        memberRepository.save(OrganizationMember.builder()
-                .user(user)
-                .organization(organization)
-                .role(role)
-                .build());
-        return true;
+  @Transactional
+  public boolean ensureMember(User user, Organization organization, AppAuthority role) {
+    if (memberRepository.existsByUser_IdAndOrganization_Id(user.getId(), organization.getId())) {
+      return false;
     }
+    memberRepository.save(
+        OrganizationMember.builder().user(user).organization(organization).role(role).build());
+    return true;
+  }
 
-    @Transactional(readOnly = true)
-    public void requireMember(String organizationId, String email) {
-        if (!organizationRepository.existsById(organizationId)) {
-            throw new ResourceNotFoundException("Organization not found");
-        }
-        User user = userRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new ForbiddenException("You do not have access to this organization"));
-        if (!memberRepository.existsByUser_IdAndOrganization_Id(user.getId(), organizationId)) {
-            throw new ForbiddenException("You do not have access to this organization");
-        }
+  @Transactional(readOnly = true)
+  public void requireMember(String organizationId, String email) {
+    if (!organizationRepository.existsById(organizationId)) {
+      throw new ResourceNotFoundException("Organization not found");
     }
+    User user =
+        userRepository
+            .findByEmailIgnoreCase(email)
+            .orElseThrow(
+                () -> new ForbiddenException("You do not have access to this organization"));
+    if (!memberRepository.existsByUser_IdAndOrganization_Id(user.getId(), organizationId)) {
+      throw new ForbiddenException("You do not have access to this organization");
+    }
+  }
 
-    /**
-     * Creates memberships for invitations accepted before membership rows existed.
-     *
-     * @return how many memberships were created
-     */
-    @Transactional
-    public int backfillAcceptedInvitations() {
-        int created = 0;
-        for (Invitation invitation : invitationRepository.findByAcceptedAtIsNotNull()) {
-            if (invitation.getOrganization() == null) {
-                continue;
-            }
-            User user = userRepository.findByEmailIgnoreCase(invitation.getEmail()).orElse(null);
-            if (user != null && ensureMember(user, invitation.getOrganization(), invitation.getRole())) {
-                created++;
-            }
-        }
-        return created;
+  /**
+   * Creates memberships for invitations accepted before membership rows existed.
+   *
+   * @return how many memberships were created
+   */
+  @Transactional
+  public int backfillAcceptedInvitations() {
+    int created = 0;
+    for (Invitation invitation : invitationRepository.findByAcceptedAtIsNotNull()) {
+      if (invitation.getOrganization() == null) {
+        continue;
+      }
+      User user = userRepository.findByEmailIgnoreCase(invitation.getEmail()).orElse(null);
+      if (user != null && ensureMember(user, invitation.getOrganization(), invitation.getRole())) {
+        created++;
+      }
     }
+    return created;
+  }
 }

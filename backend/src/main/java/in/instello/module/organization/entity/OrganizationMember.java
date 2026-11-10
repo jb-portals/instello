@@ -3,13 +3,10 @@ package in.instello.module.organization.entity;
 import in.instello.annotations.GeneratedCuid;
 import in.instello.module.user.entity.AppAuthority;
 import in.instello.module.user.entity.User;
-
 import jakarta.persistence.*;
+import java.time.Instant;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.Instant;
-
 
 @Entity
 @Builder
@@ -18,29 +15,28 @@ import java.time.Instant;
 @Getter
 @Setter
 @Table(
-        name = "organization_members",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "organization_id"})
-)
+    name = "organization_members",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "organization_id"}))
 public class OrganizationMember {
 
-    @Id
-    @GeneratedCuid
-    @Column(length = 24, nullable = false, updatable = false)
-    private String id;
+  @Id
+  @GeneratedCuid
+  @Column(length = 24, nullable = false, updatable = false)
+  private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "organization_id", nullable = false)
-    private Organization organization;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "organization_id", nullable = false)
+  private Organization organization;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
-    private AppAuthority role;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 32)
+  private AppAuthority role;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  private Instant createdAt;
 }

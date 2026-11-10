@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "auth/email-verification", description = "Verify an account email with a one-time code")
 public class EmailVerificationController {
 
-    private final EmailVerificationService emailVerificationService;
+  private final EmailVerificationService emailVerificationService;
 
-    public EmailVerificationController(EmailVerificationService emailVerificationService) {
-        this.emailVerificationService = emailVerificationService;
-    }
+  public EmailVerificationController(EmailVerificationService emailVerificationService) {
+    this.emailVerificationService = emailVerificationService;
+  }
 
-    @PostMapping("/otp")
-    @Operation(operationId = "emailVerificationResendOtp")
-    public ResponseEntity<Void> resendOtp(@Valid @RequestBody EmailOtpRequest requestBody) {
-        emailVerificationService.resendOtp(requestBody.email());
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping("/otp")
+  @Operation(operationId = "emailVerificationResendOtp")
+  public ResponseEntity<Void> resendOtp(@Valid @RequestBody EmailOtpRequest requestBody) {
+    emailVerificationService.resendOtp(requestBody.email());
+    return ResponseEntity.noContent().build();
+  }
 
-    @PostMapping("/verify")
-    @Operation(operationId = "emailVerificationVerifyOtp")
-    public ResponseEntity<Void> verify(@Valid @RequestBody VerifyEmailRequest requestBody) {
-        emailVerificationService.verify(requestBody.email(), requestBody.code());
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping("/verify")
+  @Operation(operationId = "emailVerificationVerifyOtp")
+  public ResponseEntity<Void> verify(@Valid @RequestBody VerifyEmailRequest requestBody) {
+    emailVerificationService.verify(requestBody.email(), requestBody.code());
+    return ResponseEntity.noContent().build();
+  }
 }

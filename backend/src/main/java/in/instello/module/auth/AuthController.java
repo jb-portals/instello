@@ -22,43 +22,38 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "auth", description = "Authentication operations for common users")
 public class AuthController {
 
-    private final SecurityContextRepository securityContextRepository;
-    private final LoginService loginService;
+  private final SecurityContextRepository securityContextRepository;
+  private final LoginService loginService;
 
-    public AuthController(SecurityContextRepository securityContextRepository, LoginService loginService) {
-        this.securityContextRepository = securityContextRepository;
-        this.loginService = loginService;
-    }
+  public AuthController(
+      SecurityContextRepository securityContextRepository, LoginService loginService) {
+    this.securityContextRepository = securityContextRepository;
+    this.loginService = loginService;
+  }
 
-    @PostMapping("/login")
-    public ResponseEntity<Void> login(
-            @Valid @RequestBody LoginRequest requestBody,
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) {
-        loginService.login(requestBody.email(), requestBody.password(), request, response);
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping("/login")
+  public ResponseEntity<Void> login(
+      @Valid @RequestBody LoginRequest requestBody,
+      HttpServletRequest request,
+      HttpServletResponse response) {
+    loginService.login(requestBody.email(), requestBody.password(), request, response);
+    return ResponseEntity.noContent().build();
+  }
 
-    @GetMapping("/csrf-token")
-    public ResponseEntity<CsrfTokenResponse> getCsrfToken(CsrfToken csrfToken) {
-        return ResponseEntity.ok(new CsrfTokenResponse(
-                csrfToken.getToken(),
-                csrfToken.getHeaderName(),
-                csrfToken.getParameterName()
-        ));
-    }
+  @GetMapping("/csrf-token")
+  public ResponseEntity<CsrfTokenResponse> getCsrfToken(CsrfToken csrfToken) {
+    return ResponseEntity.ok(
+        new CsrfTokenResponse(
+            csrfToken.getToken(), csrfToken.getHeaderName(), csrfToken.getParameterName()));
+  }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication
-    ) {
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.setSecurityContextRepository(securityContextRepository);
-        logoutHandler.logout(request, response, authentication);
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(
+      HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+    logoutHandler.setSecurityContextRepository(securityContextRepository);
+    logoutHandler.logout(request, response, authentication);
 
-        return ResponseEntity.noContent().build();
-    }
+    return ResponseEntity.noContent().build();
+  }
 }

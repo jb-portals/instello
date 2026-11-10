@@ -1,21 +1,18 @@
 package in.instello.module.invitation.entity;
 
-import in.instello.module.accessRequest.entity.AccessRequest;
 import in.instello.annotations.GeneratedCuid;
+import in.instello.module.accessRequest.entity.AccessRequest;
 import in.instello.module.organization.entity.Organization;
 import in.instello.module.user.entity.AppAuthority;
 import in.instello.module.user.entity.User;
-
 import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.Map;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
-import java.time.Instant;
-import java.util.Map;
 import org.jspecify.annotations.Nullable;
-
 
 @Entity
 @Builder
@@ -26,60 +23,61 @@ import org.jspecify.annotations.Nullable;
 @Table(name = "invitations")
 public class Invitation {
 
-    @Id
-    @GeneratedCuid
-    @Column(length = 24, nullable = false, updatable = false)
-    private String id;
+  @Id
+  @GeneratedCuid
+  @Column(length = 24, nullable = false, updatable = false)
+  private String id;
 
-    @Column(nullable = false)
-    private String email;
+  @Column(nullable = false)
+  private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "organization_id", nullable = false)
-    private Organization organization;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "organization_id", nullable = false)
+  private Organization organization;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppAuthority role;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private AppAuthority role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "access_request_id")
-    private @Nullable AccessRequest accessRequest;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "access_request_id")
+  private @Nullable AccessRequest accessRequest;
 
-    // SHA-256 of the emailed token; the raw token is never persisted
-    @Column(nullable = false, unique = true)
-    private String tokenHash;
+  // SHA-256 of the emailed token; the raw token is never persisted
+  @Column(nullable = false, unique = true)
+  private String tokenHash;
 
-    @Column(nullable = false)
-    private Instant expiresAt;
+  @Column(nullable = false)
+  private Instant expiresAt;
 
-    // Free-form data captured at invite time, e.g. {"email": "..."} so the invitee cannot change the email
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private @Nullable Map<String, String> metadata;
+  // Free-form data captured at invite time, e.g. {"email": "..."} so the invitee cannot change the
+  // email
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  private @Nullable Map<String, String> metadata;
 
-    private @Nullable Instant acceptedAt;
+  private @Nullable Instant acceptedAt;
 
-    private @Nullable Instant revokedAt;
+  private @Nullable Instant revokedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invited_by_id")
-    private @Nullable User invitedBy;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "invited_by_id")
+  private @Nullable User invitedBy;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  private Instant createdAt;
 
-    public InvitationStatus getStatus() {
-        if (acceptedAt != null) {
-            return InvitationStatus.ACCEPTED;
-        }
-        if (revokedAt != null) {
-            return InvitationStatus.REVOKED;
-        }
-        if (expiresAt.isBefore(Instant.now())) {
-            return InvitationStatus.EXPIRED;
-        }
-        return InvitationStatus.PENDING;
+  public InvitationStatus getStatus() {
+    if (acceptedAt != null) {
+      return InvitationStatus.ACCEPTED;
     }
+    if (revokedAt != null) {
+      return InvitationStatus.REVOKED;
+    }
+    if (expiresAt.isBefore(Instant.now())) {
+      return InvitationStatus.EXPIRED;
+    }
+    return InvitationStatus.PENDING;
+  }
 }

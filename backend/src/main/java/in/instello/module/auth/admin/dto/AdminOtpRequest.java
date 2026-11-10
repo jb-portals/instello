@@ -3,7 +3,4 @@ package in.instello.module.auth.admin.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record AdminOtpRequest(
-        @NotBlank @Email String email
-) {
-}
+public record AdminOtpRequest(@NotBlank @Email String email) {}

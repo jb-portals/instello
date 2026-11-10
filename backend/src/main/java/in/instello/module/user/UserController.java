@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "users", description = "Users operations")
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping("/me")
-    public ResponseEntity<CurrentUserResponse> currentUser(@AuthenticationPrincipal String email) {
-        return ResponseEntity.ok(userService.getCurrentUser(email));
-    }
+  @GetMapping("/me")
+  public ResponseEntity<CurrentUserResponse> currentUser(@AuthenticationPrincipal String email) {
+    return ResponseEntity.ok(userService.getCurrentUser(email));
+  }
 }

@@ -1,132 +1,132 @@
 package in.instello.module.auth.otp;
 
-import java.time.Duration;
-import java.util.Locale;
-import java.util.function.BooleanSupplier;
-
-import org.springframework.stereotype.Service;
-import org.jspecify.annotations.Nullable;
-
-import in.instello.notification.email.EmailTemplateService;
-import in.instello.redis.RedisService;
 import in.instello.module.user.entity.AppAuthority;
 import in.instello.module.user.entity.User;
 import in.instello.module.user.repository.UserRepository;
+import in.instello.notification.email.EmailTemplateService;
+import in.instello.redis.RedisService;
+import java.time.Duration;
+import java.util.Locale;
+import java.util.function.BooleanSupplier;
+import org.jspecify.annotations.Nullable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class OtpService {
 
-    private static final Duration REQUEST_WINDOW = Duration.ofHours(1);
+  private static final Duration REQUEST_WINDOW = Duration.ofHours(1);
 
-    private final OtpGenerator otpGenerator;
-    private final RedisService redisService;
-    private final UserRepository userRepository;
-    private final EmailTemplateService emailTemplateService;
-    private final OtpProperties properties;
+  private final OtpGenerator otpGenerator;
+  private final RedisService redisService;
+  private final UserRepository userRepository;
+  private final EmailTemplateService emailTemplateService;
+  private final OtpProperties properties;
 
-    public OtpService(
-            OtpGenerator otpGenerator,
-            RedisService redisService,
-            UserRepository userRepository,
-            EmailTemplateService emailTemplateService,
-            OtpProperties properties
-    ) {
-        this.otpGenerator = otpGenerator;
-        this.redisService = redisService;
-        this.userRepository = userRepository;
-        this.emailTemplateService = emailTemplateService;
-        this.properties = properties;
+  public OtpService(
+      OtpGenerator otpGenerator,
+      RedisService redisService,
+      UserRepository userRepository,
+      EmailTemplateService emailTemplateService,
+      OtpProperties properties) {
+    this.otpGenerator = otpGenerator;
+    this.redisService = redisService;
+    this.userRepository = userRepository;
+    this.emailTemplateService = emailTemplateService;
+    this.properties = properties;
+  }
+
+  public void requestAdminOtp(String email) {
+    String normalizedEmail = normalize(email);
+    issue(OtpPurpose.ADMIN_LOGIN, normalizedEmail, () -> findAdmin(normalizedEmail) != null);
+  }
+
+  public User verifyAdminOtp(String email, String code) {
+    String normalizedEmail = normalize(email);
+    consume(OtpPurpose.ADMIN_LOGIN, normalizedEmail, code);
+
+    User admin = findAdmin(normalizedEmail);
+    if (admin == null) {
+      throw new InvalidOtpException();
+    }
+    return admin;
+  }
+
+  /**
+   * Issues an email-verification code. Rate limits are always enforced; the email is only sent when
+   * {@code shouldDeliver} returns true so callers cannot probe which accounts exist.
+   */
+  public void requestEmailVerificationOtp(String email, BooleanSupplier shouldDeliver) {
+    this.issue(OtpPurpose.EMAIL_VERIFICATION, normalize(email), shouldDeliver);
+  }
+
+  /**
+   * Validates and consumes an email-verification code, throwing {@link InvalidOtpException}
+   * otherwise.
+   */
+  public void verifyEmailVerificationOtp(String email, String code) {
+    this.consume(OtpPurpose.EMAIL_VERIFICATION, normalize(email), code);
+  }
+
+  private void issue(OtpPurpose purpose, String normalizedEmail, BooleanSupplier shouldDeliver) {
+    String prefix = keyPrefix(purpose, normalizedEmail);
+
+    String cooldownKey = prefix + ":cooldown";
+    if (!redisService.setIfAbsent(cooldownKey, "1", properties.resendCooldown())) {
+      throw new OtpRateLimitException(retryAfter(cooldownKey));
     }
 
-    public void requestAdminOtp(String email) {
-        String normalizedEmail = normalize(email);
-        issue(OtpPurpose.ADMIN_LOGIN, normalizedEmail, () -> findAdmin(normalizedEmail) != null);
+    String requestsKey = prefix + ":requests";
+    if (redisService.increment(requestsKey, REQUEST_WINDOW) > properties.maxRequestsPerHour()) {
+      throw new OtpRateLimitException(retryAfter(requestsKey));
     }
 
-    public User verifyAdminOtp(String email, String code) {
-        String normalizedEmail = normalize(email);
-        consume(OtpPurpose.ADMIN_LOGIN, normalizedEmail, code);
-
-        User admin = findAdmin(normalizedEmail);
-        if (admin == null) {
-            throw new InvalidOtpException();
-        }
-        return admin;
+    if (!shouldDeliver.getAsBoolean()) {
+      return;
     }
 
-    /**
-     * Issues an email-verification code. Rate limits are always enforced; the email is only sent
-     * when {@code shouldDeliver} returns true so callers cannot probe which accounts exist.
-     */
-    public void requestEmailVerificationOtp(String email, BooleanSupplier shouldDeliver) {
-        this.issue(OtpPurpose.EMAIL_VERIFICATION, normalize(email), shouldDeliver);
-    }
+    String code = otpGenerator.generate();
+    redisService.set(prefix + ":code", code, properties.ttl());
+    redisService.delete(prefix + ":attempts");
+    emailTemplateService.sendOtp(normalizedEmail, code, (int) properties.ttl().toMinutes());
+  }
 
-    /** Validates and consumes an email-verification code, throwing {@link InvalidOtpException} otherwise. */
-    public void verifyEmailVerificationOtp(String email, String code) {
-        this.consume(OtpPurpose.EMAIL_VERIFICATION, normalize(email), code);
-    }
+  private void consume(OtpPurpose purpose, String normalizedEmail, String code) {
+    String prefix = keyPrefix(purpose, normalizedEmail);
+    String codeKey = prefix + ":code";
+    String attemptsKey = prefix + ":attempts";
+    String requestsKey = prefix + ":requests";
 
-    private void issue(OtpPurpose purpose, String normalizedEmail, BooleanSupplier shouldDeliver) {
-        String prefix = keyPrefix(purpose, normalizedEmail);
+    String expected = redisService.get(codeKey).orElseThrow(InvalidOtpException::new);
 
-        String cooldownKey = prefix + ":cooldown";
-        if (!redisService.setIfAbsent(cooldownKey, "1", properties.resendCooldown())) {
-            throw new OtpRateLimitException(retryAfter(cooldownKey));
-        }
-
-        String requestsKey = prefix + ":requests";
-        if (redisService.increment(requestsKey, REQUEST_WINDOW) > properties.maxRequestsPerHour()) {
-            throw new OtpRateLimitException(retryAfter(requestsKey));
-        }
-
-        if (!shouldDeliver.getAsBoolean()) {
-            return;
-        }
-
-        String code = otpGenerator.generate();
-        redisService.set(prefix + ":code", code, properties.ttl());
-        redisService.delete(prefix + ":attempts");
-        emailTemplateService.sendOtp(normalizedEmail, code, (int) properties.ttl().toMinutes());
-    }
-
-    private void consume(OtpPurpose purpose, String normalizedEmail, String code) {
-        String prefix = keyPrefix(purpose, normalizedEmail);
-        String codeKey = prefix + ":code";
-        String attemptsKey = prefix + ":attempts";
-        String requestsKey = prefix + ":requests";
-
-        String expected = redisService.get(codeKey).orElseThrow(InvalidOtpException::new);
-
-        if (!otpGenerator.verify(code, expected)) {
-            long attempts = redisService.increment(attemptsKey, properties.ttl());
-            if (attempts >= properties.maxVerifyAttempts()) {
-                redisService.delete(codeKey);
-                redisService.delete(attemptsKey);
-            }
-            throw new InvalidOtpException();
-        }
-
+    if (!otpGenerator.verify(code, expected)) {
+      long attempts = redisService.increment(attemptsKey, properties.ttl());
+      if (attempts >= properties.maxVerifyAttempts()) {
         redisService.delete(codeKey);
         redisService.delete(attemptsKey);
-        redisService.delete(requestsKey);
+      }
+      throw new InvalidOtpException();
     }
 
-    private @Nullable User findAdmin(String normalizedEmail) {
-        return userRepository
-                .findByEmailIgnoreCaseAndAuthorities_Authority(normalizedEmail, AppAuthority.ROLE_ADMIN)
-                .orElse(null);
-    }
+    redisService.delete(codeKey);
+    redisService.delete(attemptsKey);
+    redisService.delete(requestsKey);
+  }
 
-    private long retryAfter(String key) {
-        return Math.max(1, redisService.getRemainingExpiration(key));
-    }
+  private @Nullable User findAdmin(String normalizedEmail) {
+    return userRepository
+        .findByEmailIgnoreCaseAndAuthorities_Authority(normalizedEmail, AppAuthority.ROLE_ADMIN)
+        .orElse(null);
+  }
 
-    private static String keyPrefix(OtpPurpose purpose, String normalizedEmail) {
-        return "otp:" + purpose.key() + ":" + normalizedEmail;
-    }
+  private long retryAfter(String key) {
+    return Math.max(1, redisService.getRemainingExpiration(key));
+  }
 
-    private static String normalize(String email) {
-        return email.trim().toLowerCase(Locale.ROOT);
-    }
+  private static String keyPrefix(OtpPurpose purpose, String normalizedEmail) {
+    return "otp:" + purpose.key() + ":" + normalizedEmail;
+  }
+
+  private static String normalize(String email) {
+    return email.trim().toLowerCase(Locale.ROOT);
+  }
 }

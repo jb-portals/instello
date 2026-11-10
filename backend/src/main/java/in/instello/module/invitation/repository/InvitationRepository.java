@@ -1,24 +1,23 @@
 package in.instello.module.invitation.repository;
 
 import in.instello.module.invitation.entity.Invitation;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InvitationRepository extends JpaRepository<Invitation, String> {
 
-    List<Invitation> findByAccessRequestIdAndAcceptedAtIsNullAndRevokedAtIsNull(String accessRequestId);
+  List<Invitation> findByAccessRequestIdAndAcceptedAtIsNullAndRevokedAtIsNull(
+      String accessRequestId);
 
-    Optional<Invitation> findFirstByAccessRequestIdOrderByCreatedAtDesc(String accessRequestId);
+  Optional<Invitation> findFirstByAccessRequestIdOrderByCreatedAtDesc(String accessRequestId);
 
-    Optional<Invitation> findByTokenHash(String tokenHash);
+  Optional<Invitation> findByTokenHash(String tokenHash);
 
-    Optional<Invitation> findFirstByEmailAndAcceptedAtIsNullAndRevokedAtIsNullOrderByCreatedAtDesc(String email);
+  Optional<Invitation> findFirstByEmailAndAcceptedAtIsNullAndRevokedAtIsNullOrderByCreatedAtDesc(
+      String email);
 
-    boolean existsByEmailAndAcceptedAtIsNullAndRevokedAtIsNull(String email);
+  boolean existsByEmailAndAcceptedAtIsNullAndRevokedAtIsNull(String email);
 
-    List<Invitation> findByAcceptedAtIsNotNull();
+  List<Invitation> findByAcceptedAtIsNotNull();
 }

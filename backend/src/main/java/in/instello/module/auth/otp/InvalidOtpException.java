@@ -2,7 +2,7 @@ package in.instello.module.auth.otp;
 
 public class InvalidOtpException extends RuntimeException {
 
-    public InvalidOtpException() {
-        super("Invalid or expired OTP");
-    }
+  public InvalidOtpException() {
+    super("Invalid or expired OTP");
+  }
 }
