@@ -1,0 +1,8 @@
+package in.instello.common.exception.app;
+
+public class ResourceNotFoundException extends RuntimeException {
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}

@@ -1,0 +1,43 @@
+package in.instello.module.user.entity;
+
+import in.instello.annotations.GeneratedCuid;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.jspecify.annotations.Nullable;
+
+import java.time.Instant;
+
+
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "user_profiles")
+public class UserProfile {
+    @Id
+    @GeneratedCuid
+    @Column(length = 24, nullable = false, updatable = false)
+    private String id;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    private @Nullable String lastName;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant updatedAt;
+
+    @OneToOne
+    @JoinColumn(name = "user_id",nullable = false)
+    private User user;
+
+}
