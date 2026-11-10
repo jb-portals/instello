@@ -1,6 +1,13 @@
-# Instello
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="banner-dark.png">
+    <img src="banner.png" alt="Instello — One Platform. Every Possibility">
+  </picture>
+</p>
 
-Instello is an ERP platform for organizations and educational institutions. It brings platform administration, organization management, and institution-specific experiences together with a shared backend API.
+---
+
+Instello helps academic teams move paperwork into digital workflows for managing students, attendance, marks, timetables, and more. It brings platform administration, organization management, and institution-specific experiences together with a shared backend API.
 
 ## Applications
 
