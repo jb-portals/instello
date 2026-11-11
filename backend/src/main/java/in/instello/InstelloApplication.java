@@ -1,6 +1,7 @@
 package in.instello;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
@@ -27,6 +28,8 @@ public class InstelloApplication {
   }
 
   public static void main(String[] args) {
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
     Dotenv dotenv = Dotenv.configure().load();
     dotenv.entries().forEach((entry) -> System.setProperty(entry.getKey(), entry.getValue()));
 
