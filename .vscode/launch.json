@@ -2,10 +2,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-InstelloBackendApplication<backend>",
+            "name": "Spring Boot-InstelloApplication<backend>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.instello.backend.InstelloBackendApplication",
+            "mainClass": "in.instello.InstelloApplication",
             "projectName": "backend",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
