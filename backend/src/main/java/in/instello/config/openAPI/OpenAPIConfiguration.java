@@ -1,5 +1,6 @@
 package in.instello.config.openAPI;
 
+import in.instello.InstelloApplication;
 import in.instello.config.web.ApiVersions;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
@@ -34,7 +35,7 @@ public class OpenAPIConfiguration {
   GroupedOpenApi groupedOpenApi_V0_1() {
     return GroupedOpenApi.builder()
         .group("v" + ApiVersions.V0_1)
-        .packagesToScan("com.instello.backend")
+        .packagesToScan(InstelloApplication.class.getPackageName())
         .build();
   }
 

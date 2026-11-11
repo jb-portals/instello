@@ -1,5 +1,6 @@
 package in.instello.config.web;
 
+import in.instello.InstelloApplication;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.RequestPath;
@@ -25,7 +26,8 @@ public class WebConfiguration implements WebMvcConfigurer {
   @Override
   public void configurePathMatch(PathMatchConfigurer configurer) {
     configurer.addPathPrefix(
-        "/v{version}", HandlerTypePredicate.forBasePackage("com.instello.backend"));
+        "/v{version}",
+        HandlerTypePredicate.forBasePackage(InstelloApplication.class.getPackageName()));
   }
 
   private static boolean isVersioned(RequestPath requestPath) {
