@@ -52,7 +52,7 @@ public class AccessRequestController {
     URI location =
         ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/v{version}/access-requests/{id}")
-            .buildAndExpand(ApiVersions.V0_1, response.id())
+            .buildAndExpand(ApiVersions.V1, response.id())
             .toUri();
 
     return ResponseEntity.status(HttpStatus.CREATED)

@@ -1,8 +1,6 @@
 spring:
   application:
     name: backend
-    version: 0.0.1
-
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
@@ -81,3 +79,26 @@ springdoc:
     path: /api-docs
   default-produces-media-type: application/json
   writer-with-order-by-keys: true
+  override-with-generic-response: true
+  open-api:
+    servers:
+      - url: http://localhost:8080
+        description: Dev server (uses test data)
+      - url: https://api.instello.in
+        description: Production server (uses live data)
+    info:
+      version: 1.0.0
+      title: Instello API
+      summary: One Platform. Every Posibility.
+      description: >
+        Open API spec for Instello API. This follows standard security with CSRF protection.
+        Admin follows simple email verification authentication where-as remaining users will
+        have multiple authenticion options with email verification when they sign-up.
+      terms-of-service:
+        Copyright © 2026 Instello Technologies. All rights reserved.
+        This repository and its contents are proprietary. No license or other permission is granted to use,
+        reproduce, modify, distribute, or create derivative works from any part of this repository without prior
+        written permission from Instello Technologies, except as permitted by applicable law.
+
+        Third-party components included in this repository may be subject to separate licenses and notices.
+        Their respective terms govern those components.

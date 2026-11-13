@@ -19,8 +19,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     configurer
         .usePathSegment(0, WebConfiguration::isVersioned)
         .setVersionRequired(false)
-        .addSupportedVersions(ApiVersions.V0_1)
-        .setDefaultVersion(ApiVersions.V0_1);
+        .addSupportedVersions(ApiVersions.V1)
+        .setDefaultVersion(ApiVersions.V1);
   }
 
   @Override
