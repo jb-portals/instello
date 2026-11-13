@@ -48,17 +48,15 @@ public class StudentRemark {
   @Builder.Default
   private List<RemarkAttachment> attachments = new ArrayList<>();
 
-  // One Remark can have multiple History records
-  @OneToMany(mappedBy = "remark", fetch = FetchType.LAZY)
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
-  private Instant createdAt;
-
-  @UpdateTimestamp private Instant updatedAt;
-
   @Builder.Default
   @Column(nullable = false)
   private boolean isDeleted = false;
 
   private Instant deletedAt;
+
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  private Instant createdAt;
+
+  @UpdateTimestamp private Instant updatedAt;
 }
