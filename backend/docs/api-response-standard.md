@@ -1,131 +1,164 @@
-# API response and error standard
+# API response standard
 
-Instello REST APIs follow GitHub / Stripe / Microsoft conventions:
+Instello APIs use HTTP status codes to describe the outcome. Successful responses return the
+requested resource or result directly; errors use the Problem Details format defined by
+[RFC 9457](https://www.rfc-editor.org/rfc/rfc9457).
 
-- **Success** — return the resource (or list page) directly. HTTP status is the success signal.
-- **Errors** — always a nested Microsoft-style `error` object. Never reuse the success DTO.
+There is no universal success envelope. Do not add `{ "data": ... }`, `{ "success": true }`,
+or a success message around a response. The response body is the endpoint's resource/result shape.
 
-This is a **breaking change** for early `v0.1` clients that read `response.data`, `response.message`, or a body `code` / `status`. Prefer reading the HTTP status line and the bare resource / `error` object.
+## Success responses
 
-## Success
+### Read or update a resource — `200 OK`
 
-### Single resource — `200 OK`
+Return the resource itself as JSON:
 
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "id": "…",
-  "email": "admin@example.com"
+  "id": "usr_01JABCDEF",
+  "email": "admin@example.com",
+  "authorities": ["ROLE_ADMIN"]
 }
 ```
 
-### Create — `201 Created` (+ `Location` when a resource URI exists)
+### Create a resource — `201 Created`
+
+Return the created resource. Include `Location` when its canonical URI is known:
 
 ```http
 HTTP/1.1 201 Created
-Location: /v0.1/access-requests/{id}
+Location: /v0.1/access-requests/ar_01JABCDEF
 Content-Type: application/json
 
 {
-  "id": "…",
+  "id": "ar_01JABCDEF",
   "status": "PENDING"
 }
 ```
 
-### No body — `204 No Content`
+### Collection — `200 OK`
 
-Use for logout, fire-and-forget actions (e.g. request OTP), and stubs that have no resource to return.
+Return a page object directly (do not add another `data` wrapper):
 
-### Collections — `PageResponse` as the body
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
 
-Do **not** wrap again in `{ data: … }`.
-
-```json
 {
-  "content": [ /* items */ ],
+  "content": [
+    { "id": "ar_01JABCDEF", "status": "PENDING" }
+  ],
   "page": 0,
   "size": 20,
-  "totalElements": 42,
-  "totalPages": 3
+  "totalElements": 1,
+  "totalPages": 1
 }
 ```
 
-## Errors
+### Successful operation with no representation — `204 No Content`
 
-Always:
+Return no response body. Use this for operations such as logout, OTP requests, or verification
+when there is no result resource to return.
 
-```json
+## Error responses: RFC 9457 Problem Details
+
+Return `Content-Type: application/problem+json` and the standard Problem Details members. The
+HTTP response status is authoritative and must match the `status` member in the body. Use
+`type` as a stable identifier for the problem category; use `about:blank` when no more specific
+type URI is defined. `title` is a short summary, `detail` describes this occurrence, and
+`instance` identifies the specific occurrence when available.
+
+`about:blank` is the RFC-defined generic problem type. When using it, set `title` to the standard
+reason phrase for the HTTP status (for example, `Not Found` for `404`). The application `code`
+extension can still provide a more specific machine-readable category, such as
+`INVALID_INVITATION`; it does not replace the RFC `type` member. Prefer a stable, specific type
+URI when Instello defines one for the problem.
+
+```http
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+
 {
-  "error": {
-    "code": "validation_failed",
-    "message": "One or more fields are invalid",
-    "target": null,
-    "details": [
-      {
-        "code": "NotBlank",
-        "target": "email",
-        "message": "must not be blank"
-      }
-    ]
-  }
+  "type": "https://api.instello.in/problems/validation-failed",
+  "title": "Request validation failed",
+  "status": 400,
+  "detail": "One or more fields are invalid.",
+  "instance": "/v0.1/invitations",
+  "code": "VALIDATION_FAILED",
+  "errors": [
+    {
+      "code": "NotBlank",
+      "target": "email",
+      "detail": "must not be blank"
+    }
+  ]
 }
 ```
 
-- `error.code` — stable snake_case machine code (see below)
-- `error.message` — human-readable summary
-- `error.target` — optional primary field/path
-- `error.details` — optional list of field-level problems (validation collects **all** field errors)
-- HTTP status stays on the response line only — do **not** mirror it as a JSON int/`status` string
+`code` and `errors` above are application extension members; RFC 9457 permits extensions but
+defines the standard members (`type`, `title`, `status`, `detail`, and `instance`). Use stable,
+uppercase application codes such as `VALIDATION_FAILED`, `INVALID_CREDENTIALS`, and
+`EMAIL_NOT_VERIFIED`. The HTTP status line is authoritative; the body `status` must match it.
 
-Security `401` / `403` and the global exception handler use the **same** JSON shape.
+Set `instance` to the request path where the error occurred, without the query string. This
+identifies the endpoint in logs without copying query parameters that could contain sensitive
+values. Omit `errors` when there are no field-level issues. Do not expose stack traces, internal
+exception names, or sensitive data.
 
-### Stable error codes
+`target` is an application extension, not an RFC 9457 member. Use it only on an individual entry
+in `errors` to identify the invalid request field (for example, `email`). Clients can use it to
+show the validation message next to the relevant input. Omit it when an error is not tied to a
+specific field; it is not useful as a general error-level property.
 
-| Code | Typical HTTP |
-|------|----------------|
-| `not_found` | 404 |
-| `conflict` | 409 |
-| `validation_failed` | 400 |
-| `unauthorized` | 401 |
-| `forbidden` | 403 |
-| `email_not_verified` | 403 (login with a correct password before the email OTP was verified) |
-| `rate_limited` | 429 (+ `Retry-After` when known) |
-| `bad_request` | 400 |
-| `internal_error` | 500 |
+Example without validation extensions:
 
-## Owner onboarding and login
+```http
+HTTP/1.1 404 Not Found
+Content-Type: application/problem+json
 
-All endpoints below are public, served under `/v0.1`, and (like every `POST`) need the CSRF token from `GET /auth/csrf-token`.
+{
+  "type": "https://api.instello.in/problems/not-found",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "The requested invitation was not found.",
+  "instance": "/v0.1/organizations/invitations",
+  "code": "NOT_FOUND"
+}
+```
 
-| Step | Endpoint | Body | Success |
-|------|----------|------|---------|
-| 1. Preview invitation | `GET /organizations/invitations?token=` | – | `200 { email, organizationName, expiresAt }` (the email is locked, show it read-only) |
-| 2. Accept invitation | `POST /organizations/invitations/accept` | `{ token, password }` (8–72 chars) | `200 { email }`; an unverified account is created and a 6-digit OTP is emailed |
-| 2b. Resend code | `POST /auth/email-verification/otp` | `{ email }` | `204` (always, to avoid account probing; `429` when rate limited) |
-| 3. Verify email | `POST /auth/email-verification/verify` | `{ email, code }` | `204`; grants `ROLE_OWNER` and marks the invitation accepted |
-| 4. Log in | `POST /auth/login` | `{ email, password }` | `204` + session cookie |
+### Common application error codes
 
-Notes:
+| `code` | HTTP status | Typical use |
+|---|---:|---|
+| `NOT_FOUND` | 404 | Resource does not exist or should not be disclosed |
+| `CONFLICT` | 409 | Request conflicts with current resource state |
+| `VALIDATION_FAILED` | 400 | Request fields fail validation |
+| `BAD_REQUEST` | 400 | Other malformed or unsupported request |
+| `INVALID_CREDENTIALS` | 401 | Submitted credentials are invalid |
+| `AUTHENTICATION_REQUIRED` | 401 | Authentication is missing |
+| `FORBIDDEN` | 403 | Caller is authenticated but not allowed |
+| `EMAIL_NOT_VERIFIED` | 403 | Correct-password login for an unverified email |
+| `RATE_LIMITED` | 429 | Request limit exceeded; include `Retry-After` when known |
+| `INTERNAL_ERROR` | 500 | Unexpected server failure |
 
-- The account email comes from the invitation `metadata.email`, never from the request. It must match `invitation.email` or accept fails with `409`.
-- Invalid, expired, revoked or already accepted tokens return `404`. A verified account for the email already existing returns `409`.
-- Login failures: `401 unauthorized` for bad credentials (including admins, who use OTP only), `403 email_not_verified` for a correct password with an unverified email, `429 rate_limited` after 10 attempts per 15 minutes per email + IP.
-- Roles are rows in the `authorities` table (`ROLE_ADMIN`, `ROLE_OWNER`, `ROLE_USER`). `GET /users/me` returns them as `authorities` (previously `roles`).
+Use the same Problem Details format for errors from controllers, global exception handling,
+and security handling. Security errors should not use a separate body schema.
 
-## Do / don’t for new endpoints
+## Do / don't for new endpoints
 
 **Do**
 
-- Return `ResponseEntity<T>`, `ResponseEntity<PageResponse<T>>`, or `ResponseEntity<Void>`
-- Use `201` + `Location` for creates when a resource URI exists
-- Throw domain exceptions (`ResourceNotFoundException`, `ConflictException`, `BadRequestException`, …); the advice maps them to `ApiErrorResponse`
-- Keep success bodies free of human “success message” strings
+- Return a resource/result directly, `PageResponse<T>` for pages, or no body for `204`.
+- Use `201` and `Location` for creates when a canonical resource URI exists.
+- Use RFC 9457 Problem Details for every error, including validation and security errors.
+- Keep successful response bodies free of generic success messages.
 
-**Don’t**
+**Don't**
 
-- Wrap success in `{ code, status, message, data }`
-- Return ad-hoc `Map` bodies for resources
-- Put stack traces or internal exception types in the error body
-- Invent one-off error JSON shapes for controllers or security filters
+- Wrap success in `{ "code", "status", "message", "data" }`.
+- Return ad-hoc `Map` bodies for resources.
+- Put stack traces or internal exception types in an error response.
+- Invent one-off error JSON shapes for controllers or security filters.
