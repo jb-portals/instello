@@ -1,0 +1,351 @@
+
+name: Feature Specification
+description: Define business requirements, functional behavior, and acceptance criteria for a feature.
+title: "[FEATURE] "
+labels:
+  - feature
+  - specification
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Specification
+
+        Use this form to define the authoritative business requirements for a feature.
+        Complete the specification before creating implementation sub-issues.
+
+  - type: input
+    id: feature_name
+    attributes:
+      label: Feature Name
+      description: Name of the feature being specified.
+      placeholder: "e.g. Attendance Management"
+    validations:
+      required: true
+
+  - type: input
+    id: module
+    attributes:
+      label: Module
+      description: Parent module to which this feature belongs.
+      placeholder: "e.g. Academic Management"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Business priority of this feature.
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Explain what this feature does.
+      placeholder: Describe the feature and its purpose.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: Problem Statement
+      description: What business problem does this feature solve?
+      placeholder: Explain the existing problem and why this feature is needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: business_objectives
+    attributes:
+      label: Business Objectives
+      description: Define the expected business outcomes.
+      placeholder: |
+        - Objective 1
+        - Objective 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Clearly define what is included and excluded.
+      value: |
+        ### In Scope
+        -
+
+        ### Out of Scope
+        -
+
+        ### Dependencies
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: actors_permissions
+    attributes:
+      label: Actors and Permissions
+      description: Define the actors, roles, and access permissions.
+      value: |
+        | Actor / Role | Permissions | Description |
+        |---|---|---|
+        | | | |
+
+        ### Access Control Rules
+
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: functional_requirements
+    attributes:
+      label: Functional Requirements
+      description: Define each expected system behavior with a unique requirement ID.
+      placeholder: |
+        ### FR-001: Requirement Name
+
+        **Description:**
+
+        **Preconditions:**
+        -
+
+        **Expected Behavior:**
+        1.
+
+        **Postconditions:**
+        -
+
+        **Priority:** Must Have / Should Have / Could Have
+
+        ---
+
+        ### FR-002: Requirement Name
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: business_rules
+    attributes:
+      label: Business Rules
+      description: Define authoritative business rules that all developers must follow.
+      value: |
+        | Rule ID | Business Rule | Example / Explanation |
+        |---|---|---|
+        | BR-001 | | |
+        | BR-002 | | |
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Business Workflow
+      description: Explain the complete business process and state transitions.
+      value: |
+        ### Workflow Steps
+        1.
+        2.
+        3.
+
+        ### State Transitions
+
+        | Current State | Action | Next State | Conditions |
+        |---|---|---|---|
+        | | | | |
+
+        ### Exceptional Workflows
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: data_requirements
+    attributes:
+      label: Data Requirements
+      description: Describe required business data, relationships and integrity constraints.
+      value: |
+        ### Fields
+
+        | Field | Description | Required | Constraints |
+        |---|---|---|---|
+        | | | | |
+
+        ### Relationships
+        -
+
+        ### Data Integrity Rules
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: tenancy
+    attributes:
+      label: Multi-Tenancy and Data Isolation
+      description: Define tenant ownership, context, visibility and isolation requirements.
+      value: |
+        ### Tenant Context
+        -
+
+        ### Isolation Rules
+        -
+
+        ### Ownership and Visibility
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: api_requirements
+    attributes:
+      label: API Requirements
+      description: Define required API capabilities. Detailed contracts may be maintained separately in OpenAPI.
+      value: |
+        | Method | Endpoint | Description | Authorization |
+        |---|---|---|---|
+        | | | | |
+
+        ### Request Requirements
+        -
+
+        ### Response Requirements
+        -
+
+        ### Validation Requirements
+        -
+
+        ### Error Scenarios
+
+        | Scenario | Expected HTTP Status | Expected Behavior |
+        |---|---|---|
+        | | | |
+
+        ### OpenAPI Reference
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: nfr
+    attributes:
+      label: Non-Functional Requirements
+      description: Specify applicable security, performance and reliability requirements.
+      value: |
+        ### Security
+        -
+
+        ### Performance
+        -
+
+        ### Reliability
+        -
+
+        ### Auditability
+        -
+
+        ### Accessibility
+        -
+
+  - type: textarea
+    id: edge_cases
+    attributes:
+      label: Edge Cases and Exceptional Scenarios
+      description: Document scenarios that could affect expected system behavior.
+      value: |
+        | Scenario | Expected System Behavior |
+        |---|---|
+        | | |
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define objectively verifiable conditions for feature completion.
+      value: |
+        ### Functional
+        - [ ]
+
+        ### Business Rules
+        - [ ]
+
+        ### Security and Authorization
+        - [ ]
+
+        ### Data Integrity
+        - [ ]
+
+        ### Testing
+        - [ ] Unit tests cover applicable business logic.
+        - [ ] Integration tests cover relevant workflows.
+        - [ ] Validation and error scenarios are tested.
+        - [ ] Tenant isolation is verified.
+    validations:
+      required: true
+
+  - type: textarea
+    id: open_questions
+    attributes:
+      label: Open Questions and Assumptions
+      description: Record unresolved business decisions. Do not silently assume missing requirements.
+      value: |
+        | ID | Question / Assumption | Owner | Status | Resolution |
+        |---|---|---|---|---|
+        | Q-001 | | | Open | |
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and References
+      description: Link related features, existing issues, documentation and external dependencies.
+      placeholder: |
+        - Related feature:
+        - Related issue:
+        - External documentation:
+
+  - type: checkboxes
+    id: specification_review
+    attributes:
+      label: Specification Review Checklist
+      description: The feature owner should complete this review before implementation starts.
+      options:
+        - label: Business requirements reviewed.
+          required: true
+        - label: Functional requirements approved.
+          required: true
+        - label: Business rules approved.
+          required: true
+        - label: Permissions and tenant isolation reviewed.
+          required: true
+        - label: API requirements reviewed.
+          required: true
+        - label: Acceptance criteria finalized.
+          required: true
+        - label: Dependencies identified.
+          required: true
+        - label: Open questions resolved or explicitly deferred.
+          required: true
+
+  - type: dropdown
+    id: specification_status
+    attributes:
+      label: Specification Status
+      description: Current state of the requirements document.
+      options:
+        - Draft
+        - In Review
+        - Approved
+    validations:
+      required: true
