@@ -1,0 +1,301 @@
+
+name: Bug Report
+description: Report unexpected behavior, defects, and functional issues.
+title: "[BUG] "
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Report
+
+        Provide enough information for another developer to reproduce, investigate, and fix the issue.
+
+        Never include passwords, authentication tokens, personal information, or production secrets.
+
+  - type: input
+    id: module
+    attributes:
+      label: Affected Module
+      description: Which module contains the issue?
+      placeholder: "e.g. Authentication, Attendance, Timetable"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local Development
+        - Development
+        - Staging
+        - Production
+    validations:
+      required: true
+
+  - type: input
+    id: application_version
+    attributes:
+      label: Application Version
+      description: Version or Git commit SHA where the issue occurred.
+      placeholder: "e.g. backend-v0.1.0 or commit SHA"
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How seriously does this issue affect the system?
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected_users
+    attributes:
+      label: Affected Users
+      description: Estimate the scope of affected users.
+      options:
+        - Single User
+        - Multiple Users
+        - Entire Institution
+        - Multiple Institutions
+        - Entire Application
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: affected_role
+    attributes:
+      label: Affected User Role
+      description: Which user role experiences this issue?
+      placeholder: "e.g. Institution Owner, Principal, Faculty, Student"
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: Briefly explain the problem.
+      placeholder: Describe the issue in a few sentences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior
+      description: What is currently happening?
+      placeholder: Describe the unexpected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: Describe the correct expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide exact steps that consistently reproduce the issue.
+      placeholder: |
+        1. Log in as ...
+        2. Navigate to ...
+        3. Perform ...
+        4. Observe the issue.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reproduction_frequency
+    attributes:
+      label: Reproduction Frequency
+      options:
+        - Always
+        - Frequently
+        - Occasionally
+        - Rarely
+        - Unable to reproduce consistently
+    validations:
+      required: true
+
+  - type: textarea
+    id: preconditions
+    attributes:
+      label: Preconditions
+      description: Describe the data, permissions, and conditions required to reproduce the issue.
+      value: |
+        - User role:
+        - Institution:
+        - Required permissions:
+        - Existing records:
+        - Other dependencies:
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or Screen Recordings
+      description: Attach screenshots or recordings demonstrating the issue.
+      placeholder: Drag and drop supporting files here.
+
+  - type: textarea
+    id: error_messages
+    attributes:
+      label: Error Messages and Logs
+      description: Include relevant stack traces, browser console errors, or server logs.
+      render: shell
+      placeholder: Paste relevant logs here.
+
+  - type: textarea
+    id: api_details
+    attributes:
+      label: API / Network Details
+      description: If applicable, provide the API request and response details.
+      value: |
+        ### Request
+        - Method:
+        - Endpoint:
+        - HTTP Status:
+        - Request ID / Trace ID:
+
+        ### Request Body
+        ```json
+        ```
+
+        ### Response Body
+        ```json
+        ```
+
+  - type: textarea
+    id: technical_context
+    attributes:
+      label: Technical Context
+      description: Identify the potentially affected components, if known.
+      value: |
+        - [ ] Frontend
+        - [ ] Backend
+        - [ ] Database
+        - [ ] Authentication / Authorization
+        - [ ] Infrastructure
+        - [ ] Third-party Integration
+        - [ ] Unknown
+
+        ### Affected Component / Endpoint
+        -
+
+  - type: textarea
+    id: business_impact
+    attributes:
+      label: Business Impact
+      description: Explain how this issue affects business operations or users.
+      placeholder: Describe the impact and any available workaround.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: security_impact
+    attributes:
+      label: Security and Data Integrity Impact
+      description: Select all applicable risks.
+      options:
+        - label: Unauthorized access
+        - label: Cross-institution data exposure
+        - label: Incorrect permission enforcement
+        - label: Data corruption
+        - label: Data loss
+        - label: Sensitive information exposure
+        - label: None / Not applicable
+       
+
+  - type: textarea
+    id: security_details
+    attributes:
+      label: Security / Data Integrity Details
+      description: Explain any security or data integrity implications.
+      placeholder: Provide details if applicable.
+
+  - type: input
+    id: feature_reference
+    attributes:
+      label: Related Feature Specification
+      description: Link the parent feature issue, if applicable.
+      placeholder: "e.g. #123"
+
+  - type: textarea
+    id: related_issues
+    attributes:
+      label: Related Issues and Pull Requests
+      description: Link related issues, discussions, or pull requests.
+      placeholder: |
+        - Related issue:
+        - Related PR:
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Fix Acceptance Criteria
+      description: Define how the fix will be verified.
+      value: |
+        - [ ] The reported issue is fixed.
+        - [ ] Original reproduction steps no longer produce the issue.
+        - [ ] Existing functionality is not broken.
+        - [ ] Relevant regression tests are added or updated.
+        - [ ] Authorization and tenant isolation are verified where applicable.
+        - [ ] Error handling is verified where applicable.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        ## Developer Investigation
+
+        The following sections are intended for the assigned developer during investigation and implementation.
+
+  - type: textarea
+    id: root_cause
+    attributes:
+      label: Root Cause
+      description: Explain why the issue occurred.
+      placeholder: To be completed by the assigned developer.
+
+  - type: textarea
+    id: proposed_fix
+    attributes:
+      label: Proposed Fix
+      description: Describe the intended technical correction.
+      placeholder: To be completed by the assigned developer.
+
+  - type: textarea
+    id: regression_risks
+    attributes:
+      label: Regression Risks
+      description: Identify potentially affected functionality.
+      placeholder: To be completed by the assigned developer.
+
+  - type: textarea
+    id: verification_notes
+    attributes:
+      label: Verification Notes
+      description: Explain how the fix was tested and verified.
+      value: |
+        - [ ] Fix implemented.
+        - [ ] Unit tests passed.
+        - [ ] Integration tests passed.
+        - [ ] Regression testing completed.
+        - [ ] Code reviewed.
+        - [ ] Verified in target environment.
