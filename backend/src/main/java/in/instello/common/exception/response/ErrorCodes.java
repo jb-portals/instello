@@ -2,15 +2,16 @@ package in.instello.common.exception.response;
 
 public final class ErrorCodes {
 
-  public static final String NOT_FOUND = "not_found";
-  public static final String CONFLICT = "conflict";
-  public static final String VALIDATION_FAILED = "validation_failed";
-  public static final String UNAUTHORIZED = "unauthorized";
-  public static final String FORBIDDEN = "forbidden";
-  public static final String EMAIL_NOT_VERIFIED = "email_not_verified";
-  public static final String RATE_LIMITED = "rate_limited";
-  public static final String BAD_REQUEST = "bad_request";
-  public static final String INTERNAL_ERROR = "internal_error";
+  public static final String NOT_FOUND = "NOT_FOUND";
+  public static final String CONFLICT = "CONFLICT";
+  public static final String VALIDATION_FAILED = "VALIDATION_FAILED";
+  public static final String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
+  public static final String AUTHENTICATION_REQUIRED = "AUTHENTICATION_REQUIRED";
+  public static final String FORBIDDEN = "FORBIDDEN";
+  public static final String EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
+  public static final String RATE_LIMITED = "RATE_LIMITED";
+  public static final String BAD_REQUEST = "BAD_REQUEST";
+  public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
 
   private ErrorCodes() {}
 }

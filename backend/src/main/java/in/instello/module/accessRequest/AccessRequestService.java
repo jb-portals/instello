@@ -309,16 +309,6 @@ public class AccessRequestService {
         pageable.getPageNumber(), Math.min(pageable.getPageSize(), MAX_PAGE_SIZE), sort);
   }
 
-  private static Address copy(Address address) {
-    return Address.builder()
-        .lineOne(address.getLineOne())
-        .lineTwo(address.getLineTwo())
-        .city(address.getCity())
-        .state(address.getState())
-        .country(address.getCountry())
-        .build();
-  }
-
   private static String firstNonBlank(@Nullable String value, String fallback) {
     String trimmed = trimToNull(value);
     return trimmed != null ? trimmed : fallback;

@@ -1,6 +1,7 @@
 package in.instello.security;
 
-import in.instello.common.exception.response.ApiErrorResponse;
+import in.instello.common.exception.response.ApiProblemDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.http.MediaType;
@@ -16,10 +17,20 @@ public class ApiErrorWriter {
     this.jsonMapper = jsonMapper;
   }
 
-  public void write(HttpServletResponse response, int status, ApiErrorResponse body)
+  public void write(
+      HttpServletRequest request, HttpServletResponse response, int status, ApiProblemDetails body)
       throws IOException {
     response.setStatus(status);
-    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+    body =
+        new ApiProblemDetails(
+            body.type(),
+            body.title(),
+            body.status(),
+            body.detail(),
+            request.getRequestURI(),
+            body.code(),
+            body.errors());
     jsonMapper.writeValue(response.getOutputStream(), body);
   }
 }

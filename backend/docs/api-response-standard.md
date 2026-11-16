@@ -101,7 +101,8 @@ Content-Type: application/problem+json
 `code` and `errors` above are application extension members; RFC 9457 permits extensions but
 defines the standard members (`type`, `title`, `status`, `detail`, and `instance`). Use stable,
 uppercase application codes such as `VALIDATION_FAILED`, `INVALID_CREDENTIALS`, and
-`EMAIL_NOT_VERIFIED`. The HTTP status line is authoritative; the body `status` must match it.
+`EMAIL_NOT_VERIFIED`. Validation entries use `detail` for the constraint message and `target` for
+the invalid field. The HTTP status line is authoritative; the body `status` must match it.
 
 Set `instance` to the request path where the error occurred, without the query string. This
 identifies the endpoint in logs without copying query parameters that could contain sensitive

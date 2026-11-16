@@ -1,6 +1,6 @@
 package in.instello.security;
 
-import in.instello.common.exception.response.ApiErrorResponse;
+import in.instello.common.exception.response.ApiProblemDetails;
 import in.instello.common.exception.response.ErrorCodes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,8 +26,14 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
       AccessDeniedException accessDeniedException)
       throws IOException {
     apiErrorWriter.write(
+        request,
         response,
         HttpStatus.FORBIDDEN.value(),
-        ApiErrorResponse.of(ErrorCodes.FORBIDDEN, "Access is denied"));
+        ApiProblemDetails.of(
+            HttpStatus.FORBIDDEN.value(),
+            ErrorCodes.FORBIDDEN,
+            "Access is denied",
+            request.getRequestURI(),
+            null));
   }
 }

@@ -29,7 +29,7 @@ export function initials(name: string): string {
 
 export function errorMessage(error: unknown): string {
   if (error instanceof ApiError && typeof error.body === "object" && error.body !== null) {
-    const message = (error.body as { error?: { message?: string } }).error?.message
+    const message = (error.body as { detail?: string }).detail
     if (message) return message
   }
   return "Something went wrong. Try again."
