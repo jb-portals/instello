@@ -1,22 +1,21 @@
+
 package in.instello.module.faculty.controller;
 
-import in.instello.module.faculty.dto.CreateFacultyRequest;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import in.instello.module.faculty.dto.FacultyResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/v1/faculty/{institution}")
 public class FacultyController {
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public FacultyResponse createFaculty(
+    @PostMapping("/bulk-import")
+    public ResponseEntity<String> uploadFacultyFile(
             @PathVariable String institution,
-            @Valid @RequestBody CreateFacultyRequest request) {
-    
-        // TODO: Business logic will be implemented in Issue #26
-        return null;
+            @RequestParam("file") MultipartFile file) {
+
+        // Business logic will be implemented in Issue #26
+        return ResponseEntity.accepted()
+                .body("Bulk import request received");
     }
 }
