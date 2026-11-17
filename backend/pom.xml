@@ -134,6 +134,20 @@
             <version>3.2.0</version>
         </dependency>
 
+        <!-- Excel file support (.xls and .xlsx) -->
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.4.1</version>
+</dependency>
+
+<!-- CSV file support -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-csv</artifactId>
+    <version>1.14.1</version>
+</dependency>
+
         <dependency>
             <groupId>io.github.thibaultmeyer</groupId>
             <artifactId>cuid</artifactId>
