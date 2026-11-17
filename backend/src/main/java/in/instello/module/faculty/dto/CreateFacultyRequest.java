@@ -33,6 +33,7 @@ public record CreateFacultyRequest(
     @NotBlank
     String specialization,
 
+    @NotNull
     LocalDate joinedDate,
 
     @NotBlank
