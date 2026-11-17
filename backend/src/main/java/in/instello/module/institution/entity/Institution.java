@@ -3,6 +3,7 @@ package in.instello.module.institution.entity;
 import in.instello.annotations.GeneratedCuid;
 import in.instello.common.address.Address;
 import in.instello.module.organization.entity.Organization;
+import in.instello.module.subjectCatalog.Subject;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Collection;
@@ -42,6 +43,9 @@ public class Institution {
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Collection<InstitutionMember> institutionMembers;
+
+  @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<Subject> subjectCatalog;
 
   @Embedded private Address address;
 

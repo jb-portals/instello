@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InstitutionRepository extends JpaRepository<Institution, String> {
   Optional<Institution> findInstitutionByOrganizationAndId(Organization organization, String id);
+
+  Optional<Institution> findByIdOrSlug(String id, String slug);
 }
