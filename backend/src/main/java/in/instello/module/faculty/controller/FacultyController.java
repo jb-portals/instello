@@ -1,57 +1,72 @@
-
 package in.instello.module.faculty.controller;
 
-import java.io.IOException;
-import java.util.List;
-
+import in.instello.common.exception.response.PageResponse;
+import in.instello.module.faculty.dto.CreateFacultyRequest;
+import in.instello.module.faculty.dto.FacultyImportResponse;
+import in.instello.module.faculty.dto.FacultyResponse;
+import in.instello.module.faculty.dto.UpdateFacultyRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import in.instello.module.faculty.service.FacultyBulkImportService;
-
 @RestController
-@RequestMapping("/v1/faculty/{institution}")
+@RequestMapping("/faculty/{institution}")
 public class FacultyController {
 
-    private final FacultyBulkImportService facultyBulkImportService;
+  @PostMapping
+  @Operation(operationId = "createFaculty")
+  public ResponseEntity<FacultyResponse> create(
+      @RequestBody CreateFacultyRequest createFacultyRequest, @PathVariable String institution) {
 
-    public FacultyController(
-            FacultyBulkImportService facultyBulkImportService) {
-        this.facultyBulkImportService = facultyBulkImportService;
-    }
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+  }
 
-    /**
-     * Uploads a CSV or Excel file containing faculty details.
-     *
-     * Required columns:
-     * First Name, Last Name, Date of Birth, Email, Staff ID,
-     * Designation, Qualification, Specialization,
-     * Primary Phone Number, Joined Date.
-     */
-    @PostMapping("/bulk-import")
-    public ResponseEntity<?> uploadFacultyFile(
-            @PathVariable String institution,
-            @RequestParam("file") MultipartFile file) {
+  @PatchMapping("/{faculty}")
+  @Operation(operationId = "updateFaculty")
+  public ResponseEntity<FacultyResponse> update(
+      @RequestBody UpdateFacultyRequest updateFacultyRequest,
+      @PathVariable String institution,
+      @PathVariable String faculty) {
 
-        try {
-            List<String> missingColumns =
-                    facultyBulkImportService.validateFile(file);
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+  }
 
-            if (!missingColumns.isEmpty()) {
-                return ResponseEntity.badRequest()
-                        .body("Missing required columns: " + missingColumns);
-            }
+  @DeleteMapping("/{faculty}")
+  @Operation(operationId = "deleteFaculty")
+  public ResponseEntity<Void> delete(
+      @PathVariable String institution, @PathVariable String faculty) {
 
-            return ResponseEntity.accepted()
-                    .body("File format and column validation successful.");
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+  }
 
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+  @GetMapping
+  @Operation(operationId = "listFaculty")
+  public ResponseEntity<PageResponse<FacultyResponse>> list(
+      @PathVariable String institution,
+      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+          Pageable pageable) {
 
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError()
-                    .body("Unable to read the uploaded file.");
-        }
-    }
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+  }
+
+  @GetMapping("/{faculty}")
+  @Operation(operationId = "showFaculty")
+  public ResponseEntity<FacultyResponse> show(
+      @PathVariable String institution, @PathVariable String faculty) {
+
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+  }
+
+  @PostMapping("/bulk-import")
+  @Operation(operationId = "bulkImportFaculty")
+  public ResponseEntity<FacultyImportResponse> bulkImport(
+      @PathVariable String institution, @RequestParam("file") MultipartFile file) {
+
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+  }
 }
