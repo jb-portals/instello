@@ -35,9 +35,8 @@ public class Program {
   @Column(nullable = false)
   private String alias;
 
-  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private ProgramStatus status;
+  private boolean archived = false;
 
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;

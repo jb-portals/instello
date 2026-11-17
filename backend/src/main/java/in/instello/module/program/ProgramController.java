@@ -16,20 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/programs/{institution}")
+@RequestMapping("/programs/{institution}")
 public class ProgramController {
 
   @PostMapping
   @Operation(operationId = "createProgram")
   public ResponseEntity<ProgramResponse> create(
       @RequestBody CreateProgramRequest createProgramRequest, @PathVariable String institution) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
-  }
-
-  @GetMapping("/aliases/check")
-  @Operation(operationId = "checkProgramAlias")
-  public ResponseEntity<ProgramAliasAvailabilityResponse> checkAlias(
-      @PathVariable String institution, @RequestParam String alias) {
     return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
   }
 
@@ -46,6 +39,13 @@ public class ProgramController {
       @RequestBody UpdateProgramRequest updateProgramRequest,
       @PathVariable String institution,
       @PathVariable String program) {
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+  }
+
+  @GetMapping("/aliases/check")
+  @Operation(operationId = "checkProgramAlias")
+  public ResponseEntity<ProgramAliasAvailabilityResponse> checkAlias(
+      @PathVariable String institution, @RequestParam String alias) {
     return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
   }
 

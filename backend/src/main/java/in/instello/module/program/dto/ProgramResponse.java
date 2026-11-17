@@ -1,7 +1,7 @@
 package in.instello.module.program.dto;
 
-import jakarta.annotation.Nullable;
 import java.time.Instant;
+import org.jspecify.annotations.Nullable;
 
 public record ProgramResponse(
     String id,
