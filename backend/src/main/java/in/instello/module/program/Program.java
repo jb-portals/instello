@@ -3,8 +3,10 @@ package in.instello.module.program;
 import in.instello.annotations.GeneratedCuid;
 import in.instello.module.institution.entity.Institution;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(
@@ -16,6 +18,7 @@ import lombok.*;
     })
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Program {
@@ -36,10 +39,12 @@ public class Program {
   private String alias;
 
   @Column(nullable = false)
-  private boolean archived = false;
+  @Builder.Default
+  private boolean archive = false;
 
+  @CreationTimestamp
   @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+  private Instant createdAt;
 
-  private LocalDateTime updatedAt;
+  @UpdateTimestamp private Instant updatedAt;
 }
