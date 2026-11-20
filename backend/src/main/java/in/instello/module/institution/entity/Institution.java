@@ -2,6 +2,7 @@ package in.instello.module.institution.entity;
 
 import in.instello.annotations.GeneratedCuid;
 import in.instello.common.address.Address;
+import in.instello.module.faculty.Faculty;
 import in.instello.module.organization.entity.Organization;
 import in.instello.module.subjectCatalog.Subject;
 import jakarta.persistence.*;
@@ -40,6 +41,10 @@ public class Institution {
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false, name = "organization_id")
   private Organization organization;
+
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false, name = "faculty_id")
+  private Faculty faculty;
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Collection<InstitutionMember> institutionMembers;
