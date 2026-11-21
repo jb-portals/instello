@@ -29,20 +29,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 
-@RestControllerAdvice
+@RestController
 @Tag(name = "Faculty")
 @RequestMapping("faculty/{institution}")
 @Validated
 public class FacultyController {
+
+  private final FacultyService facultyService;
+
+  FacultyController(FacultyService facultyService) {
+    this.facultyService = facultyService;
+  }
 
   @PostMapping
   @Operation(operationId = "createFaculty")
   public ResponseEntity<CreateFacultyResponse> create(
       @RequestBody @Valid CreateFacultyRequest createFacultyRequest,
       @PathVariable String institution) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(facultyService.create(createFacultyRequest, institution));
   }
 
   @GetMapping
@@ -52,7 +59,14 @@ public class FacultyController {
       @RequestParam(required = false) @Nullable String search,
       @PageableDefault(size = 10, sort = "staffId", direction = Sort.Direction.ASC)
           Pageable pageable) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(facultyService.list(institution, search, pageable));
+  }
+
+  @GetMapping("/{id}")
+  @Operation(operationId = "showFaculty")
+  public ResponseEntity<FacultyResponse> show(
+      @PathVariable String institution, @PathVariable String id) {
+    return ResponseEntity.ok(facultyService.show(institution, id));
   }
 
   @GetMapping("staff-id/check")
@@ -60,22 +74,23 @@ public class FacultyController {
   public ResponseEntity<FacultyAvailabilityResponse> checkStaffId(
       @PathVariable String institution,
       @Valid @RequestBody CheckStaffIdRequest checkStaffIdRequest) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(facultyService.checkStaffId(institution, checkStaffIdRequest));
   }
 
   @GetMapping("email/check")
   @Operation(operationId = "checkEmail")
   public ResponseEntity<FacultyAvailabilityResponse> checkEmail(
       @PathVariable String institution, @Valid @RequestBody CheckEmailRequest checkEmailRequest) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(facultyService.checkEmail(institution, checkEmailRequest));
   }
 
   @GetMapping("primary-phone-number/check")
   @Operation(operationId = "checkPrimaryPhoneNumber")
-  public ResponseEntity<FacultyAvailabilityResponse> checkPhoneNumber(
+  public ResponseEntity<FacultyAvailabilityResponse> checkPrimaryPhoneNumber(
       @PathVariable String institution,
       @Valid @RequestBody CheckPrimaryPhoneNumberRequest checkPrimaryPhoneNumberRequest) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(
+        facultyService.checkPrimaryPhoneNumber(institution, checkPrimaryPhoneNumberRequest));
   }
 
   @PatchMapping("/{staff}")
@@ -83,24 +98,25 @@ public class FacultyController {
   public ResponseEntity<FacultyResponse> update(
       @RequestBody @Valid UpdateFacultyRequest updateFacultyRequest,
       @PathVariable String institution,
-      @PathVariable String staff) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+      @PathVariable("staff") String staffId) {
+    return ResponseEntity.ok(facultyService.update(institution, staffId, updateFacultyRequest));
   }
 
   @PatchMapping("/{staff}/staffid")
   @Operation(operationId = "updateStaffId")
   public ResponseEntity<UpdateFacultyStaffIdResponse> updateStaffId(
       @PathVariable String institution,
-      @PathVariable String staff,
+      @PathVariable("staff") String facultyId,
       @RequestBody @Valid UpdateFacultyStaffIdRequest updateFacultyStaffIdRequest) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(
+        facultyService.updateStaffId(institution, facultyId, updateFacultyStaffIdRequest));
   }
 
   @PatchMapping("/{staff}/deactivate")
   @Operation(operationId = "deacticateStaff")
   public ResponseEntity<ActivateFacultyResponse> deactivate(
-      @PathVariable String institution, @PathVariable String staff) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+      @PathVariable String institution, @PathVariable("staff") String staffId) {
+    return ResponseEntity.ok(facultyService.deactivate(institution, staffId));
   }
 
   @GetMapping("/inactive")
@@ -110,13 +126,13 @@ public class FacultyController {
       @RequestParam(required = false) String search,
       @PageableDefault(size = 10, sort = "inactivatedAt", direction = Sort.Direction.DESC)
           Pageable pageable) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    return ResponseEntity.ok(facultyService.listInactive(institution, search, pageable));
   }
 
   @PatchMapping("/{staff}/activate")
   @Operation(operationId = "acticateStaff")
   public ResponseEntity<ActivateFacultyResponse> activate(
-      @PathVariable String institution, @PathVariable String staff) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+      @PathVariable String institution, @PathVariable("staff") String staffId) {
+    return ResponseEntity.ok(facultyService.activate(institution, staffId));
   }
 }

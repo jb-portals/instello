@@ -42,9 +42,8 @@ public class Institution {
   @JoinColumn(nullable = false, name = "organization_id")
   private Organization organization;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(nullable = false, name = "faculty_id")
-  private Faculty faculty;
+  @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<Faculty> faculty;
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Collection<InstitutionMember> institutionMembers;
