@@ -1,8 +1,11 @@
 package in.instello.module.faculty.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import in.instello.common.address.dto.AddressRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -11,24 +14,25 @@ import org.jspecify.annotations.Nullable;
 
 public record CreateFacultyRequest(
     @NotBlank @Size(max = 30) String firstName,
-    @Nullable @Size(max = 30) String lastName,
-    @NotBlank @Past LocalDate dateOfBirth,
+    @NotBlank @Size(max = 30) String lastName,
+    @NotNull @Past @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dateOfBirth,
     @NotBlank @Email String email,
     @NotBlank @Size(max = 15) String staffId,
-    @NotBlank String Designation,
-    @Nullable String qualification,
-    @Nullable String specialization,
-    @Nullable LocalDate joiningDate,
+    @Nullable String profilePhoto,
+    @NotBlank String designation,
+    @NotBlank String qualification,
+    @NotBlank String specialization,
+    @NotNull @JsonFormat(pattern = "dd-MM-yyyy") LocalDate joinedDate,
     @NotBlank
         @Size(max = 15)
         @Pattern(
             regexp = "^(?:(?:\\+91|91|0)[ -]?)?[6-9]\\d{9}$",
             message = "Enter a valid Indian mobile number")
         String primaryPhoneNumber,
-    @Nullable
+    @NotBlank
         @Size(max = 15)
         @Pattern(
             regexp = "^(?:(?:\\+91|91|0)[ -]?)?[6-9]\\d{9}$",
             message = "Enter a valid Indian mobile number")
         String SecondaryPhoneNumber,
-    @NotBlank AddressRequest address) {}
+    @NotNull @Valid AddressRequest address) {}

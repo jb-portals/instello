@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.jspecify.annotations.Nullable;
 
 @Entity
 @Table(
@@ -40,6 +41,7 @@ public class Faculty {
   private String firstName;
 
   @Column(length = 30)
+  @Nullable
   private String lastName;
 
   @Column(nullable = false)
@@ -48,7 +50,7 @@ public class Faculty {
   @Column(nullable = false)
   private String email;
 
-  private String profilePhoto;
+  @Nullable private String profilePhoto;
 
   @Column(nullable = false, length = 20)
   private String staffId;
@@ -56,16 +58,17 @@ public class Faculty {
   @Column(nullable = false)
   private String designation;
 
-  private String qualification;
+  @Nullable private String qualification;
 
-  private String specialization;
+  @Nullable private String specialization;
 
-  private LocalDate joinedDate;
+  @Nullable private LocalDate joinedDate;
 
   @Column(nullable = false, length = 15)
   private String primaryPhoneNumber;
 
   @Column(length = 15)
+  @Nullable
   private String secondaryPhoneNumber;
 
   @Embedded private Address address;
@@ -74,7 +77,7 @@ public class Faculty {
   @Builder.Default
   private boolean active = true;
 
-  private Instant inactivatedAt;
+  @Nullable private Instant inactivatedAt;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false, name = "institution_id")
@@ -84,5 +87,5 @@ public class Faculty {
   @Column(nullable = false, updatable = false)
   private Instant createdAt;
 
-  @UpdateTimestamp private Instant updatedAt;
+  @UpdateTimestamp @Nullable private Instant updatedAt;
 }

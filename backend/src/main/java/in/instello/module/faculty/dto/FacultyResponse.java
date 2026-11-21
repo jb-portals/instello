@@ -1,22 +1,49 @@
 package in.instello.module.faculty.dto;
 
-import java.util.Date;
+import in.instello.common.address.dto.AddressResponse;
+import in.instello.module.faculty.Faculty;
+import java.time.Instant;
+import java.time.LocalDate;
 import org.jspecify.annotations.Nullable;
 
 public record FacultyResponse(
     String id,
     String firstName,
     @Nullable String lastName,
-    Date dateOfBirth,
+    LocalDate dateOfBirth,
     String email,
     @Nullable String profilePhoto,
     String staffId,
-    String Designation,
-    String qualification,
-    String specialization,
-    @Nullable Date joiningDate,
+    String designation,
+    @Nullable String qualification,
+    @Nullable String specialization,
+    @Nullable LocalDate joinedDate,
     String primaryPhoneNumber,
-    @Nullable String SecondaryPhoneNumber,
-    String address,
+    @Nullable String secondaryPhoneNumber,
+    @Nullable AddressResponse address,
     Boolean active,
-    @Nullable Date inactivatedAt) {}
+    @Nullable Instant inactivatedAt,
+    Instant createdAt) {
+  public static FacultyResponse from(Faculty faculty) {
+    @Nullable AddressResponse addressResponse = AddressResponse.from(faculty.getAddress());
+
+    return new FacultyResponse(
+        faculty.getId(),
+        faculty.getFirstName(),
+        faculty.getLastName(),
+        faculty.getDateOfBirth(),
+        faculty.getEmail(),
+        faculty.getProfilePhoto(),
+        faculty.getStaffId(),
+        faculty.getDesignation(),
+        faculty.getQualification(),
+        faculty.getSpecialization(),
+        faculty.getJoinedDate(),
+        faculty.getPrimaryPhoneNumber(),
+        faculty.getSecondaryPhoneNumber(),
+        addressResponse,
+        faculty.isActive(),
+        faculty.getInactivatedAt(),
+        faculty.getCreatedAt());
+  }
+}
