@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-  private static final List<String> UNVERSIONED_PATHS = List.of("/error", "/api-docs");
+  private static final List<String> UNVERSIONED_PATHS = List.of("/error", "/api-docs", "/scalar");
 
   @Override
   public void configureApiVersioning(ApiVersionConfigurer configurer) {

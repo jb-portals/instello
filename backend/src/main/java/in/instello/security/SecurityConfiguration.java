@@ -40,7 +40,7 @@ public class SecurityConfiguration {
             auth ->
                 auth.requestMatchers("/error")
                     .permitAll()
-                    .requestMatchers("/api-docs/**")
+                    .requestMatchers("/api-docs/**", "/scalar", "/scalar/**")
                     .permitAll()
                     .requestMatchers(
                         HttpMethod.POST, "/v{version}/auth/login", "/v{version}/auth/admin/**")

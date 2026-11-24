@@ -1,6 +1,6 @@
 package in.instello.config.openApi.annotation;
 
-import in.instello.common.response.ApiProblemDetails;
+import in.instello.common.responses.ApiProblemDetails;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

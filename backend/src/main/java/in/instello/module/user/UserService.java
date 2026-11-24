@@ -1,6 +1,6 @@
 package in.instello.module.user;
 
-import in.instello.common.exception.app.UnauthorizedException;
+import in.instello.common.exceptions.UnauthorizedException;
 import in.instello.module.user.dto.CurrentUserResponse;
 import in.instello.module.user.entity.Authority;
 import in.instello.module.user.entity.User;

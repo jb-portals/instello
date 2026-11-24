@@ -1,4 +1,4 @@
-package in.instello.common.exception.app;
+package in.instello.common.exceptions;
 
 import lombok.Getter;
 

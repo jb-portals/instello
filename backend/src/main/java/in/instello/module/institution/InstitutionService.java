@@ -1,6 +1,6 @@
 package in.instello.module.institution;
 
-import in.instello.common.exception.app.ResourceNotFoundException;
+import in.instello.common.exceptions.ResourceNotFoundException;
 import in.instello.module.institution.dto.CreateInstitutionRequest;
 import in.instello.module.institution.dto.CreateInstitutionResponse;
 import in.instello.module.institution.dto.InstitutionResponse;

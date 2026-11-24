@@ -7,8 +7,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import in.instello.common.exception.app.BadRequestException;
-import in.instello.common.exception.app.ConflictException;
+import in.instello.common.exceptions.BadRequestException;
+import in.instello.common.exceptions.ConflictException;
 import in.instello.module.academicPattern.dto.AcademicPatternResponse;
 import in.instello.module.academicPattern.dto.AcademicStageResponse;
 import in.instello.module.academicPattern.dto.UpdateAcademicPatternRequest;

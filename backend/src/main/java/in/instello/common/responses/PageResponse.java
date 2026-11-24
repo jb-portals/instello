@@ -1,4 +1,4 @@
-package in.instello.common.exception.response;
+package in.instello.common.responses;
 
 import java.util.List;
 import org.springframework.data.domain.Page;

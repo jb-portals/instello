@@ -1,6 +1,6 @@
 package in.instello.module.auth.emailverification;
 
-import in.instello.common.exception.app.ConflictException;
+import in.instello.common.exceptions.ConflictException;
 import in.instello.module.auth.otp.InvalidOtpException;
 import in.instello.module.auth.otp.OtpService;
 import in.instello.module.invitation.entity.Invitation;

@@ -2,8 +2,8 @@ package in.instello.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import in.instello.common.response.ApiProblemDetails;
-import in.instello.common.response.ErrorCode;
+import in.instello.common.responses.ApiProblemDetails;
+import in.instello.common.responses.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;

@@ -1,6 +1,6 @@
 package in.instello.module.accessRequest;
 
-import in.instello.common.exception.response.PageResponse;
+import in.instello.common.responses.PageResponse;
 import in.instello.config.web.ApiVersions;
 import in.instello.module.accessRequest.dto.AccessRequestDetail;
 import in.instello.module.accessRequest.dto.AccessRequestSummary;

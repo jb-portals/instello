@@ -1,4 +1,4 @@
-package in.instello.common.response;
+package in.instello.common.responses;
 
 /** Stable machine-readable codes returned in API problem responses. */
 public enum ErrorCode {

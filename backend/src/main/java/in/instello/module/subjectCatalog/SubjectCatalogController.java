@@ -1,6 +1,6 @@
 package in.instello.module.subjectCatalog;
 
-import in.instello.common.exception.response.PageResponse;
+import in.instello.common.responses.PageResponse;
 import in.instello.module.subjectCatalog.dto.CreateSubjectRequest;
 import in.instello.module.subjectCatalog.dto.CreateSubjectResponse;
 import in.instello.module.subjectCatalog.dto.SubjectAliasAvailabilityRequest;

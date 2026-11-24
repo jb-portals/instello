@@ -2,12 +2,12 @@ package in.instello.module.accessRequest;
 
 import in.instello.common.address.Address;
 import in.instello.common.address.dto.AddressResponse;
-import in.instello.common.exception.app.BadRequestException;
-import in.instello.common.exception.app.ConflictException;
-import in.instello.common.exception.app.RateLimitExceededException;
-import in.instello.common.exception.app.ResourceNotFoundException;
-import in.instello.common.exception.app.UnauthorizedException;
-import in.instello.common.exception.response.PageResponse;
+import in.instello.common.exceptions.BadRequestException;
+import in.instello.common.exceptions.ConflictException;
+import in.instello.common.exceptions.RateLimitExceededException;
+import in.instello.common.exceptions.ResourceNotFoundException;
+import in.instello.common.exceptions.UnauthorizedException;
+import in.instello.common.responses.PageResponse;
 import in.instello.module.accessRequest.dto.AccessRequestDetail;
 import in.instello.module.accessRequest.dto.AccessRequestSummary;
 import in.instello.module.accessRequest.dto.ApproveAccessRequestRequest;

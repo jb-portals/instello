@@ -1,6 +1,6 @@
 package in.instello.module.program;
 
-import in.instello.common.exception.response.PageResponse;
+import in.instello.common.responses.PageResponse;
 import in.instello.module.program.dto.CreateProgramRequest;
 import in.instello.module.program.dto.CreateProgramResponse;
 import in.instello.module.program.dto.ProgramAliasAvailabilityRequest;

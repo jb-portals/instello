@@ -1,9 +1,9 @@
 package in.instello.module.program;
 
-import in.instello.common.exception.app.BadRequestException;
-import in.instello.common.exception.app.ConflictException;
-import in.instello.common.exception.app.ResourceNotFoundException;
-import in.instello.common.exception.response.PageResponse;
+import in.instello.common.exceptions.BadRequestException;
+import in.instello.common.exceptions.ConflictException;
+import in.instello.common.exceptions.ResourceNotFoundException;
+import in.instello.common.responses.PageResponse;
 import in.instello.module.institution.entity.Institution;
 import in.instello.module.institution.repository.InstitutionRepository;
 import in.instello.module.program.dto.CreateProgramRequest;

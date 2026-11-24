@@ -1,3 +1,3 @@
-package in.instello.common.exception.app;
+package in.instello.common.exceptions;
 
 public interface TooManyRequestsException {}

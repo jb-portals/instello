@@ -1,7 +1,7 @@
 package in.instello.module.organization;
 
-import in.instello.common.exception.app.ForbiddenException;
-import in.instello.common.exception.app.ResourceNotFoundException;
+import in.instello.common.exceptions.ForbiddenException;
+import in.instello.common.exceptions.ResourceNotFoundException;
 import in.instello.module.invitation.entity.Invitation;
 import in.instello.module.invitation.repository.InvitationRepository;
 import in.instello.module.organization.entity.Organization;

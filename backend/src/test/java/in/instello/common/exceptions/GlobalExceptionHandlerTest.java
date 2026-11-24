@@ -1,13 +1,13 @@
-package in.instello.common.exception;
+package in.instello.common.exceptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import in.instello.common.exception.app.ConflictException;
-import in.instello.common.response.ApiProblemDetails;
-import in.instello.common.response.ApiProblemError;
-import in.instello.common.response.ErrorCode;
+import in.instello.GlobalExceptionHandler;
+import in.instello.common.responses.ApiProblemDetails;
+import in.instello.common.responses.ApiProblemError;
+import in.instello.common.responses.ErrorCode;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -38,11 +38,7 @@ class GlobalExceptionHandlerTest {
     assertThat(body)
         .isEqualTo(
             new ApiProblemDetails(
-                409,
-                "Already exists",
-                "/v0.1/items/missing",
-                ErrorCode.CONFLICT,
-                null));
+                409, "Already exists", "/v0.1/items/missing", ErrorCode.CONFLICT, null));
     assertThat(body.instance()).doesNotContain("secret");
   }
 
@@ -87,8 +83,6 @@ class GlobalExceptionHandlerTest {
     assertThat(body.status()).isEqualTo(400);
     assertThat(body.code()).isEqualTo(ErrorCode.VALIDATION_FAILED);
     assertThat(body.errors())
-        .containsExactly(
-            new ApiProblemError(
-                "NotBlank", "email", "must not be blank"));
+        .containsExactly(new ApiProblemError("NotBlank", "email", "must not be blank"));
   }
 }

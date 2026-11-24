@@ -1,7 +1,7 @@
 package in.instello.security;
 
-import in.instello.common.response.ApiProblemDetails;
-import in.instello.common.response.ErrorCode;
+import in.instello.common.responses.ApiProblemDetails;
+import in.instello.common.responses.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

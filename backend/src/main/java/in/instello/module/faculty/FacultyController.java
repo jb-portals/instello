@@ -1,6 +1,6 @@
 package in.instello.module.faculty;
 
-import in.instello.common.exception.response.PageResponse;
+import in.instello.common.responses.PageResponse;
 import in.instello.module.faculty.dto.ActivateFacultyResponse;
 import in.instello.module.faculty.dto.CheckEmailRequest;
 import in.instello.module.faculty.dto.CheckPrimaryPhoneNumberRequest;

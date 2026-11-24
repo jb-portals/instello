@@ -1,6 +1,6 @@
 package in.instello.module.auth;
 
-import in.instello.common.exception.app.RateLimitExceededException;
+import in.instello.common.exceptions.RateLimitExceededException;
 import in.instello.redis.RedisService;
 import in.instello.security.SessionAuthenticator;
 import jakarta.servlet.http.HttpServletRequest;

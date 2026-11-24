@@ -8,8 +8,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import in.instello.common.exception.app.ConflictException;
-import in.instello.common.exception.app.ResourceNotFoundException;
+import in.instello.common.exceptions.ConflictException;
+import in.instello.common.exceptions.ResourceNotFoundException;
 import in.instello.module.accessRequest.entity.AccessRequest;
 import in.instello.module.auth.otp.OtpService;
 import in.instello.module.invitation.dto.AcceptInvitationResponse;

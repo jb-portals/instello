@@ -1,4 +1,4 @@
-package in.instello.common.response;
+package in.instello.common.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;

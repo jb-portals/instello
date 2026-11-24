@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import in.instello.common.exception.app.ConflictException;
+import in.instello.common.exceptions.ConflictException;
 import in.instello.module.auth.emailverification.EmailVerificationService;
 import in.instello.module.auth.otp.InvalidOtpException;
 import in.instello.module.auth.otp.OtpRateLimitException;

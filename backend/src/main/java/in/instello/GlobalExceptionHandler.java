@@ -1,9 +1,9 @@
-package in.instello.common.exception;
+package in.instello;
 
-import in.instello.common.exception.app.*;
-import in.instello.common.response.ApiProblemDetails;
-import in.instello.common.response.ApiProblemError;
-import in.instello.common.response.ErrorCode;
+import in.instello.common.exceptions.*;
+import in.instello.common.responses.ApiProblemDetails;
+import in.instello.common.responses.ApiProblemError;
+import in.instello.common.responses.ErrorCode;
 import in.instello.module.auth.otp.InvalidOtpException;
 import in.instello.module.auth.otp.OtpRateLimitException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -117,8 +117,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MissingApiVersionException.class)
   public ResponseEntity<ApiProblemDetails> handleMissingApiVersionException(
       MissingApiVersionException ex, HttpServletRequest request) {
-    return error(
-        HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, "API version is required", request);
+    return error(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, "API version is required", request);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
