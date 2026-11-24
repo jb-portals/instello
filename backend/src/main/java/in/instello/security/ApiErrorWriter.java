@@ -1,6 +1,6 @@
 package in.instello.security;
 
-import in.instello.common.exception.response.ApiProblemDetails;
+import in.instello.common.response.ApiProblemDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,10 +24,8 @@ public class ApiErrorWriter {
     response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
     body =
         new ApiProblemDetails(
-            body.type(),
-            body.title(),
             body.status(),
-            body.detail(),
+            body.message(),
             request.getRequestURI(),
             body.code(),
             body.errors());

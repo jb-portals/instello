@@ -5,8 +5,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import in.instello.common.exception.app.ConflictException;
-import in.instello.common.exception.response.ApiProblemDetails;
-import in.instello.common.exception.response.ErrorCodes;
+import in.instello.common.response.ApiProblemDetails;
+import in.instello.common.response.ApiProblemError;
+import in.instello.common.response.ErrorCode;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -37,12 +38,10 @@ class GlobalExceptionHandlerTest {
     assertThat(body)
         .isEqualTo(
             new ApiProblemDetails(
-                "https://api.instello.in/problems/conflict",
-                "Request conflicts with the current resource state",
                 409,
                 "Already exists",
                 "/v0.1/items/missing",
-                ErrorCodes.CONFLICT,
+                ErrorCode.CONFLICT,
                 null));
     assertThat(body.instance()).doesNotContain("secret");
   }
@@ -86,10 +85,10 @@ class GlobalExceptionHandlerTest {
     assertThat(response.getHeaders().getContentType())
         .isEqualTo(MediaType.APPLICATION_PROBLEM_JSON);
     assertThat(body.status()).isEqualTo(400);
-    assertThat(body.code()).isEqualTo(ErrorCodes.VALIDATION_FAILED);
+    assertThat(body.code()).isEqualTo(ErrorCode.VALIDATION_FAILED);
     assertThat(body.errors())
         .containsExactly(
-            new in.instello.common.exception.response.ApiProblemError(
+            new ApiProblemError(
                 "NotBlank", "email", "must not be blank"));
   }
 }

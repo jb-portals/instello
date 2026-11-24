@@ -1,9 +1,9 @@
 package in.instello.common.exception;
 
 import in.instello.common.exception.app.*;
-import in.instello.common.exception.response.ApiProblemDetails;
-import in.instello.common.exception.response.ApiProblemError;
-import in.instello.common.exception.response.ErrorCodes;
+import in.instello.common.response.ApiProblemDetails;
+import in.instello.common.response.ApiProblemError;
+import in.instello.common.response.ErrorCode;
 import in.instello.module.auth.otp.InvalidOtpException;
 import in.instello.module.auth.otp.OtpRateLimitException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,32 +34,32 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({NoResourceFoundException.class, ResourceNotFoundException.class})
   public ResponseEntity<ApiProblemDetails> handleNoResourceFoundException(
       Exception ex, HttpServletRequest request) {
-    return error(HttpStatus.NOT_FOUND, ErrorCodes.NOT_FOUND, ex.getMessage(), request);
+    return error(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, ex.getMessage(), request);
   }
 
   @ExceptionHandler(ConflictException.class)
   public ResponseEntity<ApiProblemDetails> handleConflictException(
       ConflictException ex, HttpServletRequest request) {
-    return error(HttpStatus.CONFLICT, ErrorCodes.CONFLICT, ex.getMessage(), request);
+    return error(HttpStatus.CONFLICT, ErrorCode.CONFLICT, ex.getMessage(), request);
   }
 
   @ExceptionHandler({UnauthorizedException.class, InvalidOtpException.class})
   public ResponseEntity<ApiProblemDetails> handleUnauthorizedException(
       RuntimeException ex, HttpServletRequest request) {
     return error(
-        HttpStatus.UNAUTHORIZED, ErrorCodes.AUTHENTICATION_REQUIRED, ex.getMessage(), request);
+        HttpStatus.UNAUTHORIZED, ErrorCode.AUTHENTICATION_REQUIRED, ex.getMessage(), request);
   }
 
   @ExceptionHandler(BadRequestException.class)
   public ResponseEntity<ApiProblemDetails> handleBadRequestException(
       BadRequestException ex, HttpServletRequest request) {
-    return error(HttpStatus.BAD_REQUEST, ErrorCodes.BAD_REQUEST, ex.getMessage(), request);
+    return error(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, ex.getMessage(), request);
   }
 
   @ExceptionHandler(ForbiddenException.class)
   public ResponseEntity<ApiProblemDetails> handleForbiddenException(
       ForbiddenException ex, HttpServletRequest request) {
-    return error(HttpStatus.FORBIDDEN, ErrorCodes.FORBIDDEN, ex.getMessage(), request);
+    return error(HttpStatus.FORBIDDEN, ErrorCode.FORBIDDEN, ex.getMessage(), request);
   }
 
   // Only raised after the password was proven correct (see SecurityConfiguration), so it is safe to
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
       DisabledException ex, HttpServletRequest request) {
     return error(
         HttpStatus.FORBIDDEN,
-        ErrorCodes.EMAIL_NOT_VERIFIED,
+        ErrorCode.EMAIL_NOT_VERIFIED,
         "Email address is not verified",
         request);
   }
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
       BadCredentialsException ex, HttpServletRequest request) {
     return error(
         HttpStatus.UNAUTHORIZED,
-        ErrorCodes.INVALID_CREDENTIALS,
+        ErrorCode.INVALID_CREDENTIALS,
         "Invalid email or password",
         request);
   }
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
         };
     return error(
         HttpStatus.TOO_MANY_REQUESTS,
-        ErrorCodes.RATE_LIMITED,
+        ErrorCode.RATE_LIMITED,
         ex.getMessage(),
         request,
         HttpHeaders.RETRY_AFTER,
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
       InvalidApiVersionException ex, HttpServletRequest request) {
     return error(
         HttpStatus.BAD_REQUEST,
-        ErrorCodes.BAD_REQUEST,
+        ErrorCode.BAD_REQUEST,
         "Unsupported API version: " + ex.getVersion(),
         request);
   }
@@ -118,7 +118,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiProblemDetails> handleMissingApiVersionException(
       MissingApiVersionException ex, HttpServletRequest request) {
     return error(
-        HttpStatus.BAD_REQUEST, ErrorCodes.BAD_REQUEST, "API version is required", request);
+        HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, "API version is required", request);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -132,7 +132,7 @@ public class GlobalExceptionHandler {
         .body(
             ApiProblemDetails.of(
                 HttpStatus.BAD_REQUEST.value(),
-                ErrorCodes.VALIDATION_FAILED,
+                ErrorCode.VALIDATION_FAILED,
                 "One or more fields are invalid.",
                 request.getRequestURI(),
                 details));
@@ -155,7 +155,7 @@ public class GlobalExceptionHandler {
     log.error("Unhandled exception", ex);
     return error(
         HttpStatus.INTERNAL_SERVER_ERROR,
-        ErrorCodes.INTERNAL_ERROR,
+        ErrorCode.INTERNAL_ERROR,
         "An unexpected error occurred",
         request);
   }
@@ -168,7 +168,7 @@ public class GlobalExceptionHandler {
   }
 
   private static ResponseEntity<ApiProblemDetails> error(
-      HttpStatus status, String code, @Nullable String message, HttpServletRequest request) {
+      HttpStatus status, ErrorCode code, @Nullable String message, HttpServletRequest request) {
     return ResponseEntity.status(status)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(
@@ -182,7 +182,7 @@ public class GlobalExceptionHandler {
 
   private static ResponseEntity<ApiProblemDetails> error(
       HttpStatus status,
-      String code,
+      ErrorCode code,
       @Nullable String message,
       HttpServletRequest request,
       String headerName,
@@ -199,15 +199,15 @@ public class GlobalExceptionHandler {
                 null));
   }
 
-  static String codeForStatus(HttpStatus status) {
+  static ErrorCode codeForStatus(HttpStatus status) {
     return switch (status) {
-      case NOT_FOUND -> ErrorCodes.NOT_FOUND;
-      case CONFLICT -> ErrorCodes.CONFLICT;
-      case UNAUTHORIZED -> ErrorCodes.AUTHENTICATION_REQUIRED;
-      case FORBIDDEN -> ErrorCodes.FORBIDDEN;
-      case TOO_MANY_REQUESTS -> ErrorCodes.RATE_LIMITED;
-      case BAD_REQUEST -> ErrorCodes.BAD_REQUEST;
-      default -> status.is4xxClientError() ? ErrorCodes.BAD_REQUEST : ErrorCodes.INTERNAL_ERROR;
+      case NOT_FOUND -> ErrorCode.NOT_FOUND;
+      case CONFLICT -> ErrorCode.CONFLICT;
+      case UNAUTHORIZED -> ErrorCode.AUTHENTICATION_REQUIRED;
+      case FORBIDDEN -> ErrorCode.FORBIDDEN;
+      case TOO_MANY_REQUESTS -> ErrorCode.RATE_LIMITED;
+      case BAD_REQUEST -> ErrorCode.BAD_REQUEST;
+      default -> status.is4xxClientError() ? ErrorCode.BAD_REQUEST : ErrorCode.INTERNAL_ERROR;
     };
   }
 }

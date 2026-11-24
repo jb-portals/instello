@@ -2,8 +2,8 @@ package in.instello.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import in.instello.common.exception.response.ApiProblemDetails;
-import in.instello.common.exception.response.ErrorCodes;
+import in.instello.common.response.ApiProblemDetails;
+import in.instello.common.response.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -25,7 +25,7 @@ class ApiErrorWriterTest {
         HttpStatus.UNAUTHORIZED.value(),
         ApiProblemDetails.of(
             HttpStatus.UNAUTHORIZED.value(),
-            ErrorCodes.AUTHENTICATION_REQUIRED,
+            ErrorCode.AUTHENTICATION_REQUIRED,
             "Authentication is required",
             "/v0.1/private",
             null));
@@ -35,9 +35,10 @@ class ApiErrorWriterTest {
     assertThat(response.getContentAsString())
         .contains(
             "\"status\":401",
+            "\"message\":\"Authentication is required\"",
             "\"code\":\"AUTHENTICATION_REQUIRED\"",
             "\"instance\":\"/v0.1/private\"")
-        .doesNotContain("access_token", "errors");
+        .doesNotContain("access_token", "errors", "\"type\"", "\"detail\"", "\"title\"");
   }
 
   @Test
@@ -52,7 +53,7 @@ class ApiErrorWriterTest {
         HttpStatus.FORBIDDEN.value(),
         ApiProblemDetails.of(
             HttpStatus.FORBIDDEN.value(),
-            ErrorCodes.FORBIDDEN,
+            ErrorCode.FORBIDDEN,
             "Access is denied",
             "/v0.1/admin",
             null));

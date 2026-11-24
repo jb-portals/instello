@@ -1,7 +1,7 @@
 package in.instello.security;
 
-import in.instello.common.exception.response.ApiProblemDetails;
-import in.instello.common.exception.response.ErrorCodes;
+import in.instello.common.response.ApiProblemDetails;
+import in.instello.common.response.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
         HttpStatus.UNAUTHORIZED.value(),
         ApiProblemDetails.of(
             HttpStatus.UNAUTHORIZED.value(),
-            ErrorCodes.AUTHENTICATION_REQUIRED,
+            ErrorCode.AUTHENTICATION_REQUIRED,
             "Authentication is required",
             request.getRequestURI(),
             null));
