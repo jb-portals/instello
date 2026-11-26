@@ -4,6 +4,8 @@ import in.instello.annotations.GeneratedCuid;
 import in.instello.common.address.Address;
 import in.instello.module.faculty.Faculty;
 import in.instello.module.organization.entity.Organization;
+import in.instello.module.programSubject.entity.ProgramSubject;
+import in.instello.module.programSubject.entity.SubjectType;
 import in.instello.module.subjectCatalog.Subject;
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -42,9 +44,8 @@ public class Institution {
   @JoinColumn(nullable = false, name = "organization_id")
   private Organization organization;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(nullable = false, name = "faculty_id")
-  private Faculty faculty;
+  @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<Faculty> faculty;
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Collection<InstitutionMember> institutionMembers;
@@ -53,6 +54,12 @@ public class Institution {
   private Collection<Subject> subjectCatalog;
 
   @Embedded private Address address;
+
+  @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<ProgramSubject> programSubjects;
+
+  @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<SubjectType> subjectTypes;
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)

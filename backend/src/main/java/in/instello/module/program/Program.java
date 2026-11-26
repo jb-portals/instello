@@ -2,8 +2,10 @@ package in.instello.module.program;
 
 import in.instello.annotations.GeneratedCuid;
 import in.instello.module.institution.entity.Institution;
+import in.instello.module.programSubject.entity.ProgramSubject;
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.Collection;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,6 +33,9 @@ public class Program {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "institution_id", nullable = false)
   private Institution institution;
+
+  @OneToMany(mappedBy = "program", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<ProgramSubject> programSubjects;
 
   @Column(nullable = false)
   private String name;
