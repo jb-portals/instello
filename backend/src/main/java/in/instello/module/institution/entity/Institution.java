@@ -2,6 +2,7 @@ package in.instello.module.institution.entity;
 
 import in.instello.annotations.GeneratedCuid;
 import in.instello.common.address.Address;
+import in.instello.module.academicPattern.entity.AcademicPatternAllocation;
 import in.instello.module.faculty.Faculty;
 import in.instello.module.organization.entity.Organization;
 import in.instello.module.programSubject.entity.ProgramSubject;
@@ -57,6 +58,9 @@ public class Institution {
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Collection<ProgramSubject> programSubjects;
+
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  private AcademicPatternAllocation academicPatternAllocation;
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Collection<SubjectType> subjectTypes;

@@ -1,6 +1,7 @@
 package in.instello.module.academicPattern.entity;
 
 import in.instello.annotations.GeneratedCuid;
+import in.instello.module.institution.entity.Institution;
 import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.*;
@@ -31,8 +32,9 @@ public class AcademicPatternAllocation {
   @JoinColumn(name = "academic_pattern_id", nullable = false)
   private AcademicPattern academicPattern;
 
-  @Column(nullable = false)
-  private String institutionId;
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "institution_id", nullable = false, updatable = false)
+  private Institution institution;
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
