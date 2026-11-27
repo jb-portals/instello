@@ -9,5 +9,7 @@ public interface AcademicPatternRepository extends JpaRepository<AcademicPattern
 
   List<AcademicPattern> findByOrganization_IdOrderByNameAsc(String organizationId);
 
+  boolean existsByOrganization_IdAndName(String organizationId, String name);
+
   Optional<AcademicPattern> findByIdAndOrganization_Id(String id, String organizationId);
 }

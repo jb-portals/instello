@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
@@ -118,6 +119,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiProblemDetails> handleMissingApiVersionException(
       MissingApiVersionException ex, HttpServletRequest request) {
     return error(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, "API version is required", request);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ApiProblemDetails> handleUnreadableRequest(
+      HttpMessageNotReadableException ex, HttpServletRequest request) {
+    return error(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, "Invalid request body", request);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

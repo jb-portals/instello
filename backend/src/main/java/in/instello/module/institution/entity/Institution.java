@@ -2,6 +2,7 @@ package in.instello.module.institution.entity;
 
 import in.instello.annotations.GeneratedCuid;
 import in.instello.common.address.Address;
+import in.instello.module.academicPattern.entity.AcademicPattern;
 import in.instello.module.faculty.Faculty;
 import in.instello.module.organization.entity.Organization;
 import in.instello.module.subjectCatalog.Subject;
@@ -41,6 +42,10 @@ public class Institution {
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false, name = "organization_id")
   private Organization organization;
+
+  @OneToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false, name = "academic_pattern_id")
+  private AcademicPattern academicPattern;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false, name = "faculty_id")

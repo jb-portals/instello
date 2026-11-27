@@ -58,6 +58,15 @@ public class OrganizationMembershipService {
     }
   }
 
+  @Transactional(readOnly = true)
+  public void requireOwner(String organizationId, String email) {
+    requireMember(organizationId, email);
+    if (!memberRepository.existsByUser_EmailIgnoreCaseAndOrganization_IdAndRole(
+        email, organizationId, AppAuthority.ROLE_OWNER)) {
+      throw new ForbiddenException("Only organization owners can manage academic patterns");
+    }
+  }
+
   /**
    * Creates memberships for invitations accepted before membership rows existed.
    *

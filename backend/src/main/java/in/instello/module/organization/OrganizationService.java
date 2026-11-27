@@ -1,7 +1,7 @@
 package in.instello.module.organization;
 
 import in.instello.common.address.Address;
-import in.instello.module.academicPattern.AcademicPatternService;
+import in.instello.module.academicPattern.service.AcademicPatternSeedService;
 import in.instello.module.organization.entity.Organization;
 import in.instello.module.organization.repository.OrganizationRepository;
 import in.instello.module.user.entity.User;
@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrganizationService {
 
   private final OrganizationRepository organizationRepository;
-  private final AcademicPatternService academicPatternService;
+  private final AcademicPatternSeedService academicPatternSeedService;
 
   public OrganizationService(
       OrganizationRepository organizationRepository,
-      AcademicPatternService academicPatternService) {
+      AcademicPatternSeedService academicPatternSeedService) {
     this.organizationRepository = organizationRepository;
-    this.academicPatternService = academicPatternService;
+    this.academicPatternSeedService = academicPatternSeedService;
   }
 
   @Transactional
@@ -34,7 +34,7 @@ public class OrganizationService {
             .build();
 
     Organization saved = organizationRepository.save(organization);
-    academicPatternService.seedDefaults(saved);
+    academicPatternSeedService.seedDefaults(saved);
     return saved;
   }
 }

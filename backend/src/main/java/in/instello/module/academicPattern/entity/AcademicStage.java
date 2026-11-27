@@ -16,7 +16,10 @@ import org.jspecify.annotations.Nullable;
 @Setter
 @Table(
     name = "academic_stages",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"academic_pattern_id", "sequence_number"}))
+    uniqueConstraints = {
+      @UniqueConstraint(columnNames = {"academic_pattern_id", "sequence_number"}),
+      @UniqueConstraint(columnNames = {"academic_pattern_id", "alias"})
+    })
 public class AcademicStage {
 
   @Id
@@ -31,6 +34,7 @@ public class AcademicStage {
   @Column(nullable = false, length = 200)
   private String name;
 
+  /** URL-friendly stage code generated from the system type and sequence number. */
   @Column(nullable = false, length = 100)
   private String alias;
 

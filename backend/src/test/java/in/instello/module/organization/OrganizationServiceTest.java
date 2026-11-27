@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import in.instello.common.address.Address;
-import in.instello.module.academicPattern.AcademicPatternService;
+import in.instello.module.academicPattern.service.AcademicPatternSeedService;
 import in.instello.module.organization.entity.Organization;
 import in.instello.module.organization.repository.OrganizationRepository;
 import in.instello.module.user.entity.User;
@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrganizationServiceTest {
 
   @Mock private OrganizationRepository organizationRepository;
-  @Mock private AcademicPatternService academicPatternService;
+  @Mock private AcademicPatternSeedService academicPatternSeedService;
   @InjectMocks private OrganizationService service;
 
   @Test
@@ -50,6 +50,6 @@ class OrganizationServiceTest {
             User.builder().email("admin@example.com").build());
 
     assertThat(created.getId()).isEqualTo(organizationId);
-    verify(academicPatternService).seedDefaults(created);
+    verify(academicPatternSeedService).seedDefaults(created);
   }
 }
