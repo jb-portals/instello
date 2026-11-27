@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
     name = "subjects",
     uniqueConstraints = {
       @UniqueConstraint(
-          name = "uk_program_institution_alias",
+          name = "uk_subject_institution_alias",
           columnNames = {"institution_id", "alias"})
     })
 public class Subject {

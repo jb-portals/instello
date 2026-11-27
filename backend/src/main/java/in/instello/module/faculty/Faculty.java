@@ -16,7 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
     uniqueConstraints = {
       @UniqueConstraint(
           name = "uk_faculty_institution_staffid",
-          columnNames = {"institution_id", "staffid"}),
+          columnNames = {"institution_id", "staff_id"}),
       @UniqueConstraint(
           name = "uk_faculty_institution_email",
           columnNames = {"institution_id", "email"}),
