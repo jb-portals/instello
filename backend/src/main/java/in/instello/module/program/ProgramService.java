@@ -188,6 +188,16 @@ public class ProgramService {
     return PageResponse.from(page);
   }
 
+  public Program findOrThrow(String institutionIdOrSlug, String programIdOrAlias) {
+    Institution institution = findInstitution(institutionIdOrSlug);
+    Program program =
+        programRepository
+            .findByIdOrAliasAndInstitution(programIdOrAlias, programIdOrAlias, institution)
+            .orElseThrow(() -> new ResourceNotFoundException("Program not found"));
+
+    return program;
+  }
+
   // private methods starts here
 
   private Institution findInstitution(String institution) {
@@ -207,16 +217,6 @@ public class ProgramService {
     Program program = find(institution, alias);
     if (program != null) throw new ConflictException("Alias exists already");
     return alias;
-  }
-
-  private Program findOrThrow(String institutionIdOrSlug, String programIdOrAlias) {
-    Institution institution = findInstitution(institutionIdOrSlug);
-    Program program =
-        programRepository
-            .findByIdOrAliasAndInstitution(programIdOrAlias, programIdOrAlias, institution)
-            .orElseThrow(() -> new ResourceNotFoundException("Program not found"));
-
-    return program;
   }
 
   private static Pageable sanitize(Pageable pageable) {

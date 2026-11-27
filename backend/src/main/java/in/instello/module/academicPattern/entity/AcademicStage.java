@@ -1,8 +1,10 @@
 package in.instello.module.academicPattern.entity;
 
 import in.instello.annotations.GeneratedCuid;
+import in.instello.module.programSubject.entity.ProgramSubject;
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.Collection;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -42,6 +44,9 @@ public class AcademicStage {
 
   @Column(nullable = false)
   private int yearNumber;
+
+  @OneToMany(mappedBy = "academicStage", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Collection<ProgramSubject> programSubjects;
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)

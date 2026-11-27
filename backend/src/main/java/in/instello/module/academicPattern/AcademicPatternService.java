@@ -14,6 +14,7 @@ import in.instello.module.academicPattern.entity.AcademicTemplateKey;
 import in.instello.module.academicPattern.repository.AcademicPatternAllocationRepository;
 import in.instello.module.academicPattern.repository.AcademicPatternRepository;
 import in.instello.module.academicPattern.repository.AcademicStageRepository;
+import in.instello.module.institution.entity.Institution;
 import in.instello.module.organization.OrganizationMembershipService;
 import in.instello.module.organization.entity.Organization;
 import java.util.ArrayList;
@@ -199,6 +200,13 @@ public class AcademicPatternService {
     return patternRepository
         .findByIdAndOrganization_Id(patternId, organizationId)
         .orElseThrow(() -> new ResourceNotFoundException("Academic pattern not found"));
+  }
+
+  private AcademicPattern findStageInInstitution(Institution institution, String stageIdOrAlias) {
+
+    return stageRepository
+        .findByIdOrAliasInInstitution(stageIdOrAlias, institution)
+        .orElseThrow(() -> new ResourceNotFoundException("Academic Stage not found"));
   }
 
   private List<AcademicStage> stagesOf(AcademicPattern pattern) {
